@@ -1,104 +1,50 @@
-'use server'
-import {
-  NextAuthMiddlewareOptions,
-  NextRequestWithAuth,
-  withAuth,
-} from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
-import { UserPermissions } from './constants/user-permissions'
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
-const hasRole = (roles: any[], roleDescription: UserPermissions) =>
-  roles.some((role) => role.description === roleDescription)
+const locales = ["en", "pt"];
+const defaultLocale = "en";
 
-const middleware = (request: NextRequestWithAuth) => {
-  const userObject = request.nextauth.token
-    ? JSON.parse(JSON.stringify(request.nextauth.token))
-    : null
+export default withAuth(
+  function middleware(req) {
+    const { pathname } = req.nextUrl;
+    const token = req.nextauth.token;
+    const userRoles = token?.roles || []; // Get roles from NextAuth session
 
-  const currentPath = new URL(request.url).pathname
-  const isAuthenticated = Boolean(userObject)
+    // --- 1. SECURITY CHECKS (Based on YOUR Backend Roles) ---
 
-  // Protegendo rotas autenticadas
-  if (currentPath.startsWith('/admin') && !isAuthenticated) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    // Protect Student Routes
+    if (pathname.includes("/student") && !userRoles.includes("IS_STUDENT")) {
+      // Redirect unauthorized users to a 403 page or home
+      return NextResponse.redirect(new URL(`/${defaultLocale}/unauthorized`, req.url));
+    }
+
+    if (pathname.includes("/teacher") && !userRoles.includes("IS_TEACHER")) {
+      return NextResponse.redirect(new URL(`/${defaultLocale}/unauthorized`, req.url));
+    }
+
+    const pathnameHasLocale = locales.some(
+      (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    );
+
+    if (pathnameHasLocale) return NextResponse.next();
+
+    const locale = defaultLocale; 
+    return NextResponse.redirect(
+      new URL(`/${locale}${pathname}`, req.url)
+    );
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+    pages: {
+      signIn: "/login",
+    },
   }
-
-  // Protegendo rotas de acordo com o papel do usuário
-  if (userObject) {
-    const userRoles = userObject.role || []
-
-    if (
-      currentPath.startsWith('/admin') &&
-      !hasRole(userRoles, UserPermissions.IS_ADMIN)
-    ) {
-      return NextResponse.redirect(new URL('/404', request.url))
-    }
-
-    if (
-      currentPath.startsWith('/student') &&
-      !hasRole(userRoles, UserPermissions.IS_STUDENT)
-    ) {
-      return NextResponse.redirect(new URL('/404', request.url))
-    }
-
-    if (
-      currentPath.startsWith('/instructor') &&
-      !hasRole(userRoles, UserPermissions.IS_INSTRUCTOR)
-    ) {
-      return NextResponse.redirect(new URL('/404', request.url))
-    }
-
-    if (
-      currentPath.startsWith('/tutor') &&
-      !hasRole(userRoles, UserPermissions.IS_TUTOR)
-    ) {
-      return NextResponse.redirect(new URL('/404', request.url))
-    }
-  }
-
-  // Para as páginas não autenticadas
-  if (currentPath.startsWith('/public') && !isAuthenticated) {
-    return NextResponse.next()
-  }
-
-  if (isAuthenticated) {
-    const protectedRoutes = [
-      '/career-area',
-      '/cart',
-      '/category',
-      '/course-detail',
-      '/payment',
-      '/type-courses',
-      '/validade-certificate',
-    ]
-
-    if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
-      if (!hasRole(userObject.role || [], UserPermissions.IS_STUDENT)) {
-        return NextResponse.redirect(new URL('/404', request.url))
-      }
-    }
-  }
-
-  return NextResponse.next()
-}
-
-const callbackOptions: NextAuthMiddlewareOptions = {}
-
-export default withAuth(middleware, callbackOptions)
+);
 
 export const config = {
   matcher: [
-    '/admin/:path((?!login).*)',
-    '/student/:path*',
-    '/instructor/:path*',
-    '/tutor/:path*',
-    '/public/:path*',
-    '/career-area',
-    '/cart',
-    '/category',
-    '/course-detail',
-    '/payment',
-    '/type-courses',
-    '/validade-certificate',
+    "/((?!api|_next/static|_next/image|favicon.ico|public|images).*)",
   ],
-}
+};
