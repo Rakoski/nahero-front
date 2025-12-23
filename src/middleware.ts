@@ -8,34 +8,60 @@ export default withAuth(
   function middleware(req) {
     const { pathname } = req.nextUrl;
     const token = req.nextauth.token;
-    const userRoles = token?.roles || []; // Get roles from NextAuth session
+    const userRoles = token?.roles || [];
 
-    // --- 1. SECURITY CHECKS (Based on YOUR Backend Roles) ---
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set("x-pathname", pathname);
 
-    // Protect Student Routes
     if (pathname.includes("/student") && !userRoles.includes("IS_STUDENT")) {
-      // Redirect unauthorized users to a 403 page or home
-      return NextResponse.redirect(new URL(`/${defaultLocale}/unauthorized`, req.url));
+      return NextResponse.redirect(
+        new URL(`/${defaultLocale}/unauthorized`, req.url)
+      );
     }
 
     if (pathname.includes("/teacher") && !userRoles.includes("IS_TEACHER")) {
-      return NextResponse.redirect(new URL(`/${defaultLocale}/unauthorized`, req.url));
+      return NextResponse.redirect(
+        new URL(`/${defaultLocale}/unauthorized`, req.url)
+      );
+    }
+
+    if (pathname.includes("/admin") && !userRoles.includes("IS_ADMIN")) {
+      return NextResponse.redirect(
+        new URL(`/${defaultLocale}/unauthorized`, req.url)
+      );
     }
 
     const pathnameHasLocale = locales.some(
-      (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+      (locale) =>
+        pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     );
 
-    if (pathnameHasLocale) return NextResponse.next();
+    if (pathnameHasLocale) {
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
+    }
 
-    const locale = defaultLocale; 
-    return NextResponse.redirect(
-      new URL(`/${locale}${pathname}`, req.url)
-    );
+    const locale = defaultLocale;
+    return NextResponse.redirect(new URL(`/${locale}${pathname}`, req.url));
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ req, token }) => {
+        const path = req.nextUrl.pathname;
+
+        if (
+          path.includes("/student") ||
+          path.includes("/teacher") ||
+          path.includes("/admin")
+        ) {
+          return !!token;
+        }
+
+        return true;
+      },
     },
     pages: {
       signIn: "/login",
@@ -45,6 +71,6 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|public|images).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

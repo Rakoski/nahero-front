@@ -1,0 +1,76 @@
+import axios from "axios";
+import { getCookie, setCookie } from "@/storages/cookies";
+import { SignOut } from "@/services/auth/sign-out";
+
+export const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL_JAVA,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
+  timeout: 1000000,
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const token = getCookie("@nahero:accessToken");
+    if (typeof window !== "undefined") {
+      config.headers["Accept-Language"] = navigator.language;
+    }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+const refreshToken = async () => {
+  const currentRefreshToken = getCookie("@nahero:refreshToken");
+  if (!currentRefreshToken) {
+    return null;
+  }
+
+  const refreshApi = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_URL_JAVA,
+    headers: { "Content-Type": "application/json" },
+  });
+
+  try {
+    const response = await refreshApi.post("/auth/refresh-token", {
+      refreshToken: currentRefreshToken,
+    });
+
+    if (response.data?.accessToken) {
+      setCookie("@nahero:accessToken", response.data.accessToken, 90);
+      return response.data.accessToken;
+    }
+  } catch (error) {}
+  return null;
+};
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalConfig = error.config;
+
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalConfig._retry &&
+      error.config.url !== "/auth/login" &&
+      error.config.url !== "/auth/reset-password"
+    ) {
+      originalConfig._retry = true;
+
+      const newAccessToken = await refreshToken();
+
+      if (newAccessToken) {
+        originalConfig.headers.Authorization = `Bearer ${newAccessToken}`;
+        return api(originalConfig);
+      }
+
+      SignOut();
+    }
+
+    return Promise.reject(error);
+  }
+);

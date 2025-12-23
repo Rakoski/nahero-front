@@ -1,13 +1,20 @@
-export default function RootLayout({
-  children,
-  params: { lang },
-}: {
+import "./globals.css";
+import { Toaster } from "react-hot-toast";
+
+type Props = {
   children: React.ReactNode;
-  params: { lang: string };
-}) {
+  params: Promise<{ lang: string }>;
+};
+
+export default async function RootLayout({ children, params }: Props) {
+  const { lang } = await params;
+
   return (
     <html lang={lang}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Toaster position="top-center" />
+      </body>
     </html>
   );
 }

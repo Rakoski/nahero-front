@@ -29,12 +29,11 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id || null
         token.image = user.avatarUrl || null
-        token.permissions = user.permissions || []
         token.name = user.name || 'Name'
         token.email = user.email || 'guest@example.com'
         token.accessToken = user.accessToken || ''
         token.refreshToken = user.refreshToken || ''
-        token.role = user.role || []
+        token.roles = (user as any).roles.map((r: any) => r.name);
       }
       return token
     },
@@ -45,10 +44,9 @@ const authOptions: NextAuthOptions = {
         image: token.image as string,
         name: token.name as string,
         email: token.email as string,
-        permissions: token.permissions as [],
         accessToken: token.accessToken as string,
         refreshToken: token.refreshToken as string,
-        role: token.role as [],
+        roles: token.roles as string[],
       }
       return session
     },

@@ -7,11 +7,16 @@ declare module 'next-auth' {
     refreshToken?: string
     image?: string
     avatarUrl?: string
-    permissions?: []
-    role?: []
+    roles?: string[]
   }
 
   interface Session {
     user: User
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    roles: string[];
   }
 }
