@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Github } from "lucide-react";
 
 interface FooterProps {
   lang: string;
