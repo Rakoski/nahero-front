@@ -4,8 +4,8 @@ export const en = {
     title_highlight: "your certifications",
     description:
       "Access more than 5,000 free questions to prepare for AWS, Azure, and Google Cloud certifications. Built by students, for students.",
-    btn_primary: "Start Now",
-    btn_secondary: "View Practice Exams",
+    btn_primary: "START PRACTICING",
+    btn_secondary: "Join Us",
     image_alt: "Student studying",
   },
   features: {
@@ -78,5 +78,17 @@ export const en = {
     my_profile: "My Profile",
     logout: "Log Out",
     menu: "Menu",
+  },
+  footer: {
+    description:
+      "Free practice exam platform for all students preparing for certifications.",
+    quick_links: "Quick Links",
+    practice_exams: "Practice Exams",
+    certifications: "Certifications",
+    how_it_works: "How it works",
+    resources: "Resources",
+    faq: "FAQ",
+    support: "Support",
+    contact: "Contact",
   },
 } as const;

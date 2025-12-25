@@ -79,4 +79,16 @@ export const pt = {
     logout: "Sair",
     menu: "Menu",
   },
+  footer: {
+    description:
+      "Plataforma gratuita de simulados para todos os estudantes se preparando para certificações.",
+    quick_links: "Links Rápidos",
+    practice_exams: "Simulados",
+    certifications: "Certificações",
+    how_it_works: "Como Funciona",
+    resources: "Recursos",
+    faq: "FAQ",
+    support: "Suporte",
+    contact: "Contato",
+  },
 } as const;

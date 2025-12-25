@@ -55,7 +55,7 @@ export function Hero({ dict }: HeroProps) {
               size="lg"
               className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold"
             >
-              <Link href="/register">{dict.btn_primary}</Link>
+              <Link href="/practice-exams">{dict.btn_primary}</Link>
             </Button>
             <Button
               asChild
@@ -63,7 +63,7 @@ export function Hero({ dict }: HeroProps) {
               size="lg"
               className="border-yellow-600 text-yellow-600 hover:bg-yellow-400"
             >
-              <Link href="/practice-exams">{dict.btn_secondary}</Link>
+              <Link href="/register">{dict.btn_secondary}</Link>
             </Button>
           </FadeIn>
         </div>
