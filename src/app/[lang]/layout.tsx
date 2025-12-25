@@ -1,5 +1,8 @@
-import "./globals.css";
+import { Providers } from "@/components/providers";
+import { Header } from "@/components/header/header";
 import { Toaster } from "react-hot-toast";
+import { getDictionary } from "@/dictionaries"; // <--- Import this
+import "./globals.css";
 
 type Props = {
   children: React.ReactNode;
@@ -9,11 +12,18 @@ type Props = {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
 
+  const dict = await getDictionary(lang as "en" | "pt");
+
   return (
-    <html lang={lang}>
-      <body>
-        {children}
-        <Toaster position="top-center" />
+    <html lang={lang} suppressHydrationWarning>
+      <body className="bg-stone-950 text-stone-50 antialiased">
+        <Providers>
+          <Header dict={dict} lang={lang} />
+
+          {children}
+
+          <Toaster position="top-center" />
+        </Providers>
       </body>
     </html>
   );

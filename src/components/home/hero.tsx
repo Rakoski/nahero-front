@@ -16,25 +16,39 @@ interface HeroProps {
 
 export function Hero({ dict }: HeroProps) {
   return (
-    <section className="relative py-16 md:py-24 overflow-hidden">
+    <section className="relative py-32 md:py-48 overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/certifications2.jpeg"
+          alt="Background"
+          fill
+          className="object-cover opacity-20"
+          priority
+        />
+      </div>
+
+      {/* Optional: Additional overlay for better text contrast */}
+      <div className="absolute inset-0 bg-background/30 z-0" />
+
       <div className="container mx-auto px-4 flex flex-col-reverse md:flex-row items-center justify-between gap-12">
-        <div className="flex-1 text-center md:text-left z-10">
+        <div className="flex-1 text-center z-10">
           <FadeIn delay={0.1}>
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-6">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-12">
               {dict.title_start}{" "}
               <span className="text-yellow-600">{dict.title_highlight}</span>
             </h1>
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto md:mx-0">
+            <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
               {dict.description}
             </p>
           </FadeIn>
 
           <FadeIn
             delay={0.3}
-            className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+            className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Button
               asChild
@@ -47,22 +61,10 @@ export function Hero({ dict }: HeroProps) {
               asChild
               variant="outline"
               size="lg"
-              className="border-yellow-600 text-yellow-600 hover:bg-yellow-50"
+              className="border-yellow-600 text-yellow-600 hover:bg-yellow-400"
             >
               <Link href="/practice-exams">{dict.btn_secondary}</Link>
             </Button>
-          </FadeIn>
-        </div>
-
-        <div className="flex-1 relative w-full h-[300px] md:h-[500px]">
-          <FadeIn delay={0.4} className="w-full h-full relative">
-            <Image
-              src="/file.svg" // Added '/' for safety
-              alt={dict.image_alt} // Use the dictionary here!
-              fill
-              className="object-contain"
-              priority
-            />
           </FadeIn>
         </div>
       </div>

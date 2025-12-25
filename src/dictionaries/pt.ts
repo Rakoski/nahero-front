@@ -32,7 +32,7 @@ export const pt = {
   cta: {
     title: "Pronto para começar?",
     description:
-      "Junte-se a mais de 1.000 estudantes do IFPR e além que estão estudando agora.",
+      "Junte-se a outros estudantes que estão estudando para se certificar agora mesmo!",
     btn: "Criar Conta Grátis",
   },
   notFound: {
@@ -42,5 +42,41 @@ export const pt = {
       "Ops! A página que você está procurando não existe ou foi movida.",
     btn_home: "Voltar ao Início",
     btn_exams: "Ver Simulados",
+  },
+  login: {
+    title: "Acesse Sua Conta",
+    subtitle: "Digite seu e-mail e senha para entrar",
+    email_label: "E-mail",
+    email_placeholder: "Digite seu e-mail",
+    password_label: "Senha",
+    password_placeholder: "Digite sua senha",
+    forgot_password: "Esqueceu a senha?",
+    instructor_link: "Já é um instrutor?",
+    submit_btn: "Entrar",
+    submit_loading: "Entrando...",
+    new_here: "Novo por aqui?",
+    register_now: "Cadastre-se Agora",
+    validation: {
+      identifier_required: "E-mail é obrigatório",
+      identifier_invalid: "Por favor, insira um e-mail válido",
+      password_min: "A senha deve ter pelo menos 6 caracteres",
+    },
+    errors: {
+      invalid_credentials: "Credenciais inválidas. Tente novamente.",
+      unexpected_error: "Ocorreu um erro inesperado. Tente novamente.",
+    },
+  },
+  header: {
+    home: "Início",
+    exams: "Simulados",
+    certifications: "Certificações",
+    about: "Sobre",
+    login: "Entrar",
+    register: "Cadastrar",
+    dashboard: "Painel",
+    history: "Histórico",
+    my_profile: "Meu Perfil",
+    logout: "Sair",
+    menu: "Menu",
   },
 } as const;
