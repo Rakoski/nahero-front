@@ -27,7 +27,7 @@ import {
   getDifficultyLabel,
   formatTimeLimit,
   getDifficultyColors,
-} from "../utils";
+} from "../../../app/[lang]/(unauthenticated)/practice-exams/utils";
 
 export interface ExamCardProps {
   exam: Exam;
@@ -80,7 +80,7 @@ export function ExamCard({
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow">
       <CardHeader>
-        <div className="flex justify-between items-start mb-2">
+        <div className="flex justify-between items-start">
           <div className="flex-1">
             <CardTitle className="text-lg line-clamp-2">{exam.title}</CardTitle>
             <CardDescription className="line-clamp-1">

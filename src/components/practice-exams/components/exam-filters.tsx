@@ -59,7 +59,6 @@ export function ExamFilters({
   return (
     <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border rounded-lg p-4 shadow-sm">
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Search Input */}
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -72,7 +71,6 @@ export function ExamFilters({
           />
         </div>
 
-        {/* Difficulty Filter */}
         <Select value={difficulty || "all"} onValueChange={onDifficultyChange}>
           <SelectTrigger className="w-full md:w-45">
             <Filter className="mr-2 h-4 w-4" />
@@ -92,9 +90,9 @@ export function ExamFilters({
           </SelectContent>
         </Select>
 
-        {/* Platform Filter */}
         <Select value={platform || "all"} onValueChange={onPlatformChange}>
-          <SelectTrigger className="w-full md:w-45">
+          <SelectTrigger className="w-full md:w-45 flex justify-center">
+            <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder={dict.filter_platform} />
           </SelectTrigger>
           <SelectContent>
@@ -105,13 +103,11 @@ export function ExamFilters({
           </SelectContent>
         </Select>
 
-        {/* Search Button */}
         <Button onClick={onSearch} className="w-full md:w-auto">
           <Search className="mr-2 h-4 w-4" />
           {dict.search_button}
         </Button>
 
-        {/* Clear Filters */}
         {hasActiveFilters && (
           <Button
             onClick={onClearFilters}

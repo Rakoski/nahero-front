@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { FadeIn } from "@/components/ui/fade-in";
 import { useExams, type ExamFilters } from "@/services/exams/use-exams";
 import { Routes } from "@/routes/routes";
-import { ExamCard } from "./components/exam-card";
-import { ExamFilters as ExamFiltersComponent } from "./components/exam-filters";
-import { SkeletonCard } from "./components/skeleton-card";
-import { EmptyState } from "./components/empty-state";
+import { ExamCard } from "../../../../components/practice-exams/components/exam-card";
+import { ExamFilters as ExamFiltersComponent } from "../../../../components/practice-exams/components/exam-filters";
+import { SkeletonCard } from "../../../../components/practice-exams/components/skeleton-card";
+import { EmptyState } from "../../../../components/practice-exams/components/empty-state";
 
 type PracticeExamsDict = {
   title: string;
@@ -150,7 +150,6 @@ export default function PracticeExamsPage({ params }: Props) {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      {/* Header Section */}
       <FadeIn>
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>
@@ -158,24 +157,20 @@ export default function PracticeExamsPage({ params }: Props) {
         </div>
       </FadeIn>
 
-      {/* Filter Bar */}
-      <FadeIn delay={0.1}>
-        <ExamFiltersComponent
-          searchInput={searchInput}
-          onSearchInputChange={setSearchInput}
-          onSearch={handleSearch}
-          onKeyPress={handleKeyPress}
-          difficulty={filters.difficulty}
-          onDifficultyChange={handleDifficultyChange}
-          platform={filters.platform}
-          onPlatformChange={handlePlatformChange}
-          hasActiveFilters={hasActiveFilters}
-          onClearFilters={clearFilters}
-          dict={dict}
-        />
-      </FadeIn>
+      <ExamFiltersComponent
+        searchInput={searchInput}
+        onSearchInputChange={setSearchInput}
+        onSearch={handleSearch}
+        onKeyPress={handleKeyPress}
+        difficulty={filters.difficulty}
+        onDifficultyChange={handleDifficultyChange}
+        platform={filters.platform}
+        onPlatformChange={handlePlatformChange}
+        hasActiveFilters={hasActiveFilters}
+        onClearFilters={clearFilters}
+        dict={dict}
+      />
 
-      {/* Error State */}
       {error && (
         <FadeIn delay={0.2}>
           <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center">
@@ -189,7 +184,6 @@ export default function PracticeExamsPage({ params }: Props) {
         </FadeIn>
       )}
 
-      {/* Loading State */}
       {isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, index) => (
@@ -198,31 +192,25 @@ export default function PracticeExamsPage({ params }: Props) {
         </div>
       )}
 
-      {/* Exams Grid */}
       {!isLoading && !error && exams.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {exams.map((exam, index) => (
-            <FadeIn key={exam.id} delay={0.05 * index}>
-              <ExamCard
-                exam={exam}
-                onStartExam={handleStartExam}
-                isLoading={isStartingExam}
-                dict={dict}
-              />
-            </FadeIn>
+            <ExamCard
+              exam={exam}
+              onStartExam={handleStartExam}
+              isLoading={isStartingExam}
+              dict={dict}
+            />
           ))}
         </div>
       )}
 
-      {/* Empty State */}
       {!isLoading && !error && exams.length === 0 && (
-        <FadeIn delay={0.2}>
-          <EmptyState
-            hasActiveFilters={hasActiveFilters}
-            onClearFilters={clearFilters}
-            dict={dict.empty_state}
-          />
-        </FadeIn>
+        <EmptyState
+          hasActiveFilters={hasActiveFilters}
+          onClearFilters={clearFilters}
+          dict={dict.empty_state}
+        />
       )}
     </div>
   );

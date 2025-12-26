@@ -1,13 +1,3 @@
-/**
- * Utility functions for practice exams
- */
-
-/**
- * Get the difficulty label based on the difficulty level number
- * @param level - Difficulty level (1-4)
- * @param dict - Dictionary object for translations
- * @returns Localized difficulty label
- */
 export function getDifficultyLabel(
   level: number,
   dict: {
@@ -26,11 +16,6 @@ export function getDifficultyLabel(
   return labels[level] || "Unknown";
 }
 
-/**
- * Format time limit from minutes to a readable string
- * @param minutes - Time in minutes
- * @returns Formatted time string (e.g., "2h", "1h 30m", "45m")
- */
 export function formatTimeLimit(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
@@ -40,11 +25,6 @@ export function formatTimeLimit(minutes: number): string {
   return `${mins}m`;
 }
 
-/**
- * Get Tailwind CSS classes for difficulty badges
- * @param difficulty - Difficulty level (Beginner, Intermediate, Advanced)
- * @returns Tailwind CSS classes for the badge
- */
 export function getDifficultyColors(
   difficulty: "Beginner" | "Intermediate" | "Advanced"
 ): string {

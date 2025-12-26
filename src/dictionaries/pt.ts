@@ -174,4 +174,40 @@ export const pt = {
       title: "Falha ao carregar simulados",
     },
   },
+  examAttempt: {
+    title: "Questão",
+    time_remaining: "Tempo restante:",
+    question_of: "de",
+    select_answer: "Selecione sua resposta",
+    select_answers: "Selecione todas que se aplicam",
+    single_choice: "(Selecione uma)",
+    multiple_choice: "(Selecione duas)",
+    multiple_choice_many: "(Selecione {{count}})",
+    answered: "Respondida",
+    unanswered: "Não respondida",
+    current: "Atual",
+    navigation: {
+      previous: "Anterior",
+      next: "Próxima",
+      submit: "Enviar Simulado",
+      submitting: "Enviando...",
+    },
+    dialogs: {
+      time_up: {
+        title: "Tempo Esgotado!",
+        description: "O tempo limite para este simulado foi atingido.",
+        question: "Você gostaria de continuar?",
+        continue: "Continuar",
+        submit: "Enviar Agora",
+      },
+      confirm_submit: {
+        title: "Enviar Simulado?",
+        description: "Tem certeza de que deseja enviar seu simulado?",
+        unanswered_warning:
+          "Você tem {{count}} questão(ões) não respondida(s).",
+        cancel: "Cancelar",
+        submit: "Enviar Simulado",
+      },
+    },
+  },
 } as const;
