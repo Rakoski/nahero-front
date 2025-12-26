@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -10,13 +11,31 @@ import { SignOut } from "../../services/auth/sign-out";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Routes } from "../../routes/routes";
 
+type HeaderDict = {
+  home: string;
+  exams: string;
+  certifications: string;
+  about: string;
+  login: string;
+  register: string;
+  dashboard: string;
+  history: string;
+  my_profile: string;
+  logout: string;
+  menu: string;
+};
+
 interface HeaderProps {
   lang: string;
-  dict: any;
+  dict: HeaderDict;
 }
 
+const buildPath = (lang: string, route: string) => {
+  return `/${lang}${route}`.replace(/\/+/g, "/");
+};
+
 export function Header({ dict, lang }: HeaderProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
   const getLinks = () => {
@@ -25,44 +44,58 @@ export function Header({ dict, lang }: HeaderProps) {
     if (roles.includes("IS_STUDENT")) {
       return [
         {
-          href: `/${lang}/${Routes.StudentDashboard}`,
-          label: dict.header.dashboard,
+          href: buildPath(lang, Routes.StudentDashboard),
+          label: dict.dashboard,
         },
         {
-          href: `/${lang}/${Routes.PracticeExams}`,
-          label: dict.header.exams,
+          href: buildPath(lang, Routes.PracticeExams),
+          label: dict.exams,
         },
-        { href: `/${lang}/student/history`, label: dict.header.history },
+        { href: buildPath(lang, "/student/history"), label: dict.history },
       ];
     }
 
     if (roles.includes("IS_TEACHER")) {
       return [
         {
-          href: `/${lang}/${Routes.TeacherDashboard}`,
-          label: dict.header.dashboard,
+          href: buildPath(lang, Routes.TeacherDashboard),
+          label: dict.dashboard,
         },
-        { href: `/${lang}/teacher/create`, label: "Create Exam" },
+        { href: buildPath(lang, "/teacher/create"), label: "Create Exam" },
       ];
     }
 
     return [
-      { href: `/${lang}/${Routes.PracticeExams}`, label: dict.header.exams },
-      { href: `/${lang}/`, label: dict.header.about },
+      { href: buildPath(lang, Routes.PracticeExams), label: dict.exams },
+      { href: buildPath(lang, Routes.Home), label: dict.about },
     ];
   };
 
   const navLinks = getLinks();
 
+  if (status === "loading") {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-stone-950/80 backdrop-blur supports-backdrop-filter:bg-stone-950/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="h-8 w-32 bg-stone-800 animate-pulse rounded" />
+          <div className="h-8 w-24 bg-stone-800 animate-pulse rounded" />
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-stone-950/80 backdrop-blur supports-backdrop-filter:bg-stone-950/60">
-      <div className="container mx-auto flex h-18 items-center justify-between px-4 sm:px-6 lg:px-8 ">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
-          <Link href={`/${lang}`} className="flex items-center space-x-2">
-            <img
+          <Link
+            href={buildPath(lang, Routes.Home)}
+            className="flex items-center space-x-2"
+          >
+            <Image
               src="/favicon.ico"
-              width="30px"
-              height="30px"
+              width={30}
+              height={30}
               alt="NaHero logo"
             />
             <span className="text-xl font-bold text-yellow-500">NaHero</span>
@@ -84,7 +117,7 @@ export function Header({ dict, lang }: HeaderProps) {
         <div className="flex items-center gap-4">
           {session ? (
             <div className="hidden md:block">
-              <UserNav dict={dict.header} />
+              <UserNav dict={dict} />
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">
@@ -93,16 +126,14 @@ export function Header({ dict, lang }: HeaderProps) {
                 asChild
                 className="text-stone-300 hover:text-white hover:bg-white/10"
               >
-                <Link href={`/${lang}/${Routes.Login}`}>
-                  {dict.header.login}
-                </Link>
+                <Link href={buildPath(lang, Routes.Login)}>{dict.login}</Link>
               </Button>
               <Button
                 asChild
                 className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold transition-transform active:scale-95"
               >
-                <Link href={`/${lang}/${Routes.Register}`}>
-                  {dict.header.register}
+                <Link href={buildPath(lang, Routes.Register)}>
+                  {dict.register}
                 </Link>
               </Button>
             </div>
@@ -116,7 +147,7 @@ export function Header({ dict, lang }: HeaderProps) {
                 className="md:hidden text-stone-300"
               >
                 <Menu className="h-6 w-6" />
-                <span className="sr-only">{dict.header.menu}</span>
+                <span className="sr-only">{dict.menu}</span>
               </Button>
             </SheetTrigger>
             <SheetContent
@@ -162,7 +193,7 @@ export function Header({ dict, lang }: HeaderProps) {
                       }}
                     >
                       <LogOut className="mr-2 h-4 w-4" />
-                      {dict.header.logout}
+                      {dict.logout}
                     </Button>
                   </div>
                 ) : (
@@ -173,10 +204,10 @@ export function Header({ dict, lang }: HeaderProps) {
                       className="w-full justify-start text-stone-300"
                     >
                       <Link
-                        href={`/${lang}/${Routes.Login}`}
+                        href={buildPath(lang, Routes.Login)}
                         onClick={() => setIsOpen(false)}
                       >
-                        {dict.header.login}
+                        {dict.login}
                       </Link>
                     </Button>
                     <Button
@@ -184,10 +215,10 @@ export function Header({ dict, lang }: HeaderProps) {
                       className="w-full bg-yellow-600 text-white font-bold"
                     >
                       <Link
-                        href={`/${lang}/${Routes.Register}`}
+                        href={buildPath(lang, Routes.Register)}
                         onClick={() => setIsOpen(false)}
                       >
-                        {dict.header.register}
+                        {dict.register}
                       </Link>
                     </Button>
                   </div>

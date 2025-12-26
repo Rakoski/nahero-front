@@ -14,7 +14,13 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { User, LogOut, LayoutDashboard } from "lucide-react";
 
-export function UserNav({ dict }: { dict: any }) {
+type UserNavDict = {
+  dashboard: string;
+  my_profile: string;
+  logout: string;
+};
+
+export function UserNav({ dict }: { dict: UserNavDict }) {
   const { data: session } = useSession();
   const user = session?.user;
 

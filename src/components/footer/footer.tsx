@@ -1,9 +1,25 @@
 import Link from "next/link";
 
+type FooterDict = {
+  description: string;
+  quick_links: string;
+  practice_exams: string;
+  certifications: string;
+  how_it_works: string;
+  resources: string;
+  faq: string;
+  support: string;
+  contact: string;
+};
+
 interface FooterProps {
   lang: string;
-  dict: any;
+  dict: FooterDict;
 }
+
+const buildPath = (lang: string, route: string) => {
+  return `/${lang}${route}`.replace(/\/+/g, "/");
+};
 
 export function Footer({ dict, lang }: FooterProps) {
   return (
@@ -13,8 +29,7 @@ export function Footer({ dict, lang }: FooterProps) {
           <div className="flex flex-col gap-3 md:items-center md:text-center">
             <h3 className="text-xl font-bold text-yellow-500">NaHero</h3>
             <p className="text-sm text-stone-400 max-w-xs">
-              {dict.footer?.description ||
-                "Free practice exam platform for all students preparing for certifications."}
+              {dict.description}
             </p>
             <p className="text-xs text-stone-500 mt-2">
               © 2025 NaHero. All rights reserved.
@@ -23,52 +38,52 @@ export function Footer({ dict, lang }: FooterProps) {
 
           <div className="flex flex-col gap-3 md:items-center md:text-center">
             <h3 className="text-lg font-semibold text-stone-200">
-              {dict.footer?.quick_links || "Quick Links"}
+              {dict.quick_links}
             </h3>
             <nav className="flex flex-col gap-2">
               <Link
-                href={`/${lang}/exams`}
+                href={buildPath(lang, "/exams")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
-                {dict.footer?.practice_exams || "Practice Exams"}
+                {dict.practice_exams}
               </Link>
               <Link
-                href={`/${lang}/certifications`}
+                href={buildPath(lang, "/certifications")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
-                {dict.footer?.certifications || "Certifications"}
+                {dict.certifications}
               </Link>
               <Link
-                href={`/${lang}/`}
+                href={buildPath(lang, "/")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
-                {dict.footer?.how_it_works || "How it works"}
+                {dict.how_it_works}
               </Link>
             </nav>
           </div>
 
           <div className="flex flex-col gap-3 md:items-center md:text-center">
             <h3 className="text-lg font-semibold text-stone-200">
-              {dict.footer?.resources || "Resources"}
+              {dict.resources}
             </h3>
             <nav className="flex flex-col gap-2">
               <Link
-                href={`/${lang}/faq`}
+                href={buildPath(lang, "/faq")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
-                {dict.footer?.faq || "FAQ"}
+                {dict.faq}
               </Link>
               <Link
-                href={`/${lang}/support`}
+                href={buildPath(lang, "/support")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
-                {dict.footer?.support || "Support"}
+                {dict.support}
               </Link>
               <Link
-                href={`/${lang}/contact`}
+                href={buildPath(lang, "/contact")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
-                {dict.footer?.contact || "Contact"}
+                {dict.contact}
               </Link>
             </nav>
           </div>
