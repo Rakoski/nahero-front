@@ -7,8 +7,8 @@ interface FooterProps {
 
 export function Footer({ dict, lang }: FooterProps) {
   return (
-    <footer className="w-full border-t border-white/10 bg-stone-900/95">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className=" w-full border-t border-white/10 bg-stone-900/95">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3">
           <div className="flex flex-col gap-3 md:items-center md:text-center">
             <h3 className="text-xl font-bold text-yellow-500">NaHero</h3>

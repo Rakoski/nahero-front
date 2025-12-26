@@ -18,7 +18,7 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <main className="flex flex-col min-h-screen">
-      <Hero dict={dict.hero} />
+      <Hero dict={dict.hero} lang={lang} />
 
       <Features dict={dict.features} />
 

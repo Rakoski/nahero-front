@@ -31,11 +31,11 @@ export default async function RootLayout({ children, params }: Props) {
 
   return (
     <html lang={lang} suppressHydrationWarning>
-      <body className="bg-stone-950 text-stone-50 antialiased">
+      <body className="bg-stone-950 text-stone-50 antialiased flex flex-col min-h-screen">
         <Providers>
           <Header dict={dict} lang={lang} />
 
-          {children}
+          <main className="flex-1">{children}</main>
 
           <Footer dict={dict} lang={lang} />
           <Toaster position="top-center" />

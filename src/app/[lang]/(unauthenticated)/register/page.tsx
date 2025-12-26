@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useSession, signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -25,62 +25,68 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
-import { setCookie } from "@/storages/cookies";
 import Link from "next/link";
 
-type LoginDict = {
+type RegisterDict = {
   title: string;
   subtitle: string;
+  name_label: string;
+  name_placeholder: string;
   email_label: string;
   email_placeholder: string;
   password_label: string;
   password_placeholder: string;
-  forgot_password: string;
-  instructor_link: string;
+  confirm_password_label: string;
+  confirm_password_placeholder: string;
+  back_to_login: string;
   submit_btn: string;
   submit_loading: string;
-  new_here: string;
-  register_now: string;
   validation: {
-    identifier_required: string;
-    identifier_invalid: string;
+    name_required: string;
+    name_min: string;
+    email_required: string;
+    email_invalid: string;
     password_min: string;
+    confirm_password_required: string;
+    passwords_must_match: string;
   };
   errors: {
-    invalid_credentials: string;
+    registration_failed: string;
     unexpected_error: string;
   };
 };
 
-const createLoginSchema = (dict: LoginDict) =>
-  z.object({
-    identifier: z
-      .string()
-      .min(1, dict.validation.identifier_required)
-      .refine(
-        (value) => {
-          const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-          const isRA = /^\d+$/.test(value);
-          return isEmail || isRA;
-        },
-        {
-          message: dict.validation.identifier_invalid,
-        }
-      ),
-    password: z.string().min(6, dict.validation.password_min),
-  });
+const createRegisterSchema = (dict: RegisterDict) =>
+  z
+    .object({
+      name: z
+        .string()
+        .min(1, dict.validation.name_required)
+        .min(2, dict.validation.name_min),
+      email: z
+        .string()
+        .min(1, dict.validation.email_required)
+        .email(dict.validation.email_invalid),
+      password: z.string().min(6, dict.validation.password_min),
+      confirmPassword: z
+        .string()
+        .min(1, dict.validation.confirm_password_required),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: dict.validation.passwords_must_match,
+      path: ["confirmPassword"],
+    });
 
-type LoginFormData = z.infer<ReturnType<typeof createLoginSchema>>;
+type RegisterFormData = z.infer<ReturnType<typeof createRegisterSchema>>;
 
 type Props = {
   params: Promise<{ lang: "en" | "pt" }>;
 };
 
-export default function LoginPage({ params }: Props) {
-  const [dict, setDict] = useState<LoginDict | null>(null);
+export default function RegisterPage({ params }: Props) {
+  const [dict, setDict] = useState<RegisterDict | null>(null);
   const [lang, setLang] = useState<"en" | "pt">("en");
 
   useEffect(() => {
@@ -88,59 +94,58 @@ export default function LoginPage({ params }: Props) {
       setLang(p.lang);
       const { getDictionary } = await import("@/dictionaries");
       const dictionary = await getDictionary(p.lang);
-      setDict(dictionary.login);
+      setDict(dictionary.register);
     });
   }, [params]);
 
   const { data: session } = useSession();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const form = useForm<LoginFormData>({
-    resolver: dict ? zodResolver(createLoginSchema(dict)) : undefined,
+  const form = useForm<RegisterFormData>({
+    resolver: dict ? zodResolver(createRegisterSchema(dict)) : undefined,
     defaultValues: {
-      identifier: "",
+      name: "",
+      email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   useEffect(() => {
     if (session?.user) {
-      const destination = callbackUrl || Routes.Home;
-      router.push(destination);
+      router.push(Routes.Home);
     }
-  }, [session, router, callbackUrl]);
+  }, [session, router]);
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     if (!dict) return;
     setIsLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email: data.identifier,
-        password: data.password,
-        redirect: false,
+      // TODO: Implement registration API call
+      console.log("Registration data:", data);
+
+      // Placeholder for registration logic
+      // const response = await fetch('/api/register', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(data),
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error('Registration failed');
+      // }
+
+      // After successful registration, redirect to login
+      // router.push(`/${lang}/login`);
+
+      form.setError("root", {
+        type: "manual",
+        message: dict.errors.registration_failed,
       });
-
-      if (result?.error) {
-        form.setError("root", {
-          type: "manual",
-          message: dict.errors.invalid_credentials,
-        });
-      } else if (result?.ok) {
-        if (session?.user?.accessToken) {
-          setCookie("@nahero:accessToken", session.user.accessToken, 90);
-        }
-        if (session?.user?.refreshToken) {
-          setCookie("@nahero:refreshToken", session.user.refreshToken, 90);
-        }
-
-        const destination = callbackUrl || Routes.Home;
-        router.push(destination);
-      }
     } catch (error) {
       form.setError("root", {
         type: "manual",
@@ -167,7 +172,7 @@ export default function LoginPage({ params }: Props) {
             width={600}
             height={600}
             src="/clouds.png"
-            alt="Login Banner"
+            alt="Register Banner"
             className="object-contain"
             priority
           />
@@ -192,20 +197,39 @@ export default function LoginPage({ params }: Props) {
                 >
                   <FormField
                     control={form.control}
-                    name="identifier"
+                    name="name"
                     render={({ field }) => (
                       <FormItem>
                         <div className="mt-4">
-                          <FormLabel>{dict.email_label}</FormLabel>
+                          <FormLabel>{dict.name_label}</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder={dict.email_placeholder}
+                              placeholder={dict.name_placeholder}
                               className="h-11 mt-2"
                               {...field}
                             />
                           </FormControl>
                           <FormMessage />
                         </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{dict.email_label}</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder={dict.email_placeholder}
+                            className="h-11 mt-2"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -246,14 +270,45 @@ export default function LoginPage({ params }: Props) {
                     )}
                   />
 
-                  <div className="flex items-center justify-between text-sm">
-                    <Link
-                      href={Routes.PasswordRecovery}
-                      className="font-bold text-yellow-600 hover:text-yellow-700 hover:underline"
-                    >
-                      {dict.forgot_password}
-                    </Link>
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{dict.confirm_password_label}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              type={showConfirmPassword ? "text" : "password"}
+                              placeholder={dict.confirm_password_placeholder}
+                              className="h-11 pr-10"
+                              {...field}
+                            />
+                            <Button
+                              type="button"
+                              onClick={() =>
+                                setShowConfirmPassword(!showConfirmPassword)
+                              }
+                              variant="ghost"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent p-0 w-8 h-8 flex items-center justify-center"
+                              aria-label={
+                                showConfirmPassword
+                                  ? "Hide password"
+                                  : "Show password"
+                              }
+                            >
+                              {showConfirmPassword ? (
+                                <EyeOff className="h-4 w-4" />
+                              ) : (
+                                <Eye className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   {form.formState.errors.root && (
                     <p className="text-sm text-destructive text-center">
@@ -277,18 +332,14 @@ export default function LoginPage({ params }: Props) {
                     )}
                   </Button>
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="lg"
-                    className="w-full h-11 font-bold"
-                    onClick={() => router.push(Routes.Register)}
-                  >
-                    {dict.new_here}{" "}
-                    <span className="ml-1 text-yellow-600 hover:underline">
-                      {dict.register_now}
-                    </span>
-                  </Button>
+                  <div className="flex items-center justify-center text-sm">
+                    <Link
+                      href={`/${lang}/login`}
+                      className="font-bold text-yellow-600 hover:text-yellow-700 hover:underline"
+                    >
+                      {dict.back_to_login}
+                    </Link>
+                  </div>
                 </form>
               </Form>
             </CardContent>

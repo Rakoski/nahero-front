@@ -8,6 +8,7 @@ import { UserNav } from "./user-nav";
 import { useState } from "react";
 import { SignOut } from "../../services/auth/sign-out";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Routes } from "../../routes/routes";
 
 interface HeaderProps {
   lang: string;
@@ -23,22 +24,30 @@ export function Header({ dict, lang }: HeaderProps) {
 
     if (roles.includes("IS_STUDENT")) {
       return [
-        { href: `/${lang}/student/dashboard`, label: dict.header.dashboard },
-        { href: `/${lang}/student/exams`, label: dict.header.exams },
+        {
+          href: `/${lang}/${Routes.StudentDashboard}`,
+          label: dict.header.dashboard,
+        },
+        {
+          href: `/${lang}/${Routes.PracticeExams}`,
+          label: dict.header.exams,
+        },
         { href: `/${lang}/student/history`, label: dict.header.history },
       ];
     }
 
     if (roles.includes("IS_TEACHER")) {
       return [
-        { href: `/${lang}/teacher/dashboard`, label: dict.header.dashboard },
+        {
+          href: `/${lang}/${Routes.TeacherDashboard}`,
+          label: dict.header.dashboard,
+        },
         { href: `/${lang}/teacher/create`, label: "Create Exam" },
       ];
     }
 
     return [
-      { href: `/${lang}/exams`, label: dict.header.exams },
-      { href: `/${lang}/certifications`, label: dict.header.certifications },
+      { href: `/${lang}/${Routes.PracticeExams}`, label: dict.header.exams },
       { href: `/${lang}/`, label: dict.header.about },
     ];
   };
@@ -84,13 +93,17 @@ export function Header({ dict, lang }: HeaderProps) {
                 asChild
                 className="text-stone-300 hover:text-white hover:bg-white/10"
               >
-                <Link href={`${lang}/login`}>{dict.header.login}</Link>
+                <Link href={`/${lang}/${Routes.Login}`}>
+                  {dict.header.login}
+                </Link>
               </Button>
               <Button
                 asChild
                 className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold transition-transform active:scale-95"
               >
-                <Link href={`${lang}/register`}>{dict.header.register}</Link>
+                <Link href={`/${lang}/${Routes.Register}`}>
+                  {dict.header.register}
+                </Link>
               </Button>
             </div>
           )}
@@ -159,7 +172,10 @@ export function Header({ dict, lang }: HeaderProps) {
                       variant="ghost"
                       className="w-full justify-start text-stone-300"
                     >
-                      <Link href="/login" onClick={() => setIsOpen(false)}>
+                      <Link
+                        href={`/${lang}/${Routes.Login}`}
+                        onClick={() => setIsOpen(false)}
+                      >
                         {dict.header.login}
                       </Link>
                     </Button>
@@ -167,7 +183,10 @@ export function Header({ dict, lang }: HeaderProps) {
                       asChild
                       className="w-full bg-yellow-600 text-white font-bold"
                     >
-                      <Link href="/register" onClick={() => setIsOpen(false)}>
+                      <Link
+                        href={`/${lang}/${Routes.Register}`}
+                        onClick={() => setIsOpen(false)}
+                      >
                         {dict.header.register}
                       </Link>
                     </Button>

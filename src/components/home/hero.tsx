@@ -2,8 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { FadeIn } from "@/components/ui/fade-in";
 import { Button } from "@/components/ui/button";
+import { Routes } from "../../routes/routes";
 
 interface HeroProps {
+  lang: "en" | "pt";
   dict: {
     title_start: string;
     title_highlight: string;
@@ -14,10 +16,9 @@ interface HeroProps {
   };
 }
 
-export function Hero({ dict }: HeroProps) {
+export function Hero({ dict, lang }: HeroProps) {
   return (
     <section className="relative py-32 md:py-48 overflow-hidden">
-      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/certifications2.jpeg"
@@ -28,7 +29,6 @@ export function Hero({ dict }: HeroProps) {
         />
       </div>
 
-      {/* Optional: Additional overlay for better text contrast */}
       <div className="absolute inset-0 bg-background/30 z-0" />
 
       <div className="container mx-auto px-4 flex flex-col-reverse md:flex-row items-center justify-between gap-12">
@@ -55,7 +55,9 @@ export function Hero({ dict }: HeroProps) {
               size="lg"
               className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold"
             >
-              <Link href="/practice-exams">{dict.btn_primary}</Link>
+              <Link href={`/${lang}/${Routes.PracticeExams}`}>
+                {dict.btn_primary}
+              </Link>
             </Button>
             <Button
               asChild
@@ -63,7 +65,9 @@ export function Hero({ dict }: HeroProps) {
               size="lg"
               className="border-yellow-600 text-yellow-600 hover:bg-yellow-400"
             >
-              <Link href="/register">{dict.btn_secondary}</Link>
+              <Link href={`/${lang}/${Routes.Register}`}>
+                {dict.btn_secondary}
+              </Link>
             </Button>
           </FadeIn>
         </div>
