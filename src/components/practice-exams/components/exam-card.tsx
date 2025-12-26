@@ -109,7 +109,7 @@ export function ExamCard({
               <Clock className="h-4 w-4" />
               <span>{dict.card.time_limit}:</span>
             </div>
-            <span className="font-medium text-foreground">
+            <span className="font-medium text-yellow-400">
               {formatTimeLimit(exam.time_limit)}
             </span>
           </div>
@@ -118,7 +118,7 @@ export function ExamCard({
               <Target className="h-4 w-4" />
               <span>{dict.card.minimum_score}:</span>
             </div>
-            <span className="font-medium text-foreground">
+            <span className="font-medium text-yellow-400">
               {exam.passing_score}%
             </span>
           </div>
@@ -127,7 +127,7 @@ export function ExamCard({
               <BookOpen className="h-4 w-4" />
               <span>{dict.card.questions}:</span>
             </div>
-            <span className="font-medium text-foreground">
+            <span className="font-medium text-yellow-400">
               {exam.question_count}
             </span>
           </div>
@@ -157,17 +157,17 @@ export function ExamCard({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    {dict.dialog.difficulty_level}
+                  <p className="text-sm ">{dict.dialog.difficulty_level}</p>
+                  <p className="font-medium text-orange-400">
+                    {difficultyLabel}
                   </p>
-                  <p className="font-medium">{difficultyLabel}</p>
                 </div>
 
                 <div>
                   <p className="text-sm text-muted-foreground">
                     {dict.dialog.time_limit}
                   </p>
-                  <p className="font-medium">
+                  <p className="font-medium text-orange-400">
                     {formatTimeLimit(exam.time_limit)}
                   </p>
                 </div>
@@ -176,14 +176,18 @@ export function ExamCard({
                   <p className="text-sm text-muted-foreground">
                     {dict.dialog.questions_count}
                   </p>
-                  <p className="font-medium">{exam.question_count}</p>
+                  <p className="font-medium text-orange-400">
+                    {exam.question_count}
+                  </p>
                 </div>
 
                 <div>
                   <p className="text-sm text-muted-foreground">
                     {dict.dialog.passing_score}
                   </p>
-                  <p className="font-medium">{exam.passing_score}%</p>
+                  <p className="font-medium text-orange-400">
+                    {exam.passing_score}%
+                  </p>
                 </div>
               </div>
 
@@ -192,7 +196,9 @@ export function ExamCard({
                   <p className="text-sm text-muted-foreground">
                     {dict.dialog.platform}
                   </p>
-                  <p className="font-medium">{exam.exam.platform}</p>
+                  <p className="font-medium text-orange-400">
+                    {exam.exam.platform}
+                  </p>
                 </div>
               )}
             </div>

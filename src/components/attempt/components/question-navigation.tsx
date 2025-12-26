@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -39,6 +39,12 @@ export function QuestionNavigation({
   const [currentPage, setCurrentPage] = useState(
     Math.floor(currentQuestionIndex / QUESTIONS_PER_PAGE)
   );
+
+  // Update pagination when currentQuestionIndex changes
+  useEffect(() => {
+    const newPage = Math.floor(currentQuestionIndex / QUESTIONS_PER_PAGE);
+    setCurrentPage(newPage);
+  }, [currentQuestionIndex, QUESTIONS_PER_PAGE]);
 
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
   const startIndex = currentPage * QUESTIONS_PER_PAGE;
