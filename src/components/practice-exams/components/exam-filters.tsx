@@ -2,6 +2,7 @@
 
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DifficultyLevels } from "@/constants/difficulty-levels";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -16,10 +17,10 @@ export interface ExamFiltersProps {
   onSearchInputChange: (value: string) => void;
   onSearch: () => void;
   onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  difficulty?: string;
+  difficulty?: DifficultyLevels;
   onDifficultyChange: (value: string) => void;
-  platform?: string;
-  onPlatformChange: (value: string) => void;
+  category?: string;
+  onCategoryChange: (value: string) => void;
   hasActiveFilters: boolean;
   onClearFilters: () => void;
   dict: {
@@ -27,15 +28,16 @@ export interface ExamFiltersProps {
     search_button: string;
     clear_filters: string;
     filter_difficulty: string;
-    filter_platform: string;
+    filter_category: string;
     all_levels: string;
-    all_platforms: string;
+    all_categories: string;
     difficulty_levels: {
       beginner: string;
       intermediate: string;
       advanced: string;
+      expert: string;
     };
-    platforms: {
+    categories: {
       aws: string;
       azure: string;
       google: string;
@@ -50,8 +52,8 @@ export function ExamFilters({
   onKeyPress,
   difficulty,
   onDifficultyChange,
-  platform,
-  onPlatformChange,
+  category,
+  onCategoryChange,
   hasActiveFilters,
   onClearFilters,
   dict,
@@ -71,35 +73,41 @@ export function ExamFilters({
           />
         </div>
 
-        <Select value={difficulty || "all"} onValueChange={onDifficultyChange}>
+        <Select
+          value={difficulty?.toString() || "all"}
+          onValueChange={onDifficultyChange}
+        >
           <SelectTrigger className="w-full md:w-45">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder={dict.filter_difficulty} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{dict.all_levels}</SelectItem>
-            <SelectItem value="Beginner">
+            <SelectItem value={DifficultyLevels.EASY.toString()}>
               {dict.difficulty_levels.beginner}
             </SelectItem>
-            <SelectItem value="Intermediate">
+            <SelectItem value={DifficultyLevels.MEDIUM.toString()}>
               {dict.difficulty_levels.intermediate}
             </SelectItem>
-            <SelectItem value="Advanced">
+            <SelectItem value={DifficultyLevels.HARD.toString()}>
               {dict.difficulty_levels.advanced}
+            </SelectItem>
+            <SelectItem value={DifficultyLevels.EXPERT.toString()}>
+              {dict.difficulty_levels.expert}
             </SelectItem>
           </SelectContent>
         </Select>
 
-        <Select value={platform || "all"} onValueChange={onPlatformChange}>
+        <Select value={category || "all"} onValueChange={onCategoryChange}>
           <SelectTrigger className="w-full md:w-45 flex justify-center">
             <Filter className="mr-2 h-4 w-4" />
-            <SelectValue placeholder={dict.filter_platform} />
+            <SelectValue placeholder={dict.filter_category} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{dict.all_platforms}</SelectItem>
-            <SelectItem value="AWS">{dict.platforms.aws}</SelectItem>
-            <SelectItem value="Azure">{dict.platforms.azure}</SelectItem>
-            <SelectItem value="Google">{dict.platforms.google}</SelectItem>
+            <SelectItem value="all">{dict.all_categories}</SelectItem>
+            <SelectItem value="AWS">{dict.categories.aws}</SelectItem>
+            <SelectItem value="Azure">{dict.categories.azure}</SelectItem>
+            <SelectItem value="Google">{dict.categories.google}</SelectItem>
           </SelectContent>
         </Select>
 

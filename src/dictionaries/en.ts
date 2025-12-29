@@ -109,7 +109,7 @@ export const en = {
   },
   footer: {
     description:
-      "Free practice exam platform for all students preparing for certifications.",
+      "Free practice exam category for all students preparing for certifications.",
     quick_links: "Quick Links",
     practice_exams: "Practice Exams",
     certifications: "Certifications",
@@ -127,19 +127,16 @@ export const en = {
     search_button: "Search",
     clear_filters: "Clear",
     filter_difficulty: "Difficulty",
-    filter_platform: "Platform",
+    filter_category: "Category",
     all_levels: "All Levels",
-    all_platforms: "All Platforms",
+    all_categories: "All categories",
     difficulty_levels: {
       beginner: "Beginner",
       intermediate: "Intermediate",
       advanced: "Advanced",
-      foundation: "Foundation",
-      associate: "Associate",
-      professional: "Professional",
-      specialty: "Specialty",
+      expert: "Expert",
     },
-    platforms: {
+    categories: {
       aws: "AWS",
       azure: "Azure",
       google: "Google Cloud",
@@ -149,7 +146,7 @@ export const en = {
       time_limit: "Time Limit",
       minimum_score: "Minimum Score",
       questions: "Questions",
-      platform: "Platform",
+      category: "Category",
     },
     dialog: {
       title: "Confirm Practice Exam",
@@ -158,7 +155,7 @@ export const en = {
       time_limit: "Time Limit",
       questions_count: "Questions",
       passing_score: "Passing Score",
-      platform: "Platform",
+      category: "Category",
       cancel: "Cancel",
       start: "Start",
       starting: "Starting...",
@@ -172,6 +169,11 @@ export const en = {
     },
     error_state: {
       title: "Failed to load practice exams",
+    },
+    pagination: {
+      loading_more: "Loading more...",
+      load_more: "Load More",
+      showing_all: "Showing all {{count}} practice exams",
     },
   },
   examAttempt: {

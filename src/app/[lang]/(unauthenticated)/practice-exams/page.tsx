@@ -1,14 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { DifficultyLevels } from "@/constants/difficulty-levels";
 import { FadeIn } from "@/components/ui/fade-in";
-import { useExams, type ExamFilters } from "@/services/exams/use-exams";
 import { Routes } from "@/routes/routes";
 import { ExamCard } from "../../../../components/practice-exams/components/exam-card";
 import { ExamFilters as ExamFiltersComponent } from "../../../../components/practice-exams/components/exam-filters";
 import { SkeletonCard } from "../../../../components/practice-exams/components/skeleton-card";
 import { EmptyState } from "../../../../components/practice-exams/components/empty-state";
+import { getDictionary } from "@/dictionaries";
+import {
+  usePracticeExams,
+  searchPracticeExamAtom,
+  categoryPracticeExamAtom,
+  difficultyPracticeExamAtom,
+} from "./usePracticeExams";
+import type { PracticeExamDTO } from "@/lib/dtos";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 type PracticeExamsDict = {
   title: string;
@@ -17,19 +28,16 @@ type PracticeExamsDict = {
   search_button: string;
   clear_filters: string;
   filter_difficulty: string;
-  filter_platform: string;
+  filter_category: string;
   all_levels: string;
-  all_platforms: string;
+  all_categories: string;
   difficulty_levels: {
     beginner: string;
     intermediate: string;
     advanced: string;
-    foundation: string;
-    associate: string;
-    professional: string;
-    specialty: string;
+    expert: string;
   };
-  platforms: {
+  categories: {
     aws: string;
     azure: string;
     google: string;
@@ -39,7 +47,7 @@ type PracticeExamsDict = {
     time_limit: string;
     minimum_score: string;
     questions: string;
-    platform: string;
+    category: string;
   };
   dialog: {
     title: string;
@@ -48,7 +56,7 @@ type PracticeExamsDict = {
     time_limit: string;
     questions_count: string;
     passing_score: string;
-    platform: string;
+    category: string;
     cancel: string;
     start: string;
     starting: string;
@@ -62,86 +70,127 @@ type PracticeExamsDict = {
   error_state: {
     title: string;
   };
+  pagination?: {
+    loading_more: string;
+    load_more: string;
+    showing_all: string;
+  };
 };
 
 interface Props {
   params: Promise<{ lang: "en" | "pt" }>;
 }
 
+function mapPracticeExamToExam(dto: PracticeExamDTO) {
+  return {
+    id: dto.id,
+    title: dto.title,
+    description: dto.description,
+    difficulty: dto.exam.difficultyLevel as DifficultyLevels,
+    slug: dto.title.toLowerCase().replace(/\s+/g, "-"),
+    question_count: 0,
+    time_limit: dto.timeLimit,
+    passing_score: dto.passingScore,
+    difficulty_level: dto.exam.difficultyLevel as DifficultyLevels,
+    exam: {
+      title: dto.exam.title,
+      category: dto.exam.title,
+    },
+  };
+}
+
 export default function PracticeExamsPage({ params }: Props) {
   const router = useRouter();
   const [dict, setDict] = useState<PracticeExamsDict | null>(null);
-  const [searchInput, setSearchInput] = useState("");
-  const [filters, setFilters] = useState<ExamFilters>({});
+  const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
+  const [category, setCategory] = useAtom(categoryPracticeExamAtom);
+  const [difficulty, setDifficulty] = useAtom(difficultyPracticeExamAtom);
   const [isStartingExam, setIsStartingExam] = useState(false);
+
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     params.then(async (p) => {
-      const { getDictionary } = await import("@/dictionaries");
       const dictionary = await getDictionary(p.lang);
       setDict(dictionary.practiceExams);
     });
   }, [params]);
 
-  const { data: exams, isLoading, error } = useExams(filters);
+  useEffect(() => {
+    params.then(async (p) => {
+      const dictionary = await getDictionary(p.lang);
+      setDict(dictionary.practiceExams);
+    });
+  }, [params]);
 
-  const handleSearch = () => {
-    setFilters((prev) => ({
-      ...prev,
-      search: searchInput.trim() || undefined,
-    }));
-  };
+  const {
+    practiceExams,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    totalElements,
+  } = usePracticeExams();
+
+  const exams = practiceExams.map(mapPracticeExamToExam);
+
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [target] = entries;
+      if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
+
+  useEffect(() => {
+    const element = observerTarget.current;
+    if (!element) return;
+
+    const option = { threshold: 0.5 };
+    const observer = new IntersectionObserver(handleObserver, option);
+    observer.observe(element);
+
+    return () => observer.unobserve(element);
+  }, [handleObserver]);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSearch();
+      e.currentTarget.blur();
     }
   };
 
   const handleDifficultyChange = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      difficulty:
-        value === "all"
-          ? undefined
-          : (value as "Beginner" | "Intermediate" | "Advanced"),
-    }));
+    setDifficulty(value === "all" ? 0 : parseInt(value));
   };
 
-  const handlePlatformChange = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      platform: value === "all" ? undefined : value,
-    }));
+  const handleCategoryChange = (value: string) => {
+    setCategory(value);
   };
 
   const clearFilters = () => {
     setSearchInput("");
-    setFilters({});
+    setCategory("all");
+    setDifficulty(0);
   };
 
   const handleStartExam = async (examId: number) => {
     try {
       setIsStartingExam(true);
-      // TODO: Call API to create exam attempt
-      // const response = await api.post(`/practice-exams/${examId}/attempt`);
-      // const attemptId = response.data.id;
 
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Navigate to exam attempt page
       router.push(`${Routes.PracticeExams}/${examId}/attempt`);
     } catch (error) {
       console.error("Failed to start exam:", error);
-      // TODO: Show error toast
     } finally {
       setIsStartingExam(false);
     }
   };
 
   const hasActiveFilters = Boolean(
-    filters.search || filters.difficulty || filters.platform
+    searchInput || difficulty > 0 || category !== "all"
   );
 
   if (!dict) {
@@ -160,31 +209,18 @@ export default function PracticeExamsPage({ params }: Props) {
       <ExamFiltersComponent
         searchInput={searchInput}
         onSearchInputChange={setSearchInput}
-        onSearch={handleSearch}
+        onSearch={() => {}}
         onKeyPress={handleKeyPress}
-        difficulty={filters.difficulty}
+        difficulty={difficulty || undefined}
         onDifficultyChange={handleDifficultyChange}
-        platform={filters.platform}
-        onPlatformChange={handlePlatformChange}
+        category={category}
+        onCategoryChange={handleCategoryChange}
         hasActiveFilters={hasActiveFilters}
         onClearFilters={clearFilters}
         dict={dict}
       />
 
-      {error && (
-        <FadeIn delay={0.2}>
-          <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center">
-            <p className="text-destructive font-medium">
-              {dict.error_state.title}
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {error.message}
-            </p>
-          </div>
-        </FadeIn>
-      )}
-
-      {isLoading && (
+      {isLoading && exams.length === 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, index) => (
             <SkeletonCard key={index} />
@@ -192,25 +228,54 @@ export default function PracticeExamsPage({ params }: Props) {
         </div>
       )}
 
-      {!isLoading && !error && exams.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {exams.map((exam, index) => (
-            <ExamCard
-              exam={exam}
-              onStartExam={handleStartExam}
-              isLoading={isStartingExam}
-              dict={dict}
-            />
-          ))}
-        </div>
-      )}
-
-      {!isLoading && !error && exams.length === 0 && (
+      {!isLoading && exams.length === 0 && (
         <EmptyState
           hasActiveFilters={hasActiveFilters}
           onClearFilters={clearFilters}
           dict={dict.empty_state}
         />
+      )}
+
+      {exams.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {exams.map((exam) => (
+              <ExamCard
+                key={exam.id}
+                exam={exam}
+                onStartExam={handleStartExam}
+                isLoading={isStartingExam}
+                dict={dict}
+              />
+            ))}
+          </div>
+
+          <div ref={observerTarget} className="flex justify-center py-8">
+            {isFetchingNextPage && (
+              <Button disabled variant="ghost" size="lg">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {dict.pagination?.loading_more || "Loading more..."}
+              </Button>
+            )}
+            {!isFetchingNextPage && hasNextPage && (
+              <Button
+                onClick={() => fetchNextPage()}
+                variant="outline"
+                size="lg"
+              >
+                {dict.pagination?.load_more || "Load More"}
+              </Button>
+            )}
+            {!hasNextPage && exams.length > 0 && (
+              <p className="text-sm text-muted-foreground">
+                {dict.pagination?.showing_all?.replace(
+                  "{{count}}",
+                  totalElements.toString()
+                ) || `Showing all ${totalElements} practice exams`}
+              </p>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

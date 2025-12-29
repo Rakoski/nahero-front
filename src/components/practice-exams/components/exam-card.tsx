@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { type Exam } from "@/services/exams/use-exams";
+import { type Exam } from "@/services/practice-exams/use-exams";
 import {
   getDifficultyLabel,
   formatTimeLimit,
@@ -39,7 +39,7 @@ export interface ExamCardProps {
       time_limit: string;
       minimum_score: string;
       questions: string;
-      platform: string;
+      category: string;
     };
     dialog: {
       title: string;
@@ -48,19 +48,16 @@ export interface ExamCardProps {
       time_limit: string;
       questions_count: string;
       passing_score: string;
-      platform: string;
+      category: string;
       cancel: string;
       start: string;
       starting: string;
     };
     difficulty_levels: {
-      foundation: string;
-      associate: string;
-      professional: string;
-      specialty: string;
       beginner: string;
       intermediate: string;
       advanced: string;
+      expert: string;
     };
   };
 }
@@ -71,11 +68,11 @@ export function ExamCard({
   isLoading,
   dict,
 }: ExamCardProps) {
-  const difficultyLabel = exam.difficulty_level
-    ? getDifficultyLabel(exam.difficulty_level, dict.difficulty_levels)
-    : dict.difficulty_levels[
-        exam.difficulty.toLowerCase() as keyof typeof dict.difficulty_levels
-      ];
+  const difficultyValue = exam.difficulty_level || exam.difficulty;
+  const difficultyLabel = getDifficultyLabel(
+    difficultyValue,
+    dict.difficulty_levels
+  );
 
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow">
@@ -90,7 +87,7 @@ export function ExamCard({
           <Badge
             className={cn(
               "ml-2 shrink-0",
-              getDifficultyColors(exam.difficulty)
+              getDifficultyColors(difficultyValue)
             )}
           >
             {difficultyLabel}
@@ -191,13 +188,13 @@ export function ExamCard({
                 </div>
               </div>
 
-              {exam.exam?.platform && (
+              {exam.exam?.category && (
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {dict.dialog.platform}
+                    {dict.dialog.category}
                   </p>
                   <p className="font-medium text-orange-400">
-                    {exam.exam.platform}
+                    {exam.exam.category}
                   </p>
                 </div>
               )}

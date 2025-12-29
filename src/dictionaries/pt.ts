@@ -127,19 +127,16 @@ export const pt = {
     search_button: "Buscar",
     clear_filters: "Limpar",
     filter_difficulty: "Dificuldade",
-    filter_platform: "Plataforma",
-    all_levels: "Todos os Níveis",
-    all_platforms: "Todas as Plataformas",
+    filter_category: "Plataforma",
+    all_levels: "Todos Níveis",
+    all_categories: "Todas Categorias",
     difficulty_levels: {
       beginner: "Iniciante",
       intermediate: "Intermediário",
       advanced: "Avançado",
-      foundation: "Fundação",
-      associate: "Associado",
-      professional: "Profissional",
-      specialty: "Especialidade",
+      expert: "Expert",
     },
-    platforms: {
+    categories: {
       aws: "AWS",
       azure: "Azure",
       google: "Google Cloud",
@@ -149,7 +146,7 @@ export const pt = {
       time_limit: "Tempo Limite",
       minimum_score: "Pontuação Mínima",
       questions: "Questões",
-      platform: "Plataforma",
+      category: "Plataforma",
     },
     dialog: {
       title: "Confirmar Simulado",
@@ -158,7 +155,7 @@ export const pt = {
       time_limit: "Tempo Limite",
       questions_count: "Questões",
       passing_score: "Pontuação para Aprovação",
-      platform: "Plataforma",
+      category: "Plataforma",
       cancel: "Cancelar",
       start: "Iniciar",
       starting: "Iniciando...",
@@ -172,6 +169,11 @@ export const pt = {
     },
     error_state: {
       title: "Falha ao carregar simulados",
+    },
+    pagination: {
+      loading_more: "Carregando mais...",
+      load_more: "Carregar Mais",
+      showing_all: "Mostrando todos os {{count}} simulados",
     },
   },
   examAttempt: {

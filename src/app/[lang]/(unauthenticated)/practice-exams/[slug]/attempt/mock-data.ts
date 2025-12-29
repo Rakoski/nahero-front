@@ -215,7 +215,7 @@ export const MOCK_QUESTIONS: Question[] = [
       { id: 1, text: "A virtual private cloud for isolated network resources" },
       { id: 2, text: "A database service" },
       { id: 3, text: "A content delivery network" },
-      { id: 4, text: "A serverless compute platform" },
+      { id: 4, text: "A serverless compute category" },
     ],
     correctAnswers: [1],
     explanation:
@@ -227,7 +227,7 @@ export const MOCK_EXAM_ATTEMPT: ExamAttempt = {
   id: 1,
   examId: 1,
   examTitle: "AWS Certified Cloud Practitioner - Practice Exam",
-  timeLimit: 60, // 60 minutes
+  timeLimit: 60,
   passingScore: 70,
   questions: MOCK_QUESTIONS,
   startedAt: new Date(),

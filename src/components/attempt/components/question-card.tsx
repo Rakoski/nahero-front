@@ -8,7 +8,7 @@ import {
   Answer,
   isOptionSelected,
   getSelectionText,
-} from "../../../app/[lang]/(unauthenticated)/practice-exams/[id]/attempt/utils";
+} from "../../../app/[lang]/(unauthenticated)/practice-exams/[slug]/attempt/utils";
 
 export interface QuestionCardProps {
   question: Question;

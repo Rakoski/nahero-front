@@ -14,7 +14,7 @@ import {
 import {
   calculateRemainingTime,
   formatTimeLong,
-} from "../../../app/[lang]/(unauthenticated)/practice-exams/[id]/attempt/utils";
+} from "../../../app/[lang]/(unauthenticated)/practice-exams/[slug]/attempt/utils";
 import { cn } from "@/lib/utils";
 
 export interface ExamTimerProps {

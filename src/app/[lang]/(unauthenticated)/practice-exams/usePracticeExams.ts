@@ -1,0 +1,81 @@
+"use client";
+
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useDebounce } from "@uidotdev/usehooks";
+import { atom, useAtom } from "jotai";
+import { practiceExamsService } from "@/services/practice-exams";
+import { QUERIES } from "../../../../constants/queries";
+import type { PracticeExamsPageableResponse } from "@/lib/dtos";
+
+export const searchPracticeExamAtom = atom("");
+export const categoryPracticeExamAtom = atom<string>("all");
+export const difficultyPracticeExamAtom = atom<number>(0);
+export const sizeAtom = atom<number>(6);
+
+export const usePracticeExams = () => {
+  const [search] = useAtom(searchPracticeExamAtom);
+  const [category] = useAtom(categoryPracticeExamAtom);
+  const [difficultyLevel] = useAtom(difficultyPracticeExamAtom);
+  const [size] = useAtom(sizeAtom);
+  const debouncedSearchTerm = useDebounce(search, 500);
+
+  const filters = {
+    search: debouncedSearchTerm || undefined,
+    category: category !== "all" ? category : undefined,
+    difficultyLevel: difficultyLevel > 0 ? difficultyLevel : undefined,
+    size,
+  };
+
+  const fetchPracticeExams = async ({
+    pageParam,
+  }: {
+    pageParam: number;
+  }): Promise<PracticeExamsPageableResponse> => {
+    const response = await practiceExamsService.listPracticeExams({
+      ...filters,
+      page: pageParam,
+    });
+    return response;
+  };
+
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
+    queryFn: fetchPracticeExams,
+    queryKey: [
+      QUERIES.PRACTICE_EXAMS.LIST,
+      debouncedSearchTerm,
+      category,
+      difficultyLevel,
+      size,
+    ],
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      // If it's the last page, return undefined to stop pagination
+      if (lastPage.last) {
+        return undefined;
+      }
+      // Return the next page number
+      return lastPage.number + 1;
+    },
+  });
+
+  // Flatten all pages into a single array of practice exams
+  const practiceExams = data?.pages.flatMap((page) => page.content) ?? [];
+
+  return {
+    practiceExams,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    totalElements: data?.pages[0]?.totalElements ?? 0,
+    totalPages: data?.pages[0]?.totalPages ?? 0,
+  };
+};
