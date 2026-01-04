@@ -43,6 +43,13 @@ export const pt = {
     btn_home: "Voltar ao Início",
     btn_exams: "Ver Simulados",
   },
+  error: {
+    title: "Algo deu errado!",
+    description:
+      "Ocorreu um erro inesperado. Por favor, tente novamente ou entre em contato com o suporte se o problema persistir.",
+    btn_retry: "Tentar Novamente",
+    btn_home: "Voltar ao Início",
+  },
   login: {
     title: "Acesse Sua Conta",
     subtitle: "Digite seu e-mail e senha para entrar",

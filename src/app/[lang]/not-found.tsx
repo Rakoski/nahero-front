@@ -7,11 +7,9 @@ import { Home, FileQuestion } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
 
 export default async function NotFoundPage() {
-  // Get the pathname from the header set in Middleware
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
 
-  // Detect language from pathname
   const lang = pathname.startsWith("/pt") ? "pt" : "en";
 
   const dict = await getDictionary(lang);

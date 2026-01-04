@@ -43,6 +43,13 @@ export const en = {
     btn_home: "Back to Home",
     btn_exams: "Browse Practice Exams",
   },
+  error: {
+    title: "Something went wrong!",
+    description:
+      "An unexpected error occurred. Please try again or contact support if the problem persists.",
+    btn_retry: "Try Again",
+    btn_home: "Back to Home",
+  },
   login: {
     title: "Access Your Account",
     subtitle: "Enter your email and password to login",

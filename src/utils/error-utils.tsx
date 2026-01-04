@@ -1,8 +1,8 @@
+"use client";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { BackendErrorResponse } from "@/types/api-error";
 
-// Simple Dictionary for TITLES (Client-side only)
 const ERROR_TITLES: Record<string, { en: string; pt: string }> = {
   VALIDATION: { en: "Validation Error", pt: "Erro de Validação" },
   AUTH: { en: "Authentication Failed", pt: "Falha na Autenticação" },
@@ -14,11 +14,15 @@ const ERROR_TITLES: Record<string, { en: string; pt: string }> = {
   DEFAULT: { en: "Error", pt: "Erro" },
 };
 
-export function handleError(error: unknown) {
-  const isPt =
-    typeof window !== "undefined" ? navigator.language.startsWith("pt") : false;
+export function getLangFromPathname(): "pt" | "en" {
+  if (typeof window === "undefined") return "en";
+  const pathname = window.location.pathname;
+  return pathname.startsWith("/pt") ? "pt" : "en";
+}
 
-  const lang = isPt ? "pt" : "en";
+export function handleError(error: unknown) {
+  const lang = getLangFromPathname();
+  const isPt = lang === "pt";
 
   let message = "";
   let title = ERROR_TITLES.DEFAULT[lang];
@@ -61,7 +65,14 @@ export function handleError(error: unknown) {
         break;
     }
   } else if (error instanceof Error) {
-    message = error.message;
+    if (error.message.includes("401")) {
+      title = ERROR_TITLES.AUTH[lang];
+      message = isPt
+        ? "Email ou senha incorretos."
+        : "Invalid email or password.";
+    } else {
+      message = error.message;
+    }
   } else {
     message = isPt
       ? "Não foi possível conectar ao servidor."

@@ -21,14 +21,11 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (data: LoginCredentials) => {
-      console.log("chamou");
       const result = await signIn("credentials", {
         email: data.identifier,
         password: data.password,
         redirect: false,
       });
-
-      console.log("signIn result:", result);
 
       if (result?.error) throw new Error(result.error);
 

@@ -1,6 +1,5 @@
 "use server";
 import { api } from "@/lib/api-manager";
-import { handleError } from "../../utils/error-utils";
 
 async function loginUser(email: string, password: string) {
   const response = await api.post("/auth/login", { email, password });
