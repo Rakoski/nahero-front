@@ -3,18 +3,10 @@ import { api } from "@/lib/api-manager";
 import { handleError } from "../../utils/error-utils";
 
 async function loginUser(email: string, password: string) {
-  try {
-    const response = await api.post(
-      "/auth/login",
-      { email, password },
-      { headers: { "Content-Type": "application/json" } }
-    );
+  const response = await api.post("/auth/login", { email, password });
 
-    if (response.status === 200) {
-      return response.data;
-    }
-  } catch (error) {
-    handleError(error);
+  if (response.status === 200) {
+    return response.data;
   }
   return null;
 }

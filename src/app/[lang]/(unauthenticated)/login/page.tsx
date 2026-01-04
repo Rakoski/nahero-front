@@ -30,6 +30,7 @@ import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import { setCookie } from "@/storages/cookies";
 import Link from "next/link";
+import { useLogin } from "./useLogin";
 
 type LoginDict = {
   title: string;
@@ -98,6 +99,7 @@ export default function LoginPage({ params }: Props) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { mutate: login, isPending } = useLogin();
 
   const form = useForm<LoginFormData>({
     resolver: dict ? zodResolver(createLoginSchema(dict)) : undefined,
@@ -114,41 +116,11 @@ export default function LoginPage({ params }: Props) {
     }
   }, [session, router, callbackUrl]);
 
-  const onSubmit = async (data: LoginFormData) => {
-    if (!dict) return;
-    setIsLoading(true);
-
-    try {
-      const result = await signIn("credentials", {
-        email: data.identifier,
-        password: data.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        form.setError("root", {
-          type: "manual",
-          message: dict.errors.invalid_credentials,
-        });
-      } else if (result?.ok) {
-        if (session?.user?.accessToken) {
-          setCookie("@nahero:accessToken", session.user.accessToken, 90);
-        }
-        if (session?.user?.refreshToken) {
-          setCookie("@nahero:refreshToken", session.user.refreshToken, 90);
-        }
-
-        const destination = callbackUrl || Routes.Home;
-        router.push(destination);
-      }
-    } catch (error) {
-      form.setError("root", {
-        type: "manual",
-        message: dict.errors.unexpected_error,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const onSubmit = (data: LoginFormData) => {
+    login({
+      identifier: data.identifier,
+      password: data.password,
+    });
   };
 
   if (!dict) {
@@ -263,11 +235,11 @@ export default function LoginPage({ params }: Props) {
 
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isPending}
                     className="w-full h-11 text-base font-semibold"
                     size="lg"
                   >
-                    {isLoading ? (
+                    {isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         {dict.submit_loading}
