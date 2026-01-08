@@ -1,8 +1,9 @@
 "use server";
 import { api } from "@/lib/api-manager";
+import { NAHERO_API } from "@/constants/nahero-api";
 
 async function loginUser(email: string, password: string) {
-  const response = await api.post("/auth/login", { email, password });
+  const response = await api.post(NAHERO_API.AUTH.LOGIN, { email, password });
 
   if (response.status === 200) {
     return response.data;

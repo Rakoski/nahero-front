@@ -7,7 +7,7 @@ import {
   QuestionNavigation,
   NavigationButtons,
   SubmitDialog,
-} from "../../../../../../components/attempt/components";
+} from "@/components/attempt/components";
 import {
   Answer,
   toggleOption,
@@ -86,7 +86,6 @@ export default function ExamAttemptPage({ params }: Props) {
     }, 1000);
 
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [examAttempt.startedAt, examAttempt.timeLimit]);
 
   useEffect(() => {

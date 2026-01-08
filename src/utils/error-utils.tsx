@@ -27,6 +27,8 @@ export function handleError(error: unknown) {
   let message = "";
   let title = ERROR_TITLES.DEFAULT[lang];
 
+  console.log("Handling error:", error);
+
   if (error instanceof AxiosError && error.response) {
     const data = error.response.data as BackendErrorResponse;
     const status = error.response.status;
@@ -71,7 +73,9 @@ export function handleError(error: unknown) {
         ? "Email ou senha incorretos."
         : "Invalid email or password.";
     } else {
-      message = error.message;
+      message = isPt
+        ? "Um erro inesperado ocorreu."
+        : "Something unexpected happened.";
     }
   } else {
     message = isPt

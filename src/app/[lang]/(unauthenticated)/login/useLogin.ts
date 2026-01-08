@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { setCookie } from "@/storages/cookies";
 import { Routes } from "@/routes/routes";
 import { handleError } from "../../../../utils/error-utils";
@@ -15,9 +15,11 @@ type LoginCredentials = {
 export function useLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { update } = useSession();
 
   const callbackUrl = searchParams.get("callbackUrl");
+  const lang = pathname.startsWith("/pt") ? "pt" : "en";
 
   return useMutation({
     mutationFn: async (data: LoginCredentials) => {
@@ -41,7 +43,7 @@ export function useLogin() {
         setCookie("@nahero:refreshToken", session.user.refreshToken, 90);
       }
 
-      const destination = callbackUrl || Routes.Home;
+      const destination = callbackUrl || `/${lang}${Routes.Home}`;
       router.push(destination);
     },
     onError: (error: Error) => {

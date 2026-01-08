@@ -19,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -28,6 +27,7 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import Link from "next/link";
+import { useRegister } from "./useRegister";
 
 type RegisterDict = {
   title: string;
@@ -100,9 +100,10 @@ export default function RegisterPage({ params }: Props) {
 
   const { data: session } = useSession();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { mutate: register, isPending } = useRegister(lang);
 
   const form = useForm<RegisterFormData>({
     resolver: dict ? zodResolver(createRegisterSchema(dict)) : undefined,
@@ -120,40 +121,10 @@ export default function RegisterPage({ params }: Props) {
     }
   }, [session, router]);
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = (data: RegisterFormData) => {
     if (!dict) return;
-    setIsLoading(true);
 
-    try {
-      // TODO: Implement registration API call
-      console.log("Registration data:", data);
-
-      // Placeholder for registration logic
-      // const response = await fetch('/api/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error('Registration failed');
-      // }
-
-      // After successful registration, redirect to login
-      // router.push(`/${lang}/login`);
-
-      form.setError("root", {
-        type: "manual",
-        message: dict.errors.registration_failed,
-      });
-    } catch (error) {
-      form.setError("root", {
-        type: "manual",
-        message: dict.errors.unexpected_error,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    register(data);
   };
 
   if (!dict) {
@@ -253,9 +224,6 @@ export default function RegisterPage({ params }: Props) {
                               onClick={() => setShowPassword(!showPassword)}
                               variant="ghost"
                               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent p-0 w-8 h-8 flex items-center justify-center"
-                              aria-label={
-                                showPassword ? "Hide password" : "Show password"
-                              }
                             >
                               {showPassword ? (
                                 <EyeOff className="h-4 w-4" />
@@ -291,11 +259,6 @@ export default function RegisterPage({ params }: Props) {
                               }
                               variant="ghost"
                               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent p-0 w-8 h-8 flex items-center justify-center"
-                              aria-label={
-                                showConfirmPassword
-                                  ? "Hide password"
-                                  : "Show password"
-                              }
                             >
                               {showConfirmPassword ? (
                                 <EyeOff className="h-4 w-4" />
@@ -310,19 +273,14 @@ export default function RegisterPage({ params }: Props) {
                     )}
                   />
 
-                  {form.formState.errors.root && (
-                    <p className="text-sm text-destructive text-center">
-                      {form.formState.errors.root.message}
-                    </p>
-                  )}
-
+                  {/* 3. Use isPending state */}
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isPending}
                     className="w-full h-11 text-base font-semibold"
                     size="lg"
                   >
-                    {isLoading ? (
+                    {isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         {dict.submit_loading}
