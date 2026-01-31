@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCookie, setCookie } from "@/storages/cookies";
 import { SignOut } from "@/services/auth/sign-out";
+import { getSession } from "next-auth/react";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL_JAVA,
@@ -10,14 +11,28 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use(
-  (config) => {
-    const token = getCookie("@nahero:accessToken");
+  async (config) => {
+    // Try to get token from cookie first
+    let token = getCookie("@nahero:accessToken");
+
+    // If no token in cookie, try to get from NextAuth session (client-side)
+    if (!token && typeof window !== "undefined") {
+      const session = await getSession();
+      if (session?.user?.accessToken) {
+        token = session.user.accessToken;
+        // Update cookie for next requests
+        setCookie("@nahero:accessToken", token, 90);
+      }
+    }
+
     if (typeof window !== "undefined") {
       config.headers["Accept-Language"] = navigator.language;
     }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)

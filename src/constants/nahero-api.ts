@@ -4,6 +4,13 @@ export const NAHERO_API = {
   },
   STUDENT_PRACTICE_ATTEMPTS: {
     CREATE: "/student-practice-attempts",
+    FINISH: "/student-practice-attempts",
+  },
+  QUESTITONS: {
+    LIST_STUDENT: "/questions/list-student",
+  },
+  ALTERNATIVES: {
+    LIST_BY_QUESTION: "/alternatives",
   },
   AUTH: {
     LOGIN: "/auth/login",

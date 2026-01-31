@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   QuestionCard,
@@ -14,9 +14,11 @@ import {
   getQuestionStats,
   calculateRemainingTime,
   formatTime,
+  Question,
 } from "./utils";
-import { MOCK_EXAM_ATTEMPT } from "./mock-data";
 import { Routes } from "@/routes/routes";
+import { useAttempt } from "./useAttempt";
+import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
 
 type ExamAttemptDict = {
   title: string;
@@ -55,28 +57,81 @@ type ExamAttemptDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt"; id: string }>;
+  params: Promise<{ lang: "en" | "pt"; slug: string }>;
+}
+
+function mapApiQuestionToQuestion(
+  apiQuestion: ListQuestionsByStudentResponse,
+  index: number,
+  alternatives: { id: number; imageUrl?: string; content: string }[]
+): Question {
+  return {
+    id: parseInt(apiQuestion.id) || index,
+    text: apiQuestion.content,
+    type: apiQuestion.questionType.id === 1 ? "single" : "multiple",
+    options: alternatives.map((alt) => ({
+      id: alt.id,
+      text: alt.content,
+    })),
+    correctAnswers: [],
+    explanation: undefined,
+  };
 }
 
 export default function ExamAttemptPage({ params }: Props) {
   const router = useRouter();
   const [dict, setDict] = useState<ExamAttemptDict | null>(null);
-  const [examAttempt] = useState(MOCK_EXAM_ATTEMPT);
+  const [attemptId, setAttemptId] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(
-    calculateRemainingTime(examAttempt.startedAt, examAttempt.timeLimit)
+  const [startedAt] = useState(new Date());
+
+  useEffect(() => {
+    params.then((p) => {
+      setAttemptId(p.slug);
+    });
+  }, [params]);
+
+  const {
+    questions: apiQuestions,
+    isLoadingQuestions,
+    alternatives,
+    isLoadingAlternatives,
+    answers: attemptAnswers,
+    updateAnswer,
+    finishExam,
+    isFinishingExam,
+    finishExamResult,
+    totalElements,
+    currentPage,
+    totalPages,
+    goToNextPage,
+    goToPreviousPage,
+    isFirstPage,
+    isLastPage,
+  } = useAttempt({
+    attemptId: attemptId || "",
+    pageSize: 10,
+  });
+
+  const questions = useMemo(
+    () =>
+      apiQuestions.map((q, idx) =>
+        mapApiQuestionToQuestion(q, idx, alternatives[q.id] || [])
+      ),
+    [apiQuestions, alternatives]
   );
 
-  // Timer effect
+  const timeLimit = apiQuestions[0]?.timeLimit || 3600;
+
+  const [timeRemaining, setTimeRemaining] = useState(
+    calculateRemainingTime(startedAt, timeLimit)
+  );
+
   useEffect(() => {
     const timer = setInterval(() => {
-      const remaining = calculateRemainingTime(
-        examAttempt.startedAt,
-        examAttempt.timeLimit
-      );
+      const remaining = calculateRemainingTime(startedAt, timeLimit);
       setTimeRemaining(remaining);
 
       if (remaining <= 0) {
@@ -86,7 +141,7 @@ export default function ExamAttemptPage({ params }: Props) {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [examAttempt.startedAt, examAttempt.timeLimit]);
+  }, [startedAt, timeLimit]);
 
   useEffect(() => {
     params.then(async (p) => {
@@ -96,34 +151,57 @@ export default function ExamAttemptPage({ params }: Props) {
     });
   }, [params]);
 
-  const currentQuestion = examAttempt.questions[currentQuestionIndex];
-  const { unanswered } = getQuestionStats(
-    examAttempt.questions.length,
-    answers
-  );
+  const currentQuestion = questions[currentQuestionIndex];
+  const { unanswered } = getQuestionStats(questions.length, answers);
+
+  const globalQuestionNumber = currentPage * 10 + currentQuestionIndex + 1;
+  const totalQuestionsAcrossPages = totalElements;
+
+  const isOnLastQuestionOfExam =
+    isLastPage && currentQuestionIndex === questions.length - 1;
+  const isOnFirstQuestionOfExam = isFirstPage && currentQuestionIndex === 0;
 
   const handleAnswerChange = (questionId: number, optionId: number) => {
-    const question = examAttempt.questions.find((q) => q.id === questionId);
+    const question = questions.find((q) => q.id === questionId);
     if (!question) return;
 
+    const isSingleChoice = question.type === "single";
     const newAnswers = toggleOption(
       questionId,
       optionId,
-      question.type === "single",
+      isSingleChoice,
       answers
     );
     setAnswers(newAnswers);
+
+    // Update the answers in the hook (convert to string for API)
+    const answer = newAnswers.find((a) => a.questionId === questionId);
+    if (answer) {
+      const apiQuestion = apiQuestions.find((q) => parseInt(q.id) === questionId);
+      if (apiQuestion) {
+        updateAnswer(
+          apiQuestion.id, // Use original string ID from API
+          answer.selectedOptions.map(String) // Convert to string array
+        );
+      }
+    }
   };
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
+    } else if (currentQuestionIndex === 0 && !isFirstPage) {
+      goToPreviousPage();
+      setCurrentQuestionIndex(9);
     }
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex < examAttempt.questions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else if (currentQuestionIndex === questions.length - 1 && !isLastPage) {
+      goToNextPage();
+      setCurrentQuestionIndex(0);
     }
   };
 
@@ -136,32 +214,44 @@ export default function ExamAttemptPage({ params }: Props) {
   };
 
   const handleSubmitConfirm = async () => {
-    try {
-      setIsSubmitting(true);
-      setShowSubmitDialog(false);
+    setShowSubmitDialog(false);
 
-      // TODO: Submit to API
-      // await api.post(`/practice-exams/attempts/${examAttempt.id}/submit`, { answers });
+    const result = await finishExam();
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Navigate to results page
-      router.push(`${Routes.PracticeExams}/${examAttempt.examId}/results`);
-    } catch (error) {
-      console.error("Failed to submit exam:", error);
-      // TODO: Show error toast
-    } finally {
-      setIsSubmitting(false);
-    }
+    if (result) router.push(`${Routes.PracticeExams}/${attemptId}/results`);
   };
 
   const handleTimeUp = () => {
     handleSubmitConfirm();
   };
 
-  if (!dict) {
-    return null;
+  if (!dict || isLoadingQuestions || isLoadingAlternatives || !attemptId) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading exam...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-destructive mb-4">
+            No questions found for this exam.
+          </p>
+          <button
+            onClick={() => router.push(Routes.PracticeExams)}
+            className="text-primary hover:underline"
+          >
+            Return to practice exams
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -169,12 +259,17 @@ export default function ExamAttemptPage({ params }: Props) {
       <div className="container mx-auto">
         <div className="mx-auto">
           <QuestionNavigation
-            questions={examAttempt.questions}
+            questions={questions}
             currentQuestionIndex={currentQuestionIndex}
             answers={answers}
             onQuestionSelect={handleQuestionSelect}
             timeRemaining={timeRemaining}
             formatTime={formatTime}
+            totalElements={totalElements}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onNextPage={goToNextPage}
+            onPreviousPage={goToPreviousPage}
             dict={{
               ...dict,
               timeRemaining: dict.time_remaining,
@@ -184,8 +279,8 @@ export default function ExamAttemptPage({ params }: Props) {
           <div className="px-4 py-8">
             <QuestionCard
               question={currentQuestion}
-              questionNumber={currentQuestionIndex + 1}
-              totalQuestions={examAttempt.questions.length}
+              questionNumber={globalQuestionNumber}
+              totalQuestions={totalQuestionsAcrossPages}
               answers={answers}
               onAnswerChange={handleAnswerChange}
               dict={dict}
@@ -195,11 +290,13 @@ export default function ExamAttemptPage({ params }: Props) {
           <div className="px-4 pb-8">
             <NavigationButtons
               currentQuestionIndex={currentQuestionIndex}
-              totalQuestions={examAttempt.questions.length}
+              totalQuestions={questions.length}
+              isLastQuestion={isOnLastQuestionOfExam}
+              isFirstQuestion={isOnFirstQuestionOfExam}
               onPrevious={handlePrevious}
               onNext={handleNext}
               onSubmit={handleSubmitClick}
-              isSubmitting={isSubmitting}
+              isSubmitting={isFinishingExam}
               dict={dict.navigation}
             />
           </div>

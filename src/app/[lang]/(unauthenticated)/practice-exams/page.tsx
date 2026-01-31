@@ -177,13 +177,11 @@ export default function PracticeExamsPage({ params }: Props) {
   };
 
   const handleStartExam = async (practiceExamId: number) => {
-    try {
-      const attemptId = await startExam(practiceExamId);
-      if (attemptId) {
-        router.push(`${Routes.PracticeExams}/${attemptId}/attempt`);
-      }
-    } catch (error) {
-      console.error("Failed to start practiceExam:", error);
+    const attemptId = await startExam(practiceExamId);
+
+    if (attemptId) {
+      const targetUrl = `${Routes.PracticeExams}/${attemptId}/attempt`;
+      router.push(targetUrl);
     }
   };
 
@@ -191,9 +189,7 @@ export default function PracticeExamsPage({ params }: Props) {
     searchInput || difficulty > 0 || category !== "all"
   );
 
-  if (!dict) {
-    return null;
-  }
+  if (!dict) return null;
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">

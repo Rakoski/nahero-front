@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +17,11 @@ export interface QuestionNavigationProps {
   onQuestionSelect: (index: number) => void;
   timeRemaining: number;
   formatTime: (seconds: number) => string;
+  totalElements?: number;
+  currentPage?: number;
+  totalPages?: number;
+  onNextPage?: () => void;
+  onPreviousPage?: () => void;
   dict: {
     answered: string;
     unanswered: string;
@@ -33,25 +37,19 @@ export function QuestionNavigation({
   onQuestionSelect,
   timeRemaining,
   formatTime,
+  totalElements,
+  currentPage: apiCurrentPage,
+  totalPages: apiTotalPages,
+  onNextPage,
+  onPreviousPage,
   dict,
 }: QuestionNavigationProps) {
-  const QUESTIONS_PER_PAGE = 10;
-  const [currentPage, setCurrentPage] = useState(
-    Math.floor(currentQuestionIndex / QUESTIONS_PER_PAGE)
-  );
+  const visibleQuestions = questions;
 
-  // Update pagination when currentQuestionIndex changes
-  useEffect(() => {
-    const newPage = Math.floor(currentQuestionIndex / QUESTIONS_PER_PAGE);
-    setCurrentPage(newPage);
-  }, [currentQuestionIndex, QUESTIONS_PER_PAGE]);
+  const totalQuestionsCount = totalElements ?? questions.length;
 
-  const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
-  const startIndex = currentPage * QUESTIONS_PER_PAGE;
-  const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
-  const visibleQuestions = questions.slice(startIndex, endIndex);
-
-  const isWarning = timeRemaining < 300;
+  const globalQuestionNumber =
+    (apiCurrentPage ?? 0) * 10 + currentQuestionIndex + 1;
 
   const getButtonClasses = (status: QuestionStatus): string => {
     if (status === "current") {
@@ -70,82 +68,126 @@ export function QuestionNavigation({
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+    if (onPreviousPage && apiCurrentPage && apiCurrentPage > 0) {
+      onPreviousPage();
     }
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1);
+    if (
+      onNextPage &&
+      apiTotalPages &&
+      apiCurrentPage !== undefined &&
+      apiCurrentPage < apiTotalPages - 1
+    ) {
+      onNextPage();
     }
   };
 
+  const canGoPrevious = apiCurrentPage !== undefined && apiCurrentPage > 0;
+  const canGoNext =
+    apiCurrentPage !== undefined &&
+    apiTotalPages !== undefined &&
+    apiCurrentPage < apiTotalPages - 1;
+
   return (
-    <div className="grid grid-cols-3 items-center px-4 py-3 border-b border-border">
-      {/* Left: Timer - Fixed width */}
-      <div className="flex justify-start">
-        <div>
-          <span className="mr-2">{dict.timeRemaining}</span>
-          <span className="font-bold text-xl">{formatTime(timeRemaining)}</span>
+    <div className="flex flex-col gap-4 px-4 py-3 border-b border-border bg-background">
+      <div className="flex items-center justify-between w-full md:grid md:grid-cols-3 md:items-center">
+        <div className="flex justify-start">
+          <div className="flex items-center gap-2">
+            <span className="text-sm md:text-base text-muted-foreground whitespace-nowrap">
+              {dict.timeRemaining}
+            </span>
+            <span className="font-bold text-lg md:text-xl">
+              {formatTime(timeRemaining)}
+            </span>
+          </div>
+        </div>
+
+        <div className="hidden md:block" />
+
+        <div className="flex justify-end">
+          <div className="font-medium text-lg md:text-xl">
+            <span className="text-muted-foreground md:text-foreground">
+              {globalQuestionNumber} / {totalQuestionsCount}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Center: Navigation Controls */}
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-1 md:gap-3 w-full">
         <Button
           onClick={handlePrevPage}
-          disabled={currentPage === 0}
+          disabled={!canGoPrevious}
           variant="outline"
           size="sm"
-          className="h-9 w-9 p-0"
+          className="h-9 w-9 md:h-10 md:w-10 p-0 shrink-0"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5" />
         </Button>
 
-        <div className="flex gap-2">
-          {visibleQuestions.map((question, idx) => {
-            const absoluteIndex = startIndex + idx;
-            const status = getQuestionStatus(
-              question.id,
-              questions[currentQuestionIndex].id,
-              answers
-            );
+        <div className="flex flex-col gap-1.5 md:flex-row md:gap-2">
+          <div className="flex gap-1.5 md:gap-2 justify-center">
+            {visibleQuestions.slice(0, 5).map((question, idx) => {
+              const globalIndex = (apiCurrentPage ?? 0) * 10 + idx;
+              const status = getQuestionStatus(
+                question.id,
+                questions[currentQuestionIndex].id,
+                answers
+              );
 
-            return (
-              <Button
-                key={question.id}
-                onClick={() => onQuestionSelect(absoluteIndex)}
-                variant="outline"
-                size="sm"
-                className={cn(
-                  "h-12 w-12 p-0 border transition-all shrink-0 text-xl",
-                  getButtonClasses(status)
-                )}
-              >
-                {absoluteIndex + 1}
-              </Button>
-            );
-          })}
+              return (
+                <Button
+                  key={question.id}
+                  onClick={() => onQuestionSelect(idx)}
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "h-10 w-10 md:h-12 md:w-12 p-0 border transition-all shrink-0 text-sm md:text-xl cursor-pointer",
+                    getButtonClasses(status)
+                  )}
+                >
+                  {globalIndex + 1}
+                </Button>
+              );
+            })}
+          </div>
+          <div className="flex gap-1.5 md:gap-2 justify-center">
+            {visibleQuestions.slice(5, 10).map((question, idx) => {
+              const globalIndex = (apiCurrentPage ?? 0) * 10 + idx + 5;
+              const status = getQuestionStatus(
+                question.id,
+                questions[currentQuestionIndex].id,
+                answers
+              );
+
+              return (
+                <Button
+                  key={question.id}
+                  onClick={() => onQuestionSelect(idx + 5)}
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "h-10 w-10 md:h-12 md:w-12 p-0 border transition-all shrink-0 text-sm md:text-xl cursor-pointer",
+                    getButtonClasses(status)
+                  )}
+                >
+                  {globalIndex + 1}
+                </Button>
+              );
+            })}
+          </div>
         </div>
 
         <Button
           onClick={handleNextPage}
-          disabled={currentPage === totalPages - 1}
+          disabled={!canGoNext}
           variant="outline"
           size="sm"
-          className="h-9 w-9 p-0"
+          className="h-9 w-9 md:h-10 md:w-10 p-0 shrink-0"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-5 w-5" />
         </Button>
-      </div>
-
-      <div className="flex justify-end">
-        <div className="font-medium text-xl">
-          <span>
-            {currentQuestionIndex + 1} / {questions.length}
-          </span>
-        </div>
       </div>
     </div>
   );

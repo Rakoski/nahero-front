@@ -51,7 +51,6 @@ export async function listPracticeExams(
     handleError(error);
   }
 
-  // Return empty pageable response on error
   return {
     content: [],
     pageable: {
