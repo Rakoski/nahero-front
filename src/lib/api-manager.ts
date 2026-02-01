@@ -26,7 +26,16 @@ api.interceptors.request.use(
     }
 
     if (typeof window !== "undefined") {
-      config.headers["Accept-Language"] = navigator.language;
+      const pathLang = window.location.pathname.split("/")[1];
+      const validLang = ["en", "pt"].includes(pathLang) ? pathLang : "en";
+      const localeCode = validLang === "pt" ? "pt-BR" : "en-US";
+      config.headers["Accept-Language"] = localeCode;
+      console.log(
+        "Setting Accept-Language:",
+        localeCode,
+        "from path:",
+        window.location.pathname
+      );
     }
 
     if (token) {

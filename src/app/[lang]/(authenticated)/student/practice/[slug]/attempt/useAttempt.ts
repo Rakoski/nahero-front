@@ -50,7 +50,7 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
 
   // Fetch alternatives for each question on the current page
   const questionIds = questionsData?.content.map((q) => q.id) ?? [];
-  
+
   const alternativesQueries = useQuery<
     Record<string, ListAlternativeByQuestionResponse[]>
   >({
@@ -77,24 +77,23 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     enabled: questionIds.length > 0,
   });
 
-  const updateAnswer = useCallback((questionId: string, alternativeIds: string[]) => {
-    setAnswers((prev) => {
-      const newAnswers = new Map(prev);
-      newAnswers.set(questionId, alternativeIds);
-      return newAnswers;
-    });
-  }, []);
+  const updateAnswer = useCallback(
+    (questionId: string, alternativeIds: string[]) => {
+      setAnswers((prev) => {
+        const newAnswers = new Map(prev);
+        newAnswers.set(questionId, alternativeIds);
+        return newAnswers;
+      });
+    },
+    []
+  );
 
   const {
     mutateAsync: finishExam,
     isPending: isFinishingExam,
     isSuccess: isExamFinished,
     data: finishExamResult,
-  } = useMutation<
-    FinishStudentPracticeAttemptResponse | null,
-    Error,
-    void
-  >({
+  } = useMutation<FinishStudentPracticeAttemptResponse | null, Error, void>({
     mutationFn: async () => {
       // Convert answers Map to AnswerRequest array
       const answersArray: AnswerRequest[] = Array.from(answers.entries()).map(

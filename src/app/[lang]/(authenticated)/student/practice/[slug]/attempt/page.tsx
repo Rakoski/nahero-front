@@ -177,7 +177,9 @@ export default function ExamAttemptPage({ params }: Props) {
     // Update the answers in the hook (convert to string for API)
     const answer = newAnswers.find((a) => a.questionId === questionId);
     if (answer) {
-      const apiQuestion = apiQuestions.find((q) => parseInt(q.id) === questionId);
+      const apiQuestion = apiQuestions.find(
+        (q) => parseInt(q.id) === questionId
+      );
       if (apiQuestion) {
         updateAnswer(
           apiQuestion.id, // Use original string ID from API

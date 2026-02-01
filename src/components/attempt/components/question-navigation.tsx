@@ -8,7 +8,7 @@ import {
   Answer,
   getQuestionStatus,
   QuestionStatus,
-} from "../../../app/[lang]/(unauthenticated)/practice-exams/[slug]/attempt/utils";
+} from "../../../app/[lang]/(authenticated)/student/practice/[slug]/attempt/utils";
 
 export interface QuestionNavigationProps {
   questions: Question[];
