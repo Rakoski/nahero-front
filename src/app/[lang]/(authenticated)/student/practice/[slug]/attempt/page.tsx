@@ -50,6 +50,7 @@ type ExamAttemptDict = {
       title: string;
       description: string;
       unanswered_warning: string;
+      no_answers_error: string;
       cancel: string;
       submit: string;
     };
@@ -82,6 +83,7 @@ export default function ExamAttemptPage({ params }: Props) {
   const router = useRouter();
   const [dict, setDict] = useState<ExamAttemptDict | null>(null);
   const [attemptId, setAttemptId] = useState<string | null>(null);
+  const [lang, setLang] = useState<"en" | "pt">("en");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
@@ -90,6 +92,7 @@ export default function ExamAttemptPage({ params }: Props) {
   useEffect(() => {
     params.then((p) => {
       setAttemptId(p.slug);
+      setLang(p.lang);
     });
   }, [params]);
 
@@ -99,6 +102,7 @@ export default function ExamAttemptPage({ params }: Props) {
     alternatives,
     isLoadingAlternatives,
     answers: attemptAnswers,
+    answersCount,
     updateAnswer,
     finishExam,
     isFinishingExam,
@@ -220,7 +224,13 @@ export default function ExamAttemptPage({ params }: Props) {
 
     const result = await finishExam();
 
-    if (result) router.push(`${Routes.PracticeExams}/${attemptId}/results`);
+    if (result) {
+      router.push(
+        `/${lang}/student/practice/${attemptId}/attempt/results?data=${encodeURIComponent(
+          JSON.stringify(result)
+        )}`
+      );
+    }
   };
 
   const handleTimeUp = () => {
@@ -310,6 +320,7 @@ export default function ExamAttemptPage({ params }: Props) {
         onOpenChange={setShowSubmitDialog}
         onConfirm={handleSubmitConfirm}
         unansweredCount={unanswered}
+        totalAnswered={answersCount}
         dict={dict.dialogs.confirm_submit}
       />
     </div>

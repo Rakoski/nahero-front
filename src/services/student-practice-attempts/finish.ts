@@ -9,10 +9,18 @@ export interface FinishStudentPracticeAttemptRequestPayload {
 }
 
 export interface FinishStudentPracticeAttemptResponse {
-  id: number;
-  score: number;
   passed: boolean;
-  completedAt: string;
+  score: number;
+  answers: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  startTime: string;
+  endTime: string;
+  timeLimit: number;
+  timeSpentInMinutes: number;
+  passingPercentageScore: number;
+  attemptStatus: string;
+  numberOfQuestions: number;
 }
 
 /**

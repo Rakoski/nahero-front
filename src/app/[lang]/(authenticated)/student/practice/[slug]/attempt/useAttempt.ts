@@ -149,6 +149,7 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     alternativesError: alternativesQueries.error,
 
     answers,
+    answersCount: answers.size,
     updateAnswer,
 
     currentPage,
