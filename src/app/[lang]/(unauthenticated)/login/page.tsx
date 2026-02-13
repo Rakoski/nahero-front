@@ -25,10 +25,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { getDictionary } from "@/dictionaries";
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
-import { setCookie } from "@/storages/cookies";
 import Link from "next/link";
 import { useLogin } from "./useLogin";
 
@@ -87,7 +86,6 @@ export default function LoginPage({ params }: Props) {
   useEffect(() => {
     params.then(async (p) => {
       setLang(p.lang);
-      const { getDictionary } = await import("@/dictionaries");
       const dictionary = await getDictionary(p.lang);
       setDict(dictionary.login);
     });

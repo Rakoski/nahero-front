@@ -2,4 +2,12 @@ export namespace QUERIES {
   export enum PRACTICE_EXAMS {
     LIST = "LIST_PRACTICE_EXAMS",
   }
+
+  export enum QUESTIONS {
+    LIST_STUDENT = "LIST_QUESTIONS_BY_STUDENT",
+  }
+
+  export enum ALTERNATIVES {
+    LIST_BY_QUESTION = "LIST_ALTERNATIVES_BY_QUESTION",
+  }
 }

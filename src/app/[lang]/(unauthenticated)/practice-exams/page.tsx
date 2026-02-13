@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useAtom } from "jotai";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
 import { FadeIn } from "@/components/ui/fade-in";
@@ -101,23 +102,19 @@ function mapPracticeExamToExam(dto: PracticeExamDTO) {
 
 export default function PracticeExamsPage({ params }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
   const [dict, setDict] = useState<PracticeExamsDict | null>(null);
+  const [lang, setLang] = useState<"en" | "pt">("en");
   const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
   const [category, setCategory] = useAtom(categoryPracticeExamAtom);
   const [difficulty, setDifficulty] = useAtom(difficultyPracticeExamAtom);
-  const [isStartingExam, setIsStartingExam] = useState(false);
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     params.then(async (p) => {
-      const dictionary = await getDictionary(p.lang);
-      setDict(dictionary.practiceExams);
-    });
-  }, [params]);
-
-  useEffect(() => {
-    params.then(async (p) => {
+      setLang(p.lang);
       const dictionary = await getDictionary(p.lang);
       setDict(dictionary.practiceExams);
     });
@@ -130,9 +127,51 @@ export default function PracticeExamsPage({ params }: Props) {
     hasNextPage,
     isFetchingNextPage,
     totalElements,
+    startExam,
+    isStartingExam,
   } = usePracticeExams();
 
-  const exams = practiceExams.map(mapPracticeExamToExam);
+  const practiceExamsMapped = practiceExams.map(mapPracticeExamToExam);
+
+  const handleStartExam = useCallback(
+    async (practiceExamId: number) => {
+      // Check if user is authenticated
+      if (status === "unauthenticated") {
+        // Redirect to login with callback URL
+        const callbackUrl = `/${lang}${Routes.PracticeExams}?startExam=${practiceExamId}`;
+        router.push(
+          `/${lang}${Routes.Login}?callbackUrl=${encodeURIComponent(
+            callbackUrl
+          )}`
+        );
+        return;
+      }
+
+      // User is authenticated, start the exam
+      const attemptId = await startExam(practiceExamId);
+
+      if (attemptId) {
+        const targetUrl = `/${lang}${Routes.Practice}/${attemptId}/attempt`;
+        router.push(targetUrl);
+      }
+    },
+    [status, lang, router, startExam]
+  );
+
+  // Handle post-login exam start
+  useEffect(() => {
+    const startExamId = searchParams.get("startExam");
+    if (startExamId && session && status === "authenticated") {
+      const examId = parseInt(startExamId);
+      if (!isNaN(examId)) {
+        handleStartExam(examId);
+        // Clean up URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete("startExam");
+        router.replace(url.pathname + url.search);
+      }
+    }
+  }, [searchParams, session, status, handleStartExam, router]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -175,27 +214,11 @@ export default function PracticeExamsPage({ params }: Props) {
     setDifficulty(0);
   };
 
-  const handleStartExam = async (examId: number) => {
-    try {
-      setIsStartingExam(true);
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      router.push(`${Routes.PracticeExams}/${examId}/attempt`);
-    } catch (error) {
-      console.error("Failed to start exam:", error);
-    } finally {
-      setIsStartingExam(false);
-    }
-  };
-
   const hasActiveFilters = Boolean(
     searchInput || difficulty > 0 || category !== "all"
   );
 
-  if (!dict) {
-    return null;
-  }
+  if (!dict) return null;
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -220,7 +243,7 @@ export default function PracticeExamsPage({ params }: Props) {
         dict={dict}
       />
 
-      {isLoading && exams.length === 0 && (
+      {isLoading && practiceExamsMapped.length === 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, index) => (
             <SkeletonCard key={index} />
@@ -228,7 +251,7 @@ export default function PracticeExamsPage({ params }: Props) {
         </div>
       )}
 
-      {!isLoading && exams.length === 0 && (
+      {!isLoading && practiceExamsMapped.length === 0 && (
         <EmptyState
           hasActiveFilters={hasActiveFilters}
           onClearFilters={clearFilters}
@@ -236,13 +259,13 @@ export default function PracticeExamsPage({ params }: Props) {
         />
       )}
 
-      {exams.length > 0 && (
+      {practiceExamsMapped.length > 0 && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {exams.map((exam) => (
+            {practiceExamsMapped.map((practiceExam) => (
               <ExamCard
-                key={exam.id}
-                exam={exam}
+                key={practiceExam.id}
+                exam={practiceExam}
                 onStartExam={handleStartExam}
                 isLoading={isStartingExam}
                 dict={dict}
@@ -266,12 +289,12 @@ export default function PracticeExamsPage({ params }: Props) {
                 {dict.pagination?.load_more || "Load More"}
               </Button>
             )}
-            {!hasNextPage && exams.length > 0 && (
+            {!hasNextPage && practiceExamsMapped.length > 0 && (
               <p className="text-sm text-muted-foreground">
                 {dict.pagination?.showing_all?.replace(
                   "{{count}}",
                   totalElements.toString()
-                ) || `Showing all ${totalElements} practice exams`}
+                ) || `Showing all ${totalElements} practice practiceExams`}
               </p>
             )}
           </div>

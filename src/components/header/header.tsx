@@ -86,7 +86,7 @@ export function Header({ dict, lang }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-stone-950/80 backdrop-blur supports-backdrop-filter:bg-stone-950/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto flex h-16 items-center justify-between sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
           <Link
             href={buildPath(lang, Routes.Home)}
@@ -102,12 +102,12 @@ export function Header({ dict, lang }: HeaderProps) {
           </Link>
         </div>
 
-        <nav className="hidden md:flex gap-6">
+        <nav className="hidden sm:flex md:flex gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-stone-300 hover:text-white transition-colors"
+              className=" font-medium text-stone-300 hover:text-white transition-colors"
             >
               {link.label}
             </Link>
@@ -152,15 +152,15 @@ export function Header({ dict, lang }: HeaderProps) {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="bg-stone-950 border-stone-800 text-stone-100"
+              className="bg-stone-950 border-stone-800 text-stone-100 flex flex-col"
             >
-              <div className="flex flex-col gap-6 mt-6">
+              <div className="flex flex-col gap-6 mt-6 ">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-stone-300 hover:text-yellow-500"
+                    className="text-lg font-medium text-stone-300 hover:text-yellow-500 text-center"
                   >
                     {link.label}
                   </Link>
@@ -169,15 +169,15 @@ export function Header({ dict, lang }: HeaderProps) {
                 <div className="h-px bg-stone-800 my-2" />
 
                 {session ? (
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3 mb-2">
+                  <div className="flex flex-col gap-4 items-center">
+                    <div className="flex flex-col items-center gap-3 mb-2">
                       <Avatar className="h-10 w-10 border border-stone-700">
                         <AvatarImage src={session.user?.image || ""} />
                         <AvatarFallback>
                           {session.user?.name?.[0]}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col">
+                      <div className="flex flex-col items-center">
                         <span className="font-bold">{session.user?.name}</span>
                         <span className="text-xs text-stone-500">
                           {session.user?.email}
@@ -186,7 +186,7 @@ export function Header({ dict, lang }: HeaderProps) {
                     </div>
                     <Button
                       variant="destructive"
-                      className="w-full justify-start"
+                      className="w-1/2 justify-center"
                       onClick={() => {
                         SignOut();
                         setIsOpen(false);
@@ -197,11 +197,11 @@ export function Header({ dict, lang }: HeaderProps) {
                     </Button>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-3 items-center">
                     <Button
                       asChild
                       variant="ghost"
-                      className="w-full justify-start text-stone-300"
+                      className="w-3/4 justify-center text-stone-300"
                     >
                       <Link
                         href={buildPath(lang, Routes.Login)}
@@ -212,7 +212,7 @@ export function Header({ dict, lang }: HeaderProps) {
                     </Button>
                     <Button
                       asChild
-                      className="w-full bg-yellow-600 text-white font-bold"
+                      className="w-3/4 bg-yellow-600 text-white font-bold justify-center"
                     >
                       <Link
                         href={buildPath(lang, Routes.Register)}

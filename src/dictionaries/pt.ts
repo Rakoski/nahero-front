@@ -43,6 +43,13 @@ export const pt = {
     btn_home: "Voltar ao Início",
     btn_exams: "Ver Simulados",
   },
+  error: {
+    title: "Algo deu errado!",
+    description:
+      "Ocorreu um erro inesperado. Por favor, tente novamente ou entre em contato com o suporte se o problema persistir.",
+    btn_retry: "Tentar Novamente",
+    btn_home: "Voltar ao Início",
+  },
   login: {
     title: "Acesse Sua Conta",
     subtitle: "Digite seu e-mail e senha para entrar",
@@ -207,9 +214,61 @@ export const pt = {
         description: "Tem certeza de que deseja enviar seu simulado?",
         unanswered_warning:
           "Você tem {{count}} questão(ões) não respondida(s).",
+        no_answers_error:
+          "Você deve responder pelo menos uma questão antes de enviar.",
         cancel: "Cancelar",
         submit: "Enviar Simulado",
       },
+    },
+  },
+  examResults: {
+    title: "Resultados do Simulado",
+    subtitle: "Aqui estão seus resultados para este simulado",
+    loading: "Carregando resultados...",
+    status: {
+      passed: "Parabéns! Você passou!",
+      failed: "Continue praticando! Você pode tentar novamente.",
+    },
+    stats: {
+      score: "Pontuação",
+      correct: "Respostas Corretas",
+      incorrect: "Respostas Incorretas",
+      total: "Total de Questões",
+      timeSpent: "Tempo Gasto",
+      passingScore: "Nota de Aprovação",
+      attemptStatus: "Status",
+      answered: "Respondidas",
+      startTime: "Hora de Início",
+      endTime: "Hora de Término",
+      limit: "Limite",
+    },
+    details: "Detalhes",
+    percentages: {
+      correct: "correto",
+      incorrect: "incorreto",
+    },
+    actions: {
+      retry: "Tentar Novamente",
+      backToExams: "Voltar aos Simulados",
+      viewDetails: "Ver Resultados Detalhados",
+    },
+    timeFormat: {
+      minutes: "{{time}} minutos",
+      hours: "{{hours}}h {{minutes}}m",
+    },
+    answers: {
+      title: "Respostas",
+      showAll: "Mostrar Todas",
+      showCorrect: "Mostrar Corretas",
+      showIncorrect: "Mostrar Incorretas",
+      searchPlaceholder: "Buscar questões...",
+      loading: "Carregando respostas...",
+      questionNumber: "Questão #{{number}}",
+      correct: "Correto",
+      incorrect: "Incorreto",
+      questionAlt: "Questão",
+      alternativeAlt: "Alternativa",
+      explanation: "Explicação:",
     },
   },
 } as const;

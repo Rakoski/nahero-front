@@ -7,7 +7,7 @@ export interface Question {
   text: string;
   type: "single" | "multiple";
   options: QuestionOption[];
-  correctAnswers: number[]; // IDs of correct options
+  correctAnswers: number[];
   explanation?: string;
 }
 
@@ -20,7 +20,7 @@ export interface ExamAttempt {
   id: number;
   examId: number;
   examTitle: string;
-  timeLimit: number; // in minutes
+  timeLimit: number;
   passingScore: number;
   questions: Question[];
   startedAt: Date;
@@ -33,9 +33,6 @@ export interface Answer {
 
 export type QuestionStatus = "answered" | "unanswered" | "current";
 
-/**
- * Get the status of a question
- */
 export function getQuestionStatus(
   questionId: number,
   currentQuestionId: number,
@@ -51,9 +48,6 @@ export function getQuestionStatus(
     : "unanswered";
 }
 
-/**
- * Check if an answer is selected for a question
- */
 export function isOptionSelected(
   questionId: number,
   optionId: number,
@@ -63,9 +57,6 @@ export function isOptionSelected(
   return answer ? answer.selectedOptions.includes(optionId) : false;
 }
 
-/**
- * Toggle an option selection
- */
 export function toggleOption(
   questionId: number,
   optionId: number,
@@ -77,7 +68,6 @@ export function toggleOption(
   );
 
   if (existingAnswerIndex === -1) {
-    // No answer exists, create new one
     return [
       ...answers,
       {
@@ -91,10 +81,8 @@ export function toggleOption(
   let newSelectedOptions: number[];
 
   if (isSingleChoice) {
-    // For single choice, replace the selection
     newSelectedOptions = [optionId];
   } else {
-    // For multiple choice, toggle the option
     if (existingAnswer.selectedOptions.includes(optionId)) {
       newSelectedOptions = existingAnswer.selectedOptions.filter(
         (id) => id !== optionId
@@ -113,9 +101,6 @@ export function toggleOption(
   return newAnswers;
 }
 
-/**
- * Calculate remaining time in seconds
- */
 export function calculateRemainingTime(
   startedAt: Date,
   timeLimitMinutes: number
@@ -127,18 +112,12 @@ export function calculateRemainingTime(
   return Math.max(0, remaining);
 }
 
-/**
- * Format time in MM:SS format
- */
 export function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-/**
- * Format time in HH:MM:SS format for longer durations
- */
 export function formatTimeLong(seconds: number): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
@@ -154,9 +133,6 @@ export function formatTimeLong(seconds: number): string {
   return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-/**
- * Count answered and unanswered questions
- */
 export function getQuestionStats(
   totalQuestions: number,
   answers: Answer[]
@@ -168,16 +144,10 @@ export function getQuestionStats(
   };
 }
 
-/**
- * Get the expected number of selections for a question
- */
 export function getExpectedSelections(question: Question): number {
   return question.type === "single" ? 1 : question.correctAnswers.length;
 }
 
-/**
- * Format the selection instruction text
- */
 export function getSelectionText(
   question: Question,
   dict: {

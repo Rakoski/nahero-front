@@ -1,11 +1,13 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import { atom, useAtom } from "jotai";
 import { practiceExamsService } from "@/services/practice-exams";
 import { QUERIES } from "../../../../constants/queries";
 import type { PracticeExamsPageableResponse } from "@/lib/dtos";
+import { studentPracticeAttemptsService } from "../../../../services/student-practice-attempts";
+import { handleError } from "../../../../utils/error-utils";
 
 export const searchPracticeExamAtom = atom("");
 export const categoryPracticeExamAtom = atom<string>("all");
@@ -56,17 +58,25 @@ export const usePracticeExams = () => {
     ],
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      // If it's the last page, return undefined to stop pagination
       if (lastPage.last) {
         return undefined;
       }
-      // Return the next page number
       return lastPage.number + 1;
     },
   });
 
-  // Flatten all pages into a single array of practice exams
   const practiceExams = data?.pages.flatMap((page) => page.content) ?? [];
+
+  const { mutateAsync: startExam, isPending: isStartingExam } = useMutation({
+    mutationFn: async (practiceExamId: number) => {
+      return await studentPracticeAttemptsService.createStudentPracticeAttempt(
+        practiceExamId
+      );
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   return {
     practiceExams,
@@ -77,5 +87,7 @@ export const usePracticeExams = () => {
     refetch,
     totalElements: data?.pages[0]?.totalElements ?? 0,
     totalPages: data?.pages[0]?.totalPages ?? 0,
+    startExam,
+    isStartingExam,
   };
 };

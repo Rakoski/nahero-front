@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 export interface NavigationButtonsProps {
   currentQuestionIndex: number;
   totalQuestions: number;
+  isLastQuestion?: boolean;
+  isFirstQuestion?: boolean;
   onPrevious: () => void;
   onNext: () => void;
   onSubmit: () => void;
@@ -21,14 +23,17 @@ export interface NavigationButtonsProps {
 export function NavigationButtons({
   currentQuestionIndex,
   totalQuestions,
+  isLastQuestion: isLastQuestionOverride,
+  isFirstQuestion: isFirstQuestionOverride,
   onPrevious,
   onNext,
   onSubmit,
   isSubmitting = false,
   dict,
 }: NavigationButtonsProps) {
-  const isFirstQuestion = currentQuestionIndex === 0;
-  const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+  const isFirstQuestion = isFirstQuestionOverride ?? currentQuestionIndex === 0;
+  const isLastQuestion =
+    isLastQuestionOverride ?? currentQuestionIndex === totalQuestions - 1;
 
   return (
     <div className="flex items-center justify-between gap-4">

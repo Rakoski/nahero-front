@@ -6,6 +6,7 @@ export const Routes = {
   Profile: "/public/profile",
   NotFound: "/not-found",
   PracticeExams: "/practice-exams",
+  Practice: "/student/practice",
 
   StudentDashboard: "/dashboard",
 

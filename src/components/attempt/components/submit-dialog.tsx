@@ -16,10 +16,12 @@ export interface SubmitDialogProps {
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
   unansweredCount: number;
+  totalAnswered: number;
   dict: {
     title: string;
     description: string;
     unanswered_warning: string;
+    no_answers_error: string;
     cancel: string;
     submit: string;
   };
@@ -30,9 +32,11 @@ export function SubmitDialog({
   onOpenChange,
   onConfirm,
   unansweredCount,
+  totalAnswered,
   dict,
 }: SubmitDialogProps) {
   const hasUnanswered = unansweredCount > 0;
+  const hasNoAnswers = totalAnswered === 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -42,7 +46,16 @@ export function SubmitDialog({
           <DialogDescription>{dict.description}</DialogDescription>
         </DialogHeader>
 
-        {hasUnanswered && (
+        {hasNoAnswers && (
+          <div className="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+            <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700 dark:text-red-400">
+              {dict.no_answers_error}
+            </p>
+          </div>
+        )}
+
+        {hasUnanswered && !hasNoAnswers && (
           <div className="flex items-start gap-3 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
             <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
             <p className="text-sm text-yellow-700 dark:text-yellow-400">
@@ -58,7 +71,9 @@ export function SubmitDialog({
           <Button onClick={() => onOpenChange(false)} variant="outline">
             {dict.cancel}
           </Button>
-          <Button onClick={onConfirm}>{dict.submit}</Button>
+          <Button onClick={onConfirm} disabled={hasNoAnswers}>
+            {dict.submit}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
