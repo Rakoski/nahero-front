@@ -123,3 +123,64 @@ export interface FinishStudentPracticeAttemptRequest {
   studentPracticeAttemptId: number;
   answers: AnswerRequest[];
 }
+
+/**
+ * Finish Exam Response - matches FinishStudentPracticeAttemptResponse.java
+ */
+export interface FinishStudentPracticeAttemptResponse {
+  passed: boolean;
+  score: number;
+  answers: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  startTime: string;
+  endTime: string;
+  timeLimit: number;
+  timeSpentInMinutes: number;
+  passingPercentageScore: number;
+  attemptStatus: string;
+  numberOfQuestions: number;
+}
+
+export interface AlternativeResponse {
+  alternativeId: number;
+  alternativeVersion: number;
+  content: string;
+  imageUrl: string | null;
+  isCorrect: boolean;
+  isActive: boolean;
+}
+
+export interface ListAnsweredAnswersResponse {
+  // Student Answer fields
+  studentAnswerId: number;
+  studentPracticeAttemptId: number;
+  questionId: number;
+  questionVersion: number;
+  selectedAlternativeId: number | null;
+  selectedAlternativeVersion: number | null;
+  isCorrect: boolean | null;
+
+  // Question fields
+  questionContent: string;
+  questionImageUrl: string | null;
+  questionPoints: number;
+  questionType: string;
+  explanation: string | null;
+
+  // Alternatives list
+  alternatives: AlternativeResponse[];
+}
+
+// If you need a paginated response wrapper
+export interface PaginatedResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number; // current page number
+  size: number;
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}

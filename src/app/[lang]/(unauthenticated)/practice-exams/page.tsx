@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useAtom } from "jotai";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
 import { FadeIn } from "@/components/ui/fade-in";
@@ -101,7 +102,10 @@ function mapPracticeExamToExam(dto: PracticeExamDTO) {
 
 export default function PracticeExamsPage({ params }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
   const [dict, setDict] = useState<PracticeExamsDict | null>(null);
+  const [lang, setLang] = useState<"en" | "pt">("en");
   const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
   const [category, setCategory] = useAtom(categoryPracticeExamAtom);
   const [difficulty, setDifficulty] = useAtom(difficultyPracticeExamAtom);
@@ -110,13 +114,7 @@ export default function PracticeExamsPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      const dictionary = await getDictionary(p.lang);
-      setDict(dictionary.practiceExams);
-    });
-  }, [params]);
-
-  useEffect(() => {
-    params.then(async (p) => {
+      setLang(p.lang);
       const dictionary = await getDictionary(p.lang);
       setDict(dictionary.practiceExams);
     });
@@ -134,6 +132,46 @@ export default function PracticeExamsPage({ params }: Props) {
   } = usePracticeExams();
 
   const practiceExamsMapped = practiceExams.map(mapPracticeExamToExam);
+
+  const handleStartExam = useCallback(
+    async (practiceExamId: number) => {
+      // Check if user is authenticated
+      if (status === "unauthenticated") {
+        // Redirect to login with callback URL
+        const callbackUrl = `/${lang}${Routes.PracticeExams}?startExam=${practiceExamId}`;
+        router.push(
+          `/${lang}${Routes.Login}?callbackUrl=${encodeURIComponent(
+            callbackUrl
+          )}`
+        );
+        return;
+      }
+
+      // User is authenticated, start the exam
+      const attemptId = await startExam(practiceExamId);
+
+      if (attemptId) {
+        const targetUrl = `/${lang}${Routes.Practice}/${attemptId}/attempt`;
+        router.push(targetUrl);
+      }
+    },
+    [status, lang, router, startExam]
+  );
+
+  // Handle post-login exam start
+  useEffect(() => {
+    const startExamId = searchParams.get("startExam");
+    if (startExamId && session && status === "authenticated") {
+      const examId = parseInt(startExamId);
+      if (!isNaN(examId)) {
+        handleStartExam(examId);
+        // Clean up URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete("startExam");
+        router.replace(url.pathname + url.search);
+      }
+    }
+  }, [searchParams, session, status, handleStartExam, router]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -174,15 +212,6 @@ export default function PracticeExamsPage({ params }: Props) {
     setSearchInput("");
     setCategory("all");
     setDifficulty(0);
-  };
-
-  const handleStartExam = async (practiceExamId: number) => {
-    const attemptId = await startExam(practiceExamId);
-
-    if (attemptId) {
-      const targetUrl = `${Routes.PracticeExams}/${attemptId}/attempt`;
-      router.push(targetUrl);
-    }
   };
 
   const hasActiveFilters = Boolean(
