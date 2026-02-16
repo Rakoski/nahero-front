@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardHeader,
@@ -13,7 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Routes } from "@/routes/routes";
-import type { FinishStudentPracticeAttemptResponse } from "@/lib/dtos";
+import { QUERIES } from "@/constants/queries";
+import type { GetResultResponse } from "@/services/student-practice-attempts/get-result";
+import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
 import { CheckCircle2, XCircle, Clock, Award } from "lucide-react";
 import type { AnswerFilters } from "@/services/answers";
 import { useAnswers } from "./useAnswers";
@@ -26,6 +29,11 @@ type ExamResultsDict = {
   status: {
     passed: string;
     failed: string;
+  };
+  statusLabels: {
+    completed: string;
+    timed_out: string;
+    in_progress: string;
   };
   stats: {
     score: string;
@@ -69,10 +77,7 @@ interface Props {
 
 export default function ExamResultsPage({ params }: Props) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [dict, setDict] = useState<ExamResultsDict | null>(null);
-  const [results, setResults] =
-    useState<FinishStudentPracticeAttemptResponse | null>(null);
   const [attemptId, setAttemptId] = useState<number | null>(null);
   const [lang, setLang] = useState<"en" | "pt">("en");
   const [showAnswers, setShowAnswers] = useState(false);
@@ -87,6 +92,21 @@ export default function ExamResultsPage({ params }: Props) {
     isLoading: isLoadingAnswers,
   } = useAnswers(attemptId || 0, filters, 10);
 
+  // Fetch results from API
+  const {
+    data: results,
+    isLoading: isLoadingResults,
+    error: resultsError,
+  } = useQuery<GetResultResponse>({
+    queryKey: [QUERIES.STUDENT_PRACTICE_ATTEMPTS.GET_RESULT, attemptId],
+    queryFn: () =>
+      studentPracticeAttemptsService.getStudentPracticeAttemptResult(
+        attemptId!,
+      ),
+    enabled: !!attemptId,
+    retry: 1,
+  });
+
   useEffect(() => {
     params.then(async (p) => {
       setAttemptId(parseInt(p.slug));
@@ -98,27 +118,18 @@ export default function ExamResultsPage({ params }: Props) {
   }, [params]);
 
   useEffect(() => {
-    const data = searchParams.get("data");
-    if (data) {
-      try {
-        const parsedResults = JSON.parse(
-          decodeURIComponent(data),
-        ) as FinishStudentPracticeAttemptResponse;
-        setResults(parsedResults);
-      } catch (error) {
-        console.error("Failed to parse results data:", error);
-        router.push(`/${lang}${Routes.PracticeExams}`);
-      }
-    } else {
+    if (resultsError) {
+      console.error("Failed to fetch results:", resultsError);
       router.push(`/${lang}${Routes.PracticeExams}`);
     }
-  }, [searchParams, router, lang]);
+  }, [resultsError, router, lang]);
 
   // Infinite scroll observer
   const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!showAnswers) return;
+    const currentTarget = observerTarget.current;
+    if (!currentTarget) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -129,17 +140,12 @@ export default function ExamResultsPage({ params }: Props) {
       { threshold: 0.1 },
     );
 
-    const currentTarget = observerTarget.current;
-    if (currentTarget) {
-      observer.observe(currentTarget);
-    }
+    observer.observe(currentTarget);
 
     return () => {
-      if (currentTarget) {
-        observer.unobserve(currentTarget);
-      }
+      observer.unobserve(currentTarget);
     };
-  }, [showAnswers, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleViewDetails = useCallback(() => {
     setShowAnswers(true);
@@ -148,7 +154,7 @@ export default function ExamResultsPage({ params }: Props) {
     }, 100);
   }, []);
 
-  if (!dict || !results) {
+  if (!dict || !results || isLoadingResults) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -176,6 +182,11 @@ export default function ExamResultsPage({ params }: Props) {
     (results.score / results.numberOfQuestions) * 100,
   );
   const isPassed = results.passed;
+
+  const getStatusLabel = (status: string): string => {
+    const statusKey = status.toLowerCase() as keyof typeof dict.statusLabels;
+    return dict.statusLabels[statusKey] || status;
+  };
 
   const allAnswers = answersData?.pages.flatMap((page) => page.content) || [];
 
@@ -207,12 +218,6 @@ export default function ExamResultsPage({ params }: Props) {
               )}
               <div className="flex items-center gap-2">
                 <span className="text-5xl font-bold">{percentageScore}%</span>
-                <Badge
-                  variant={isPassed ? "default" : "destructive"}
-                  className="text-lg px-4 py-2"
-                >
-                  {results.attemptStatus}
-                </Badge>
               </div>
               <Progress
                 value={percentageScore}
@@ -299,6 +304,17 @@ export default function ExamResultsPage({ params }: Props) {
             <CardTitle>{dict.details}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">
+                {dict.stats.attemptStatus}:
+              </span>
+              <Badge
+                variant={isPassed ? "default" : "destructive"}
+                className="text-base px-3 py-1"
+              >
+                {getStatusLabel(results.attemptStatus)}
+              </Badge>
+            </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">{dict.stats.total}:</span>
               <span className="font-semibold">{results.numberOfQuestions}</span>

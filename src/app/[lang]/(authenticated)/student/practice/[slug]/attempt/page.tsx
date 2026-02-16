@@ -64,12 +64,12 @@ interface Props {
 function mapApiQuestionToQuestion(
   apiQuestion: ListQuestionsByStudentResponse,
   index: number,
-  alternatives: { id: number; imageUrl?: string; content: string }[]
+  alternatives: { id: number; imageUrl?: string; content: string }[],
 ): Question {
   return {
     id: parseInt(apiQuestion.id) || index,
     text: apiQuestion.content,
-    type: apiQuestion.questionType.id === 1 ? "single" : "multiple",
+    type: apiQuestion.questionType.id === 3 ? "single" : "multiple",
     options: alternatives.map((alt) => ({
       id: alt.id,
       text: alt.content,
@@ -106,7 +106,6 @@ export default function ExamAttemptPage({ params }: Props) {
     updateAnswer,
     finishExam,
     isFinishingExam,
-    finishExamResult,
     totalElements,
     currentPage,
     totalPages,
@@ -122,15 +121,15 @@ export default function ExamAttemptPage({ params }: Props) {
   const questions = useMemo(
     () =>
       apiQuestions.map((q, idx) =>
-        mapApiQuestionToQuestion(q, idx, alternatives[q.id] || [])
+        mapApiQuestionToQuestion(q, idx, alternatives[q.id] || []),
       ),
-    [apiQuestions, alternatives]
+    [apiQuestions, alternatives],
   );
 
   const timeLimit = apiQuestions[0]?.timeLimit || 3600;
 
   const [timeRemaining, setTimeRemaining] = useState(
-    calculateRemainingTime(startedAt, timeLimit)
+    calculateRemainingTime(startedAt, timeLimit),
   );
 
   useEffect(() => {
@@ -174,21 +173,17 @@ export default function ExamAttemptPage({ params }: Props) {
       questionId,
       optionId,
       isSingleChoice,
-      answers
+      answers,
     );
     setAnswers(newAnswers);
 
-    // Update the answers in the hook (convert to string for API)
     const answer = newAnswers.find((a) => a.questionId === questionId);
     if (answer) {
       const apiQuestion = apiQuestions.find(
-        (q) => parseInt(q.id) === questionId
+        (q) => parseInt(q.id) === questionId,
       );
       if (apiQuestion) {
-        updateAnswer(
-          apiQuestion.id, // Use original string ID from API
-          answer.selectedOptions.map(String) // Convert to string array
-        );
+        updateAnswer(apiQuestion.id, answer.selectedOptions.map(String));
       }
     }
   };
@@ -222,15 +217,9 @@ export default function ExamAttemptPage({ params }: Props) {
   const handleSubmitConfirm = async () => {
     setShowSubmitDialog(false);
 
-    const result = await finishExam();
+    await finishExam();
 
-    if (result) {
-      router.push(
-        `/${lang}/student/practice/${attemptId}/attempt/results?data=${encodeURIComponent(
-          JSON.stringify(result)
-        )}`
-      );
-    }
+    router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
   };
 
   const handleTimeUp = () => {

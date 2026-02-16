@@ -228,6 +228,11 @@ export const en = {
       passed: "Congratulations! You passed!",
       failed: "Keep practicing! You can try again.",
     },
+    statusLabels: {
+      completed: "Completed",
+      timed_out: "Timed Out",
+      in_progress: "In Progress",
+    },
     stats: {
       score: "Score",
       correct: "Correct Answers",

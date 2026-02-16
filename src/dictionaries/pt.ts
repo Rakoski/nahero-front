@@ -229,6 +229,11 @@ export const pt = {
       passed: "Parabéns! Você passou!",
       failed: "Continue praticando! Você pode tentar novamente.",
     },
+    statusLabels: {
+      completed: "Concluído",
+      timed_out: "Tempo Esgotado",
+      in_progress: "Em Progresso",
+    },
     stats: {
       score: "Pontuação",
       correct: "Respostas Corretas",

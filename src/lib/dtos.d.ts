@@ -149,6 +149,7 @@ export interface AlternativeResponse {
   imageUrl: string | null;
   isCorrect: boolean;
   isActive: boolean;
+  wasSelected?: boolean;
 }
 
 export interface ListAnsweredAnswersResponse {

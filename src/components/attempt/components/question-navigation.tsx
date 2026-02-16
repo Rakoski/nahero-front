@@ -51,10 +51,12 @@ export function QuestionNavigation({
   const globalQuestionNumber =
     (apiCurrentPage ?? 0) * 10 + currentQuestionIndex + 1;
 
+  const currentQuestion = questions[currentQuestionIndex];
+
   const getButtonClasses = (status: QuestionStatus): string => {
     if (status === "current") {
-      const answered = answers.some(
-        (a) => a.questionId === questions[currentQuestionIndex].id
+      const answered = currentQuestion && answers.some(
+        (a) => a.questionId === currentQuestion.id
       );
       if (answered) {
         return "bg-[#9e751d] border-[#773712] text-[#5e410c] font-semibold";
@@ -132,7 +134,7 @@ export function QuestionNavigation({
               const globalIndex = (apiCurrentPage ?? 0) * 10 + idx;
               const status = getQuestionStatus(
                 question.id,
-                questions[currentQuestionIndex].id,
+                currentQuestion?.id ?? -1,
                 answers
               );
 
@@ -157,7 +159,7 @@ export function QuestionNavigation({
               const globalIndex = (apiCurrentPage ?? 0) * 10 + idx + 5;
               const status = getQuestionStatus(
                 question.id,
-                questions[currentQuestionIndex].id,
+                currentQuestion?.id ?? -1,
                 answers
               );
 
