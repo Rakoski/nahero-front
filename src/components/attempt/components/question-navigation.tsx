@@ -55,9 +55,9 @@ export function QuestionNavigation({
 
   const getButtonClasses = (status: QuestionStatus): string => {
     if (status === "current") {
-      const answered = currentQuestion && answers.some(
-        (a) => a.questionId === currentQuestion.id
-      );
+      const answered =
+        currentQuestion &&
+        answers.some((a) => a.questionId === currentQuestion.id);
       if (answered) {
         return "bg-[#9e751d] border-[#773712] text-[#5e410c] font-semibold";
       }
@@ -135,7 +135,7 @@ export function QuestionNavigation({
               const status = getQuestionStatus(
                 question.id,
                 currentQuestion?.id ?? -1,
-                answers
+                answers,
               );
 
               return (
@@ -146,7 +146,7 @@ export function QuestionNavigation({
                   size="sm"
                   className={cn(
                     "h-10 w-10 md:h-12 md:w-12 p-0 border transition-all shrink-0 text-sm md:text-xl cursor-pointer",
-                    getButtonClasses(status)
+                    getButtonClasses(status),
                   )}
                 >
                   {globalIndex + 1}
@@ -160,7 +160,7 @@ export function QuestionNavigation({
               const status = getQuestionStatus(
                 question.id,
                 currentQuestion?.id ?? -1,
-                answers
+                answers,
               );
 
               return (
@@ -171,7 +171,7 @@ export function QuestionNavigation({
                   size="sm"
                   className={cn(
                     "h-10 w-10 md:h-12 md:w-12 p-0 border transition-all shrink-0 text-sm md:text-xl cursor-pointer",
-                    getButtonClasses(status)
+                    getButtonClasses(status),
                   )}
                 >
                   {globalIndex + 1}

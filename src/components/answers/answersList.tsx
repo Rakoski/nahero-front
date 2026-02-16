@@ -146,9 +146,12 @@ export function AnswersList({
                   {/* Alternatives */}
                   <div className="space-y-2">
                     {answer.alternatives.map((alt) => {
-                      const isSelectedByUser = alt.wasSelected || alt.alternativeId === answer.selectedAlternativeId;
-                      const shouldHighlightIncorrect = isSelectedByUser && !alt.isCorrect;
-                      
+                      const isSelectedByUser =
+                        alt.wasSelected ||
+                        alt.alternativeId === answer.selectedAlternativeId;
+                      const shouldHighlightIncorrect =
+                        isSelectedByUser && !alt.isCorrect;
+
                       return (
                         <div
                           key={alt.alternativeId}
