@@ -6,6 +6,7 @@ export const NAHERO_API = {
     CREATE: "/student-practice-attempts",
     FINISH: "/student-practice-attempts/finish",
     GET_RESULT: "/student-practice-attempts",
+    GET_HISTORY: "/student-practice-attempts/history",
   },
   QUESTITONS: {
     LIST_STUDENT: "/questions/list-student",

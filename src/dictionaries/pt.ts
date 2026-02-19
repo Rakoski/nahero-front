@@ -276,4 +276,35 @@ export const pt = {
       explanation: "Explicação:",
     },
   },
+  history: {
+    title: "Histórico de Simulados",
+    subtitle: "Veja todas as suas tentativas anteriores de simulados",
+    loading: "Carregando histórico...",
+    empty: {
+      title: "Nenhum Histórico Ainda",
+      description:
+        "Você ainda não completou nenhum simulado. Comece a praticar para ver seu histórico aqui!",
+      action: "Ver Simulados",
+    },
+    card: {
+      score: "Pontuação",
+      timeSpent: "Tempo Gasto",
+      timeLimit: "Tempo Limite",
+      passingScore: "Nota de Aprovação",
+      seeResults: "Ver Resultados",
+      retry: "Tentar Novamente",
+    },
+    timeFormat: {
+      minutes: "{{time}} min",
+      hours: "{{hours}}h {{minutes}}m",
+    },
+    filters: {
+      filter_exam: "Filtrar por Simulado",
+      filter_date_from: "Data Inicial",
+      filter_date_to: "Data Final",
+      filter_min_score: "Pontuação Mínima",
+      clear_filters: "Limpar Filtros",
+      all_exams: "Todos os Simulados",
+    },
+  },
 } as const;

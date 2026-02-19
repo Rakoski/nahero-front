@@ -7,6 +7,7 @@ export const Routes = {
   NotFound: "/not-found",
   PracticeExams: "/practice-exams",
   Practice: "/student/practice",
+  History: "/student/history",
 
   StudentDashboard: "/dashboard",
 

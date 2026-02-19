@@ -275,4 +275,35 @@ export const en = {
       explanation: "Explanation:",
     },
   },
+  history: {
+    title: "Exam History",
+    subtitle: "View all your previous practice exam attempts",
+    loading: "Loading history...",
+    empty: {
+      title: "No History Yet",
+      description:
+        "You haven't completed any practice exams yet. Start practicing to see your history here!",
+      action: "Browse Practice Exams",
+    },
+    card: {
+      score: "Score",
+      timeSpent: "Time Spent",
+      timeLimit: "Time Limit",
+      passingScore: "Passing Score",
+      seeResults: "See Results",
+      retry: "Retry",
+    },
+    timeFormat: {
+      minutes: "{{time}} min",
+      hours: "{{hours}}h {{minutes}}m",
+    },
+    filters: {
+      filter_exam: "Filter by Exam",
+      filter_date_from: "From Date",
+      filter_date_to: "To Date",
+      filter_min_score: "Minimum Score",
+      clear_filters: "Clear Filters",
+      all_exams: "All Exams",
+    },
+  },
 } as const;
