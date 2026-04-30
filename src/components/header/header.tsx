@@ -117,7 +117,7 @@ export function Header({ dict, lang }: HeaderProps) {
         <div className="flex items-center gap-4">
           {session ? (
             <div className="hidden md:block">
-              <UserNav dict={dict} />
+              <UserNav dict={dict} lang={lang} />
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">

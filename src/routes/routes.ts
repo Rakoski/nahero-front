@@ -9,7 +9,7 @@ export const Routes = {
   Practice: "/student/practice",
   History: "/student/history",
 
-  StudentDashboard: "/dashboard",
+  StudentDashboard: "/student/dashboard",
 
   TeacherDashboard: "/teacher/dashboard",
 };

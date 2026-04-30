@@ -218,6 +218,13 @@ export const en = {
         cancel: "Cancel",
         submit: "Submit Exam",
       },
+      confirm_leave: {
+        title: "Leave exam?",
+        description:
+          "If you leave now, your progress on this attempt will be lost and the attempt will not be saved.",
+        stay: "Stay on exam",
+        leave: "Leave anyway",
+      },
     },
   },
   examResults: {
@@ -279,6 +286,11 @@ export const en = {
     title: "Exam History",
     subtitle: "View all your previous practice exam attempts",
     loading: "Loading history...",
+    error: {
+      title: "Error loading history",
+      description:
+        "Please try again later or contact support if the problem persists.",
+    },
     empty: {
       title: "No History Yet",
       description:
@@ -304,6 +316,71 @@ export const en = {
       filter_min_score: "Minimum Score",
       clear_filters: "Clear Filters",
       all_exams: "All Exams",
+    },
+  },
+  studentDashboard: {
+    title: "Your dashboard",
+    welcome: "Welcome back, {{name}}",
+    loading: "Loading your dashboard…",
+    empty: {
+      title: "No attempts yet",
+      description:
+        "Take your first practice exam to start tracking your progress.",
+      cta: "Browse practice exams",
+    },
+    resume: {
+      heading: "You have an attempt in progress",
+      description: "Pick up where you left off on “{{title}}”.",
+      cta: "Resume attempt",
+    },
+    retry: {
+      heading: "Last attempt didn’t pass",
+      description: "“{{title}}” — score {{score}}",
+      cta: "Try again",
+    },
+    kpi: {
+      total_attempts: "Total attempts",
+      pass_rate: "Pass rate",
+      average_score: "Average score",
+      best_score: "Best score",
+      total_time: "Time studied",
+      streak: "Current streak",
+      days: "{{count}} day(s)",
+      no_data: "—",
+    },
+    charts: {
+      score_over_time: {
+        title: "Score over time",
+        description: "Your last completed attempts",
+        score_label: "Score",
+        passing_label: "Passing score",
+        empty: "Complete an attempt to see your score trend.",
+      },
+      status_breakdown: {
+        title: "Attempts by status",
+        description:
+          "How your sessions are ending — abandoned attempts don’t count toward your score.",
+        empty: "No attempts yet.",
+        labels: {
+          completed: "Completed",
+          timed_out: "Timed out",
+          abandoned: "Abandoned",
+          in_progress: "In progress",
+        },
+      },
+      by_exam: {
+        title: "By practice exam",
+        description: "How you’re performing on each exam.",
+        attempts_label: "{{count}} attempt(s)",
+        best: "Best",
+        last: "Last",
+        empty: "Complete an attempt to see per-exam stats.",
+      },
+      activity: {
+        title: "Activity — last 30 days",
+        description: "Days you sat at least one attempt.",
+        tooltip: "{{count}} attempt(s) on {{date}}",
+      },
     },
   },
 } as const;

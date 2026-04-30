@@ -219,6 +219,13 @@ export const pt = {
         cancel: "Cancelar",
         submit: "Enviar Simulado",
       },
+      confirm_leave: {
+        title: "Sair do simulado?",
+        description:
+          "Se você sair agora, seu progresso nesta tentativa será perdido e a tentativa não será salva.",
+        stay: "Continuar no simulado",
+        leave: "Sair mesmo assim",
+      },
     },
   },
   examResults: {
@@ -280,6 +287,11 @@ export const pt = {
     title: "Histórico de Simulados",
     subtitle: "Veja todas as suas tentativas anteriores de simulados",
     loading: "Carregando histórico...",
+    error: {
+      title: "Erro ao carregar histórico",
+      description:
+        "Por favor, tente novamente mais tarde ou entre em contato com o suporte se o problema persistir.",
+    },
     empty: {
       title: "Nenhum Histórico Ainda",
       description:
@@ -305,6 +317,71 @@ export const pt = {
       filter_min_score: "Pontuação Mínima",
       clear_filters: "Limpar Filtros",
       all_exams: "Todos os Simulados",
+    },
+  },
+  studentDashboard: {
+    title: "Seu painel",
+    welcome: "Bem-vindo de volta, {{name}}",
+    loading: "Carregando seu painel…",
+    empty: {
+      title: "Você ainda não fez nenhum simulado",
+      description:
+        "Comece um simulado para acompanhar seu progresso.",
+      cta: "Ver simulados",
+    },
+    resume: {
+      heading: "Você tem uma tentativa em andamento",
+      description: "Continue de onde parou em “{{title}}”.",
+      cta: "Continuar tentativa",
+    },
+    retry: {
+      heading: "Sua última tentativa não foi aprovada",
+      description: "“{{title}}” — pontuação {{score}}",
+      cta: "Tentar novamente",
+    },
+    kpi: {
+      total_attempts: "Total de tentativas",
+      pass_rate: "Taxa de aprovação",
+      average_score: "Pontuação média",
+      best_score: "Melhor pontuação",
+      total_time: "Tempo estudado",
+      streak: "Sequência atual",
+      days: "{{count}} dia(s)",
+      no_data: "—",
+    },
+    charts: {
+      score_over_time: {
+        title: "Pontuação ao longo do tempo",
+        description: "Suas últimas tentativas concluídas",
+        score_label: "Pontuação",
+        passing_label: "Nota de aprovação",
+        empty: "Conclua uma tentativa para ver sua evolução.",
+      },
+      status_breakdown: {
+        title: "Tentativas por status",
+        description:
+          "Como suas sessões terminam — tentativas abandonadas não contam para sua pontuação.",
+        empty: "Nenhuma tentativa ainda.",
+        labels: {
+          completed: "Concluídas",
+          timed_out: "Tempo esgotado",
+          abandoned: "Abandonadas",
+          in_progress: "Em andamento",
+        },
+      },
+      by_exam: {
+        title: "Por simulado",
+        description: "Seu desempenho em cada simulado.",
+        attempts_label: "{{count}} tentativa(s)",
+        best: "Melhor",
+        last: "Última",
+        empty: "Conclua uma tentativa para ver as estatísticas.",
+      },
+      activity: {
+        title: "Atividade — últimos 30 dias",
+        description: "Dias em que você fez pelo menos uma tentativa.",
+        tooltip: "{{count}} tentativa(s) em {{date}}",
+      },
     },
   },
 } as const;

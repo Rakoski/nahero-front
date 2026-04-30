@@ -3,7 +3,7 @@
 import { Filter, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ComboboxSelect } from "@/components/ui/combobox-select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 
 export interface HistoryFiltersProps {
   practiceExamId?: number;
@@ -48,11 +48,11 @@ export function HistoryFilters({
   return (
     <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border rounded-lg p-4 shadow-sm mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 cursor-pointer">
           <label className="text-sm font-medium text-muted-foreground">
             {dict.filter_exam}
           </label>
-          <ComboboxSelect
+          <SearchableSelect
             options={practiceExams}
             value={practiceExamId?.toString() || ""}
             onValueChange={onPracticeExamIdChange}

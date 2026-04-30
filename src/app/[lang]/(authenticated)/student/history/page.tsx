@@ -21,6 +21,10 @@ type HistoryDict = {
   title: string;
   subtitle: string;
   loading: string;
+  error: {
+    title: string;
+    description: string;
+  };
   empty: {
     title: string;
     description: string;
@@ -63,7 +67,6 @@ export default function HistoryPage({ params }: Props) {
     error,
     filters,
     practiceExams,
-    handleApplyFilters,
     handleClearFilters,
     hasActiveFilters,
   } = useHistory();
@@ -124,16 +127,13 @@ export default function HistoryPage({ params }: Props) {
 
   if (error) {
     return (
-      <div className="container px-4 py-8">
+      <div className="container px-4 mx-auto py-8">
         <Card className="border-destructive">
           <CardContent className="pt-6">
             <div className="flex flex-col items-center text-center space-y-4">
               <AlertCircle className="w-12 h-12 text-destructive" />
-              <h2 className="text-xl font-semibold">Error loading history</h2>
-              <p className="text-muted-foreground">
-                Please try again later or contact support if the problem
-                persists.
-              </p>
+              <h2 className="text-xl font-semibold">{dict.error.title}</h2>
+              <p className="text-muted-foreground">{dict.error.description}</p>
             </div>
           </CardContent>
         </Card>

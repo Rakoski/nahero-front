@@ -20,7 +20,7 @@ type UserNavDict = {
   logout: string;
 };
 
-export function UserNav({ dict }: { dict: UserNavDict }) {
+export function UserNav({ dict, lang }: { dict: UserNavDict; lang: string }) {
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -53,15 +53,6 @@ export function UserNav({ dict }: { dict: UserNavDict }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-stone-800" />
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            className="focus:bg-stone-800 focus:text-white cursor-pointer"
-            asChild
-          >
-            <Link href="/dashboard">
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              {dict.dashboard}
-            </Link>
-          </DropdownMenuItem>
           <DropdownMenuItem className="focus:bg-stone-800 focus:text-white cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             {dict.my_profile}

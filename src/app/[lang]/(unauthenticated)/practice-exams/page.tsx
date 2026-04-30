@@ -135,19 +135,16 @@ export default function PracticeExamsPage({ params }: Props) {
 
   const handleStartExam = useCallback(
     async (practiceExamId: number) => {
-      // Check if user is authenticated
       if (status === "unauthenticated") {
-        // Redirect to login with callback URL
         const callbackUrl = `/${lang}${Routes.PracticeExams}?startExam=${practiceExamId}`;
         router.push(
           `/${lang}${Routes.Login}?callbackUrl=${encodeURIComponent(
-            callbackUrl
-          )}`
+            callbackUrl,
+          )}`,
         );
         return;
       }
 
-      // User is authenticated, start the exam
       const attemptId = await startExam(practiceExamId);
 
       if (attemptId) {
@@ -155,17 +152,15 @@ export default function PracticeExamsPage({ params }: Props) {
         router.push(targetUrl);
       }
     },
-    [status, lang, router, startExam]
+    [status, lang, router, startExam],
   );
 
-  // Handle post-login exam start
   useEffect(() => {
     const startExamId = searchParams.get("startExam");
     if (startExamId && session && status === "authenticated") {
       const examId = parseInt(startExamId);
       if (!isNaN(examId)) {
         handleStartExam(examId);
-        // Clean up URL
         const url = new URL(window.location.href);
         url.searchParams.delete("startExam");
         router.replace(url.pathname + url.search);
@@ -180,7 +175,7 @@ export default function PracticeExamsPage({ params }: Props) {
         fetchNextPage();
       }
     },
-    [fetchNextPage, hasNextPage, isFetchingNextPage]
+    [fetchNextPage, hasNextPage, isFetchingNextPage],
   );
 
   useEffect(() => {
@@ -215,17 +210,16 @@ export default function PracticeExamsPage({ params }: Props) {
   };
 
   const hasActiveFilters = Boolean(
-    searchInput || difficulty > 0 || category !== "all"
+    searchInput || difficulty > 0 || category !== "all",
   );
 
   if (!dict) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-4 py-4 space-y-8">
       <FadeIn>
-        <div className="space-y-2">
+        <div className="space-y-2 text-center">
           <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>
-          <p className="text-muted-foreground text-lg">{dict.subtitle}</p>
         </div>
       </FadeIn>
 
@@ -293,7 +287,7 @@ export default function PracticeExamsPage({ params }: Props) {
               <p className="text-sm text-muted-foreground">
                 {dict.pagination?.showing_all?.replace(
                   "{{count}}",
-                  totalElements.toString()
+                  totalElements.toString(),
                 ) || `Showing all ${totalElements} practice practiceExams`}
               </p>
             )}

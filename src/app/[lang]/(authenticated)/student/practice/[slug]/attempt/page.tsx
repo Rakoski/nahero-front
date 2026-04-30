@@ -7,6 +7,7 @@ import {
   QuestionNavigation,
   NavigationButtons,
   SubmitDialog,
+  LeaveExamDialog,
 } from "@/components/attempt/components";
 import {
   Answer,
@@ -18,6 +19,7 @@ import {
 } from "./utils";
 import { Routes } from "@/routes/routes";
 import { useAttempt } from "./useAttempt";
+import { useLeaveConfirmation } from "@/hooks/useLeaveConfirmation";
 import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
 
 type ExamAttemptDict = {
@@ -53,6 +55,12 @@ type ExamAttemptDict = {
       no_answers_error: string;
       cancel: string;
       submit: string;
+    };
+    confirm_leave: {
+      title: string;
+      description: string;
+      stay: string;
+      leave: string;
     };
   };
 };
@@ -156,6 +164,19 @@ export default function ExamAttemptPage({ params }: Props) {
 
   const currentQuestion = questions[currentQuestionIndex];
   const { unanswered } = getQuestionStats(questions.length, answers);
+
+  const guardEnabled =
+    !!dict &&
+    !isLoadingQuestions &&
+    !isLoadingAlternatives &&
+    !isFinishingExam &&
+    apiQuestions.length > 0;
+
+  const {
+    isLeaveDialogOpen,
+    confirmLeave,
+    cancelLeave,
+  } = useLeaveConfirmation(guardEnabled);
 
   const globalQuestionNumber = currentPage * 10 + currentQuestionIndex + 1;
   const totalQuestionsAcrossPages = totalElements;
@@ -311,6 +332,15 @@ export default function ExamAttemptPage({ params }: Props) {
         unansweredCount={unanswered}
         totalAnswered={answersCount}
         dict={dict.dialogs.confirm_submit}
+      />
+
+      <LeaveExamDialog
+        open={isLeaveDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) cancelLeave();
+        }}
+        onConfirm={confirmLeave}
+        dict={dict.dialogs.confirm_leave}
       />
     </div>
   );
