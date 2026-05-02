@@ -185,6 +185,16 @@ export const en = {
   },
   examAttempt: {
     title: "Question",
+    loading: "Loading exam and synchronizing timer...",
+    empty: {
+      title: "No questions found for this exam.",
+      back: "Return to practice exams",
+    },
+    error: {
+      not_enough_questions:
+        "This exam doesn't have enough questions yet. Please try another exam.",
+      generic: "Something went wrong loading the exam.",
+    },
     time_remaining: "Time remaining:",
     question_of: "of",
     select_answer: "Select your answer",

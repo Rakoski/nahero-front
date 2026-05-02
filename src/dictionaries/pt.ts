@@ -185,6 +185,16 @@ export const pt = {
   },
   examAttempt: {
     title: "Questão",
+    loading: "Carregando simulado e sincronizando o cronômetro...",
+    empty: {
+      title: "Nenhuma questão encontrada para este simulado.",
+      back: "Voltar para os simulados",
+    },
+    error: {
+      not_enough_questions:
+        "Este simulado ainda não tem questões suficientes. Tente outro simulado.",
+      generic: "Algo deu errado ao carregar o simulado.",
+    },
     time_remaining: "Tempo restante:",
     question_of: "de",
     select_answer: "Selecione sua resposta",

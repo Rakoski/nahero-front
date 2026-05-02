@@ -21,9 +21,19 @@ import { Routes } from "@/routes/routes";
 import { useAttempt } from "./useAttempt";
 import { useLeaveConfirmation } from "@/hooks/useLeaveConfirmation";
 import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
+import { AxiosError } from "axios";
 
 type ExamAttemptDict = {
   title: string;
+  loading: string;
+  empty: {
+    title: string;
+    back: string;
+  };
+  error: {
+    not_enough_questions: string;
+    generic: string;
+  };
   time_remaining: string;
   question_of: string;
   select_answer: string;
@@ -96,17 +106,12 @@ export default function ExamAttemptPage({ params }: Props) {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [startedAt] = useState(new Date());
-
-  useEffect(() => {
-    params.then((p) => {
-      setAttemptId(p.slug);
-      setLang(p.lang);
-    });
-  }, [params]);
+  const [timeRemaining, setTimeRemaining] = useState(0);
 
   const {
     questions: apiQuestions,
     isLoadingQuestions,
+    questionsError,
     alternatives,
     isLoadingAlternatives,
     answers: attemptAnswers,
@@ -126,6 +131,21 @@ export default function ExamAttemptPage({ params }: Props) {
     pageSize: 10,
   });
 
+  const timeLimit = apiQuestions[0]?.timeLimit || 3600;
+
+  const isDataReady = !isLoadingQuestions && !!dict && !questionsError;
+  const errorStatus =
+    questionsError instanceof AxiosError
+      ? questionsError.response?.status
+      : undefined;
+
+  useEffect(() => {
+    params.then((p) => {
+      setAttemptId(p.slug);
+      setLang(p.lang);
+    });
+  }, [params]);
+
   const questions = useMemo(
     () =>
       apiQuestions.map((q, idx) =>
@@ -134,13 +154,16 @@ export default function ExamAttemptPage({ params }: Props) {
     [apiQuestions, alternatives],
   );
 
-  const timeLimit = apiQuestions[0]?.timeLimit || 3600;
-
-  const [timeRemaining, setTimeRemaining] = useState(
-    calculateRemainingTime(startedAt, timeLimit),
-  );
+  useEffect(() => {
+    if (isDataReady) {
+      const initialTime = calculateRemainingTime(startedAt, timeLimit);
+      setTimeRemaining(initialTime);
+    }
+  }, [isDataReady, startedAt, timeLimit]);
 
   useEffect(() => {
+    if (!isDataReady) return;
+
     const timer = setInterval(() => {
       const remaining = calculateRemainingTime(startedAt, timeLimit);
       setTimeRemaining(remaining);
@@ -152,7 +175,7 @@ export default function ExamAttemptPage({ params }: Props) {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [startedAt, timeLimit]);
+  }, [isDataReady, startedAt, timeLimit]);
 
   useEffect(() => {
     params.then(async (p) => {
@@ -172,11 +195,8 @@ export default function ExamAttemptPage({ params }: Props) {
     !isFinishingExam &&
     apiQuestions.length > 0;
 
-  const {
-    isLeaveDialogOpen,
-    confirmLeave,
-    cancelLeave,
-  } = useLeaveConfirmation(guardEnabled);
+  const { isLeaveDialogOpen, confirmLeave, cancelLeave } =
+    useLeaveConfirmation(guardEnabled);
 
   const globalQuestionNumber = currentPage * 10 + currentQuestionIndex + 1;
   const totalQuestionsAcrossPages = totalElements;
@@ -247,12 +267,35 @@ export default function ExamAttemptPage({ params }: Props) {
     handleSubmitConfirm();
   };
 
-  if (!dict || isLoadingQuestions || isLoadingAlternatives || !attemptId) {
+  if (questionsError && dict) {
+    const message =
+      errorStatus === 422
+        ? dict.error.not_enough_questions
+        : dict.error.generic;
+
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-destructive mb-4">{message}</p>
+          <button
+            onClick={() => router.push(Routes.PracticeExams)}
+            className="text-primary hover:underline"
+          >
+            {dict.empty.back}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isDataReady || isLoadingAlternatives || !attemptId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading exam...</p>
+          <p className="text-muted-foreground">
+            {dict?.loading ?? "Loading..."}
+          </p>
         </div>
       </div>
     );
@@ -262,14 +305,12 @@ export default function ExamAttemptPage({ params }: Props) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-destructive mb-4">
-            No questions found for this exam.
-          </p>
+          <p className="text-destructive mb-4">{dict.empty.title}</p>
           <button
             onClick={() => router.push(Routes.PracticeExams)}
             className="text-primary hover:underline"
           >
-            Return to practice exams
+            {dict.empty.back}
           </button>
         </div>
       </div>
