@@ -10,32 +10,58 @@ export const api = axios.create({
   timeout: 1000000,
 });
 
+const ACCESS_TOKEN_COOKIE = "@nahero:accessToken";
+/** Treat the token as stale this many ms before its real expiry. */
+const TOKEN_SKEW_MS = 60_000;
+
+/** Reads the `exp` claim (seconds) from a JWT as an epoch in ms, or 0. */
+function getTokenExpiry(token: string): number {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return typeof payload.exp === "number" ? payload.exp * 1000 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** True when the token is present and not within the skew window of expiry. */
+function isTokenFresh(token: string | undefined): token is string {
+  if (!token) return false;
+  return Date.now() < getTokenExpiry(token) - TOKEN_SKEW_MS;
+}
+
+/**
+ * Returns a valid access token, using the cookie as a fast cache and falling
+ * back to the NextAuth session — reading the session triggers the `jwt`
+ * callback, which refreshes the access token server-side when needed. The
+ * session is the single source of truth; the cookie only mirrors it.
+ */
+async function getValidAccessToken(): Promise<string | undefined> {
+  const cookieToken = getCookie(ACCESS_TOKEN_COOKIE) || undefined;
+  if (isTokenFresh(cookieToken)) return cookieToken;
+
+  if (typeof window === "undefined") return cookieToken;
+
+  const session = await getSession();
+  if (session?.error === "RefreshAccessTokenError") {
+    SignOut();
+    return undefined;
+  }
+
+  const token = session?.user?.accessToken;
+  if (token) setCookie(ACCESS_TOKEN_COOKIE, token, 90);
+  return token;
+}
+
 api.interceptors.request.use(
   async (config) => {
-    // Try to get token from cookie first
-    let token = getCookie("@nahero:accessToken");
-
-    // If no token in cookie, try to get from NextAuth session (client-side)
-    if (!token && typeof window !== "undefined") {
-      const session = await getSession();
-      if (session?.user?.accessToken) {
-        token = session.user.accessToken;
-        // Update cookie for next requests
-        setCookie("@nahero:accessToken", token, 90);
-      }
-    }
+    const token = await getValidAccessToken();
 
     if (typeof window !== "undefined") {
       const pathLang = window.location.pathname.split("/")[1];
       const validLang = ["en", "pt"].includes(pathLang) ? pathLang : "en";
       const localeCode = validLang === "pt" ? "pt-BR" : "en-US";
       config.headers["Accept-Language"] = localeCode;
-      console.log(
-        "Setting Accept-Language:",
-        localeCode,
-        "from path:",
-        window.location.pathname
-      );
     }
 
     if (token) {
@@ -46,30 +72,6 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
-const refreshToken = async () => {
-  const currentRefreshToken = getCookie("@nahero:refreshToken");
-  if (!currentRefreshToken) {
-    return null;
-  }
-
-  const refreshApi = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL_JAVA,
-    headers: { "Content-Type": "application/json" },
-  });
-
-  try {
-    const response = await refreshApi.post("/auth/refresh-token", {
-      refreshToken: currentRefreshToken,
-    });
-
-    if (response.data?.accessToken) {
-      setCookie("@nahero:accessToken", response.data.accessToken, 90);
-      return response.data.accessToken;
-    }
-  } catch (error) {}
-  return null;
-};
 
 api.interceptors.response.use(
   (response) => response,
@@ -85,9 +87,13 @@ api.interceptors.response.use(
     ) {
       originalConfig._retry = true;
 
-      const newAccessToken = await refreshToken();
+      // Force a session read so the NextAuth `jwt` callback refreshes the
+      // access token, then retry the original request once.
+      const session = await getSession();
+      const newAccessToken = session?.user?.accessToken;
 
-      if (newAccessToken) {
+      if (session?.error !== "RefreshAccessTokenError" && newAccessToken) {
+        setCookie(ACCESS_TOKEN_COOKIE, newAccessToken, 90);
         originalConfig.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalConfig);
       }

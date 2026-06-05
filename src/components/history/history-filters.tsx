@@ -1,6 +1,6 @@
 "use client";
 
-import { Filter, XIcon } from "lucide-react";
+import { Search, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SearchableSelect } from "@/components/ui/searchable-select";
@@ -16,6 +16,7 @@ export interface HistoryFiltersProps {
   onMinScoreChange: (value: string) => void;
   hasActiveFilters: boolean;
   onClearFilters: () => void;
+  onSearch: () => void;
   practiceExams: Array<{ value: string; label: string }>;
   isLoadingExams: boolean;
   onExamSearchChange?: (search: string) => void;
@@ -26,6 +27,10 @@ export interface HistoryFiltersProps {
     filter_min_score: string;
     clear_filters: string;
     all_exams: string;
+    search: string;
+    search_exam_placeholder: string;
+    loading_exams: string;
+    no_exam_found: string;
   };
 }
 
@@ -40,13 +45,20 @@ export function HistoryFilters({
   onMinScoreChange,
   hasActiveFilters,
   onClearFilters,
+  onSearch,
   practiceExams,
   isLoadingExams,
   onExamSearchChange,
   dict,
 }: HistoryFiltersProps) {
   return (
-    <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border rounded-lg p-4 shadow-sm mb-6">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSearch();
+      }}
+      className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border rounded-lg p-4 shadow-sm mb-6"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="flex flex-col gap-2 cursor-pointer">
           <label className="text-sm font-medium text-muted-foreground">
@@ -57,8 +69,8 @@ export function HistoryFilters({
             value={practiceExamId?.toString() || ""}
             onValueChange={onPracticeExamIdChange}
             placeholder={dict.all_exams}
-            emptyText={isLoadingExams ? "Loading..." : "No exam found"}
-            searchPlaceholder="Search exam..."
+            emptyText={isLoadingExams ? dict.loading_exams : dict.no_exam_found}
+            searchPlaceholder={dict.search_exam_placeholder}
             onSearchChange={onExamSearchChange}
           />
         </div>
@@ -87,19 +99,38 @@ export function HistoryFilters({
           />
         </div>
 
-        <div className="flex items-end">
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-muted-foreground">
+            {dict.filter_min_score}
+          </label>
+          <Input
+            type="number"
+            min={0}
+            max={100}
+            value={minScore ?? ""}
+            onChange={(e) => onMinScoreChange(e.target.value)}
+            className="w-full"
+          />
+        </div>
+
+        <div className="flex items-end gap-2">
+          <Button type="submit" variant="default" className="flex-1 h-10">
+            <Search className="w-5 h-5" />
+            {dict.search}
+          </Button>
           {hasActiveFilters && (
             <Button
+              type="button"
               onClick={onClearFilters}
-              variant="default"
-              className="w-full h-10"
+              variant="outline"
+              className="h-10"
+              aria-label={dict.clear_filters}
             >
-              <XIcon className="w-5 h-5 text-black" />
-              {dict.clear_filters}
+              <XIcon className="w-5 h-5" />
             </Button>
           )}
         </div>
       </div>
-    </div>
+    </form>
   );
 }

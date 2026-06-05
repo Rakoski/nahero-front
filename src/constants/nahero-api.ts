@@ -1,6 +1,7 @@
 export const NAHERO_API = {
   PRACTICE_EXAMS: {
     LIST: "/practice-exams/list",
+    GET_BY_SLUG: "/practice-exams/by-slug",
   },
   STUDENT_PRACTICE_ATTEMPTS: {
     CREATE: "/student-practice-attempts",
@@ -17,6 +18,7 @@ export const NAHERO_API = {
   },
   AUTH: {
     LOGIN: "/auth/login",
+    REFRESH_TOKEN: "/auth/refresh-token",
   },
   USERS: {
     REGISTER: "/users",

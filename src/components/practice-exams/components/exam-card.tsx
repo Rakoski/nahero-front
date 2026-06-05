@@ -1,17 +1,8 @@
 "use client";
 
-import { Clock, Target, BookOpen, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Clock, Target, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -22,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Routes } from "@/routes/routes";
 import { type Exam } from "@/services/practice-exams/use-exams";
 import {
   getDifficultyLabel,
@@ -31,8 +23,7 @@ import {
 
 export interface ExamCardProps {
   exam: Exam;
-  onStartExam: (examId: number) => void;
-  isLoading: boolean;
+  lang: "en" | "pt";
   dict: {
     card: {
       start_exam: string;
@@ -40,18 +31,6 @@ export interface ExamCardProps {
       minimum_score: string;
       questions: string;
       category: string;
-    };
-    dialog: {
-      title: string;
-      description: string;
-      difficulty_level: string;
-      time_limit: string;
-      questions_count: string;
-      passing_score: string;
-      category: string;
-      cancel: string;
-      start: string;
-      starting: string;
     };
     difficulty_levels: {
       beginner: string;
@@ -62,24 +41,25 @@ export interface ExamCardProps {
   };
 }
 
-export function ExamCard({
-  exam,
-  onStartExam,
-  isLoading,
-  dict,
-}: ExamCardProps) {
+export function ExamCard({ exam, lang, dict }: ExamCardProps) {
   const difficultyValue = exam.difficulty_level || exam.difficulty;
   const difficultyLabel = getDifficultyLabel(
     difficultyValue,
-    dict.difficulty_levels
+    dict.difficulty_levels,
   );
+
+  const detailHref = `/${lang}${Routes.PracticeExams}/${exam.slug}`;
 
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow">
       <CardHeader>
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <CardTitle className="text-lg line-clamp-2">{exam.title}</CardTitle>
+            <CardTitle className="text-lg line-clamp-2">
+              <Link href={detailHref} className="hover:underline">
+                {exam.title}
+              </Link>
+            </CardTitle>
             <CardDescription className="line-clamp-1">
               {exam.exam?.title || "Practice Exam"}
             </CardDescription>
@@ -87,7 +67,7 @@ export function ExamCard({
           <Badge
             className={cn(
               "ml-2 shrink-0",
-              getDifficultyColors(difficultyValue)
+              getDifficultyColors(difficultyValue),
             )}
           >
             {difficultyLabel}
@@ -132,85 +112,9 @@ export function ExamCard({
       </CardContent>
 
       <CardFooter className="justify-end mt-auto border-t pt-4">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="w-full">{dict.card.start_exam}</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{dict.dialog.title}</DialogTitle>
-              <DialogDescription>{dict.dialog.description}</DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-medium text-lg">{exam.title}</h4>
-                {exam.description && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {exam.description}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm ">{dict.dialog.difficulty_level}</p>
-                  <p className="font-medium text-orange-400">
-                    {difficultyLabel}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {dict.dialog.time_limit}
-                  </p>
-                  <p className="font-medium text-orange-400">
-                    {formatTimeLimit(exam.time_limit)}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {dict.dialog.questions_count}
-                  </p>
-                  <p className="font-medium text-orange-400">
-                    {exam.question_count}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {dict.dialog.passing_score}
-                  </p>
-                  <p className="font-medium text-orange-400">
-                    {exam.passing_score}%
-                  </p>
-                </div>
-              </div>
-
-              {exam.exam?.category && (
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {dict.dialog.category}
-                  </p>
-                  <p className="font-medium text-orange-400">
-                    {exam.exam.category}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">{dict.dialog.cancel}</Button>
-              </DialogClose>
-              <Button onClick={() => onStartExam(exam.id)} disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isLoading ? dict.dialog.starting : dict.dialog.start}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button asChild className="w-full">
+          <Link href={detailHref}>{dict.card.start_exam}</Link>
+        </Button>
       </CardFooter>
     </Card>
   );

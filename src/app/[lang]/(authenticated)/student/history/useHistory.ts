@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
 import { practiceExamsService } from "@/services/practice-exams";
@@ -18,7 +18,7 @@ export function useHistory() {
   const [minScore, setMinScore] = useState<number | undefined>();
   const [examSearchQuery, setExamSearchQuery] = useState("");
 
-  useEffect(() => {
+  const handleApplyFilters = () => {
     const newFilters: GetHistoryFilters = {};
 
     if (practiceExamId) {
@@ -38,7 +38,7 @@ export function useHistory() {
     }
 
     setFilters(newFilters);
-  }, [practiceExamId, startDate, endDate, minScore]);
+  };
 
   const {
     data: history,
@@ -84,6 +84,7 @@ export function useHistory() {
     setStartDate("");
     setEndDate("");
     setMinScore(undefined);
+    setFilters({});
   };
 
   const hasActiveFilters =
@@ -112,6 +113,7 @@ export function useHistory() {
       hasNextPage: hasNextExamsPage,
     },
     handleClearFilters,
+    handleApplyFilters,
     hasActiveFilters,
   };
 }

@@ -40,7 +40,6 @@ type ExamAttemptDict = {
   select_answers: string;
   single_choice: string;
   multiple_choice: string;
-  multiple_choice_many: string;
   answered: string;
   unanswered: string;
   current: string;

@@ -37,7 +37,6 @@ export function SearchableSelect({
   const [isOpen, setIsOpen] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  // Focus input when dropdown opens
   React.useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
@@ -45,11 +44,8 @@ export function SearchableSelect({
       }, 0);
       return () => clearTimeout(timer);
     }
-    // Removed the else { setSearchQuery("") } to prevent the list
-    // from flickering/disappearing during filter updates
   }, [isOpen]);
 
-  // Debounce search
   React.useEffect(() => {
     const timer = setTimeout(() => {
       onSearchChange?.(searchQuery);
@@ -61,7 +57,7 @@ export function SearchableSelect({
     e.preventDefault();
     e.stopPropagation();
     onValueChange?.("");
-    setSearchQuery(""); // Clear search when clearing value
+    setSearchQuery("");
     setIsOpen(false);
   };
 
@@ -132,18 +128,6 @@ export function SearchableSelect({
           </div>
         </SelectContent>
       </Select>
-
-      {value && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="absolute right-8 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-transparent"
-          onClick={handleClearValue}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      )}
     </div>
   );
 }

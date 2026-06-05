@@ -1,12 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useAtom } from "jotai";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
 import { FadeIn } from "@/components/ui/fade-in";
-import { Routes } from "@/routes/routes";
 import { ExamCard } from "../../../../components/practice-exams/components/exam-card";
 import { ExamFilters as ExamFiltersComponent } from "../../../../components/practice-exams/components/exam-filters";
 import { SkeletonCard } from "../../../../components/practice-exams/components/skeleton-card";
@@ -50,18 +47,6 @@ type PracticeExamsDict = {
     questions: string;
     category: string;
   };
-  dialog: {
-    title: string;
-    description: string;
-    difficulty_level: string;
-    time_limit: string;
-    questions_count: string;
-    passing_score: string;
-    category: string;
-    cancel: string;
-    start: string;
-    starting: string;
-  };
   empty_state: {
     title: string;
     description_filtered: string;
@@ -88,8 +73,8 @@ function mapPracticeExamToExam(dto: PracticeExamDTO) {
     title: dto.title,
     description: dto.description,
     difficulty: dto.exam.difficultyLevel as DifficultyLevels,
-    slug: dto.title.toLowerCase().replace(/\s+/g, "-"),
-    question_count: 0,
+    slug: dto.slug,
+    question_count: dto.numberOfQuestions ?? 0,
     time_limit: dto.timeLimit,
     passing_score: dto.passingScore,
     difficulty_level: dto.exam.difficultyLevel as DifficultyLevels,
@@ -101,9 +86,6 @@ function mapPracticeExamToExam(dto: PracticeExamDTO) {
 }
 
 export default function PracticeExamsPage({ params }: Props) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { data: session, status } = useSession();
   const [dict, setDict] = useState<PracticeExamsDict | null>(null);
   const [lang, setLang] = useState<"en" | "pt">("en");
   const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
@@ -127,46 +109,9 @@ export default function PracticeExamsPage({ params }: Props) {
     hasNextPage,
     isFetchingNextPage,
     totalElements,
-    startExam,
-    isStartingExam,
   } = usePracticeExams();
 
   const practiceExamsMapped = practiceExams.map(mapPracticeExamToExam);
-
-  const handleStartExam = useCallback(
-    async (practiceExamId: number) => {
-      if (status === "unauthenticated") {
-        const callbackUrl = `/${lang}${Routes.PracticeExams}?startExam=${practiceExamId}`;
-        router.push(
-          `/${lang}${Routes.Login}?callbackUrl=${encodeURIComponent(
-            callbackUrl,
-          )}`,
-        );
-        return;
-      }
-
-      const attemptId = await startExam(practiceExamId);
-
-      if (attemptId) {
-        const targetUrl = `/${lang}${Routes.Practice}/${attemptId}/attempt`;
-        router.push(targetUrl);
-      }
-    },
-    [status, lang, router, startExam],
-  );
-
-  useEffect(() => {
-    const startExamId = searchParams.get("startExam");
-    if (startExamId && session && status === "authenticated") {
-      const examId = parseInt(startExamId);
-      if (!isNaN(examId)) {
-        handleStartExam(examId);
-        const url = new URL(window.location.href);
-        url.searchParams.delete("startExam");
-        router.replace(url.pathname + url.search);
-      }
-    }
-  }, [searchParams, session, status, handleStartExam, router]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -260,8 +205,7 @@ export default function PracticeExamsPage({ params }: Props) {
               <ExamCard
                 key={practiceExam.id}
                 exam={practiceExam}
-                onStartExam={handleStartExam}
-                isLoading={isStartingExam}
+                lang={lang}
                 dict={dict}
               />
             ))}

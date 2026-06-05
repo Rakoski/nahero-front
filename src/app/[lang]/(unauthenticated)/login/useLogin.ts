@@ -36,11 +36,10 @@ export function useLogin() {
       return newSession;
     },
     onSuccess: (session) => {
+      // The access-token cookie is only a fast cache for the axios interceptor;
+      // the refresh token now lives solely in the encrypted NextAuth JWT.
       if (session?.user?.accessToken) {
         setCookie("@nahero:accessToken", session.user.accessToken, 90);
-      }
-      if (session?.user?.refreshToken) {
-        setCookie("@nahero:refreshToken", session.user.refreshToken, 90);
       }
 
       const destination = callbackUrl || `/${lang}${Routes.Home}`;

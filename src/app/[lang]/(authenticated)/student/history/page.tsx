@@ -49,6 +49,10 @@ type HistoryDict = {
     filter_min_score: string;
     clear_filters: string;
     all_exams: string;
+    search: string;
+    search_exam_placeholder: string;
+    loading_exams: string;
+    no_exam_found: string;
   };
 };
 
@@ -68,6 +72,7 @@ export default function HistoryPage({ params }: Props) {
     filters,
     practiceExams,
     handleClearFilters,
+    handleApplyFilters,
     hasActiveFilters,
   } = useHistory();
 
@@ -164,6 +169,7 @@ export default function HistoryPage({ params }: Props) {
           }
           hasActiveFilters={hasActiveFilters}
           onClearFilters={handleClearFilters}
+          onSearch={handleApplyFilters}
           practiceExams={practiceExams.options}
           isLoadingExams={practiceExams.isLoading}
           onExamSearchChange={practiceExams.setSearchQuery}
@@ -214,6 +220,7 @@ export default function HistoryPage({ params }: Props) {
           }
           hasActiveFilters={hasActiveFilters}
           onClearFilters={handleClearFilters}
+          onSearch={handleApplyFilters}
           practiceExams={practiceExams.options}
           isLoadingExams={practiceExams.isLoading}
           onExamSearchChange={practiceExams.setSearchQuery}

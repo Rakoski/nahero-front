@@ -201,7 +201,6 @@ export const pt = {
     select_answers: "Selecione todas que se aplicam",
     single_choice: "(Selecione uma)",
     multiple_choice: "(Selecione duas)",
-    multiple_choice_many: "(Selecione {{count}})",
     answered: "Respondida",
     unanswered: "Não respondida",
     current: "Atual",
@@ -236,6 +235,38 @@ export const pt = {
         stay: "Continuar no simulado",
         leave: "Sair mesmo assim",
       },
+    },
+  },
+  practiceExamDetail: {
+    not_found: {
+      title: "Simulado não encontrado",
+      description: "Este simulado não existe ou foi removido.",
+      back: "Voltar para os simulados",
+    },
+    meta: {
+      description_template:
+        "Simulado gratuito de {{title}}. {{questions}} questões, {{minutes}} minutos, nota mínima de aprovação {{score}}%.",
+    },
+    overview: {
+      heading: "Sobre este simulado",
+      time_limit: "Tempo limite",
+      questions: "Questões",
+      passing_score: "Nota mínima",
+      difficulty: "Dificuldade",
+      category: "Categoria",
+      taught_by: "Criado por",
+    },
+    cta: {
+      start_logged_in: "Iniciar simulado",
+      start_logged_out: "Entre para começar",
+      starting: "Iniciando...",
+      back: "Voltar para os simulados",
+    },
+    difficulty_levels: {
+      beginner: "Iniciante",
+      intermediate: "Intermediário",
+      advanced: "Avançado",
+      expert: "Especialista",
     },
   },
   examResults: {
@@ -327,6 +358,10 @@ export const pt = {
       filter_min_score: "Pontuação Mínima",
       clear_filters: "Limpar Filtros",
       all_exams: "Todos os Simulados",
+      search: "Buscar",
+      search_exam_placeholder: "Buscar simulado...",
+      loading_exams: "Carregando...",
+      no_exam_found: "Nenhum simulado encontrado",
     },
   },
   studentDashboard: {

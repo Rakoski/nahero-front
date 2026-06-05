@@ -201,7 +201,6 @@ export const en = {
     select_answers: "Select all that apply",
     single_choice: "(Select one)",
     multiple_choice: "(Select two)",
-    multiple_choice_many: "(Select {{count}})",
     answered: "Answered",
     unanswered: "Unanswered",
     current: "Current",
@@ -235,6 +234,38 @@ export const en = {
         stay: "Stay on exam",
         leave: "Leave anyway",
       },
+    },
+  },
+  practiceExamDetail: {
+    not_found: {
+      title: "Practice exam not found",
+      description: "This practice exam doesn't exist or has been removed.",
+      back: "Back to practice exams",
+    },
+    meta: {
+      description_template:
+        "Free {{title}} practice exam. {{questions}} questions, {{minutes}} minutes, passing score {{score}}%.",
+    },
+    overview: {
+      heading: "About this exam",
+      time_limit: "Time limit",
+      questions: "Questions",
+      passing_score: "Passing score",
+      difficulty: "Difficulty",
+      category: "Category",
+      taught_by: "Created by",
+    },
+    cta: {
+      start_logged_in: "Start exam",
+      start_logged_out: "Log in to start",
+      starting: "Starting...",
+      back: "Back to practice exams",
+    },
+    difficulty_levels: {
+      beginner: "Beginner",
+      intermediate: "Intermediate",
+      advanced: "Advanced",
+      expert: "Expert",
     },
   },
   examResults: {
@@ -326,6 +357,10 @@ export const en = {
       filter_min_score: "Minimum Score",
       clear_filters: "Clear Filters",
       all_exams: "All Exams",
+      search: "Search",
+      search_exam_placeholder: "Search exam...",
+      loading_exams: "Loading...",
+      no_exam_found: "No exam found",
     },
   },
   studentDashboard: {
