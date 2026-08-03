@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { Routes } from "@/routes/routes";
 import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
 import { handleError } from "@/utils/error-utils";
+import { handlePaywallError } from "@/utils/paywall-utils";
 
 interface Props {
   practiceExamId: number;
@@ -34,7 +35,9 @@ export function AutoStartOnReturn({ practiceExamId, lang }: Props) {
           router.replace(`/${lang}${Routes.Practice}/${attemptId}/attempt`);
         }
       } catch (error) {
-        handleError(error);
+        if (!handlePaywallError(error, lang, router, "practice-attempt")) {
+          handleError(error);
+        }
       }
     })();
   }, [searchParams, status, practiceExamId, lang, router]);

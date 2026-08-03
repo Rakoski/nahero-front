@@ -1,5 +1,3 @@
-"use server";
-
 import { api } from "@/lib/api-manager";
 import { NAHERO_API } from "@/constants/nahero-api"; // Adjust path if needed
 

@@ -145,7 +145,7 @@ export function AnswersList({
 
                   {/* Alternatives */}
                   <div className="space-y-2">
-                    {answer.alternatives.map((alt) => {
+                    {answer.alternatives.map((alt, altIndex) => {
                       const isSelectedByUser =
                         alt.wasSelected ||
                         alt.alternativeId === answer.selectedAlternativeId;
@@ -154,7 +154,7 @@ export function AnswersList({
 
                       return (
                         <div
-                          key={alt.alternativeId}
+                          key={`${alt.alternativeId}-${altIndex}`}
                           className={`p-3 rounded-lg ${
                             alt.isCorrect
                               ? "bg-green-600 dark:bg-green-900/20"

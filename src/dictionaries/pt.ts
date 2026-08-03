@@ -29,6 +29,113 @@ export const pt = {
       },
     ],
   },
+  stats: {
+    items: [
+      { value: "5.000+", label: "Questões de prática" },
+      { value: "1.000+", label: "Estudantes se preparando" },
+      { value: "3", label: "Provedores de nuvem" },
+      { value: "R$0", label: "De custo para simulados fundacionais" },
+    ],
+  },
+  howItWorks: {
+    title_start: "Certifique-se em",
+    title_highlight: "quatro passos",
+    subtitle:
+      "Sem barreiras de cadastro, sem cartão de crédito. Abra um simulado e comece agora mesmo.",
+    steps: [
+      {
+        title: "Escolha uma certificação",
+        description:
+          "Escolha no nosso catálogo crescente de provas de certificação em nuvem, começando pela AWS Cloud Practitioner.",
+      },
+      {
+        title: "Pratique em condições reais",
+        description:
+          "Faça simulados cronometrados que reproduzem o formato, a quantidade de questões e a dificuldade da prova real.",
+      },
+      {
+        title: "Revise cada resposta",
+        description:
+          "Veja explicações detalhadas, as alternativas corretas e exatamente onde você errou em cada questão.",
+      },
+      {
+        title: "Acompanhe sua evolução",
+        description:
+          "Seu painel mostra notas, pontos fracos e histórico para você saber exatamente quando está pronto.",
+      },
+    ],
+  },
+  certifications: {
+    title_start: "Certificações que",
+    title_highlight: "cobrimos",
+    subtitle:
+      "Focados nas certificações que impulsionam carreiras em nuvem — com novas adicionadas todo mês.",
+    available_label: "Disponível agora",
+    soon_label: "Em breve",
+    items: [
+      {
+        provider: "AWS",
+        name: "Cloud Practitioner (CLF-C02)",
+        status: "available",
+      },
+      {
+        provider: "AWS",
+        name: "Solutions Architect Associate",
+        status: "soon",
+      },
+      {
+        provider: "Microsoft Azure",
+        name: "AZ-900 Fundamentals",
+        status: "soon",
+      },
+      {
+        provider: "Google Cloud",
+        name: "Cloud Digital Leader",
+        status: "soon",
+      },
+    ],
+  },
+  testimonials: {
+    title_start: "Aprovado por",
+    title_highlight: "estudantes",
+    subtitle: "Preparação de verdade, resultados de verdade.",
+    items: [
+      {
+        quote:
+          "Passei na AWS Cloud Practitioner na primeira tentativa. Os simulados cronometrados eram idênticos à prova real.",
+        name: "Lucas H.",
+        role: "Estudante de TI, IFPR",
+      },
+      {
+        quote:
+          "Finalmente uma plataforma que não esconde toda questão atrás de um paywall. As explicações fizeram tudo fazer sentido.",
+        name: "Leandro M.",
+        role: "Engenheiro de Nuvem Júnior",
+      },
+      {
+        quote:
+          "O painel mostrou meus pontos fracos em Segurança, então eu sabia exatamente o que estudar antes da prova.",
+        name: "Flávia O.",
+        role: "Em transição de carreira",
+      },
+    ],
+  },
+  faq: {
+    title_start: "Perguntas",
+    title_highlight: "frequentes",
+    items: [
+      {
+        question: "Os simulados são parecidos com a prova real?",
+        answer:
+          "Nossos simulados reproduzem o formato oficial, o número de questões e o tempo limite, para você praticar em condições realistas.",
+      },
+      {
+        question: "Preciso de conta para praticar?",
+        answer:
+          "Você pode navegar pelos simulados livremente. Criar uma conta gratuita permite salvar seu progresso, acompanhar suas notas e revisar seu histórico.",
+      },
+    ],
+  },
   cta: {
     title: "Pronto para começar?",
     description:
@@ -111,6 +218,10 @@ export const pt = {
     dashboard: "Painel",
     history: "Histórico",
     my_profile: "Meu Perfil",
+    my_subscription: "Minha Assinatura",
+    premium: "Me inscrever",
+    free_tries_badge: "{{count}} grátis",
+    premium_badge: "Premium",
     logout: "Sair",
     menu: "Menu",
   },
@@ -125,6 +236,13 @@ export const pt = {
     faq: "FAQ",
     support: "Suporte",
     contact: "Contato",
+  },
+  contact: {
+    title: "Fale conosco",
+    subtitle:
+      "Tem uma dúvida, encontrou um bug ou quer contribuir? Adoraríamos ouvir você.",
+    email_label: "Envie um e-mail para",
+    response_note: "Normalmente respondemos em alguns dias.",
   },
   practiceExams: {
     title: "Simulados",
@@ -370,8 +488,7 @@ export const pt = {
     loading: "Carregando seu painel…",
     empty: {
       title: "Você ainda não fez nenhum simulado",
-      description:
-        "Comece um simulado para acompanhar seu progresso.",
+      description: "Comece um simulado para acompanhar seu progresso.",
       cta: "Ver simulados",
     },
     resume: {
@@ -427,6 +544,90 @@ export const pt = {
         description: "Dias em que você fez pelo menos uma tentativa.",
         tooltip: "{{count}} tentativa(s) em {{date}}",
       },
+    },
+  },
+  premium: {
+    title: "Seja Premium",
+    subtitle: "Libere todos os simulados, em todos os níveis, para sempre.",
+    loading: "Carregando…",
+    fromPracticeAttempt: "Você já usou sua tentativa gratuita nesta dificuldade. Assine para continuar praticando sem limites.",
+    alreadyPremiumTitle: "Você já é Premium",
+    alreadyPremiumBody: "Seu acesso está ativo até {{date}}. Gerencie sua assinatura pelo seu perfil.",
+    goToDashboard: "Ir para o dashboard",
+    plans: {
+      monthly: {
+        name: "Mensal",
+        price: "R$ 29,99",
+        cadence: "por mês",
+        description: "Acesso total, mês a mês. Cancele quando quiser.",
+        cta: "Assinar mensal",
+      },
+      yearly: {
+        name: "Anual",
+        price: "R$ 330",
+        cadence: "por ano",
+        description: "Acesso total por um ano inteiro — cerca de R$ 27,50/mês.",
+        cta: "Assinar anual",
+        badge: "Mais popular",
+        savings: "Economize 8%",
+      },
+    },
+    features: {
+      title: "O que está incluso",
+      items: [
+        "Tentativas ilimitadas em todos os simulados",
+        "Todos os níveis de dificuldade liberados",
+        "Explicações detalhadas das respostas",
+        "Acompanhamento do seu progresso",
+      ],
+    },
+    starting: "Iniciando…",
+    success: {
+      polling_title: "Finalizando sua assinatura…",
+      polling_subtitle: "Isso costuma levar apenas alguns segundos.",
+      success_title: "Bem-vindo ao Premium!",
+      success_subtitle: "Seu acesso está ativo. Aproveite todos os simulados sem limites.",
+      timeout_title: "Pagamento recebido",
+      timeout_subtitle: "Está levando um pouco mais que o normal para liberar seu acesso. Tente atualizar a página em alguns instantes.",
+      cta_dashboard: "Ir para o painel",
+      cta_exams: "Explorar simulados",
+      cta_retry: "Atualizar",
+    },
+    cancel: {
+      title: "Pagamento cancelado",
+      subtitle: "Nenhum pagamento foi feito. Você pode escolher um plano quando quiser.",
+      cta_retry: "Voltar para os planos",
+      cta_exams: "Continuar no plano gratuito",
+    },
+  },
+  subscription: {
+    title: "Sua Assinatura",
+    loading: "Carregando…",
+    provider_label: "Provedor",
+    status_label: "Status",
+    statuses: {
+      active: "Ativa",
+      canceled: "Cancelada",
+      past_due: "Pagamento pendente",
+      free: "Plano gratuito",
+    },
+    renews_on: "Renova em {{date}}",
+    cancels_on: "Cancela em {{date}}",
+    canceled_on: "Encerrada em {{date}}",
+    free_tries_left: "Tentativas gratuitas restantes: {{count}}",
+    cancel_button: "Cancelar assinatura",
+    cancel_pending: "Cancelando…",
+    already_canceling: "Esta assinatura está programada para encerrar no período atual.",
+    cancel_dialog: {
+      title: "Cancelar sua assinatura?",
+      description: "Você continuará com o Premium até {{date}}. Depois disso, sua conta volta ao plano gratuito.",
+      confirm: "Sim, cancelar",
+      dismiss: "Manter assinatura",
+    },
+    upgrade: {
+      title: "Você está no plano Gratuito",
+      subtitle: "Faça upgrade para o Premium e libere todos os simulados em todos os níveis.",
+      cta: "Ver planos",
     },
   },
 } as const;

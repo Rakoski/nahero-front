@@ -1,7 +1,7 @@
 export const en = {
   hero: {
-    title_start: "Free practice exams for",
-    title_highlight: "your certifications",
+    title_start: "Free practice for",
+    title_highlight: "your future",
     description:
       "Access more than 5,000 free questions to prepare for AWS, Azure, and Google Cloud certifications. Built by students, for students.",
     btn_primary: "START PRACTICING",
@@ -29,10 +29,127 @@ export const en = {
       },
     ],
   },
+  stats: {
+    items: [
+      { value: "5,000+", label: "Practice questions" },
+      { value: "1,000+", label: "Students preparing" },
+      { value: "3", label: "Cloud providers" },
+      { value: "R$0", label: "Cost for foundational exams" },
+    ],
+  },
+  howItWorks: {
+    title_start: "Get certified in",
+    title_highlight: "four steps",
+    subtitle:
+      "No sign-up walls, no credit card. Open a practice exam and start right now.",
+    steps: [
+      {
+        title: "Pick a certification",
+        description:
+          "Choose from our growing catalog of cloud certification exams, starting with the AWS Cloud Practitioner.",
+      },
+      {
+        title: "Practice in real conditions",
+        description:
+          "Take timed simulations that mirror the real exam's format, question count, and difficulty.",
+      },
+      {
+        title: "Review every answer",
+        description:
+          "Get detailed explanations, the correct alternatives, and exactly where you went wrong on each question.",
+      },
+      {
+        title: "Track your progress",
+        description:
+          "Your dashboard shows scores, weak areas, and history so you know precisely when you're ready.",
+      },
+    ],
+  },
+  certifications: {
+    title_start: "Certifications we",
+    title_highlight: "cover",
+    subtitle:
+      "Focused on the certifications that launch cloud careers — with more added every month.",
+    available_label: "Available now",
+    soon_label: "Coming soon",
+    items: [
+      {
+        provider: "AWS",
+        name: "Cloud Practitioner (CLF-C02)",
+        status: "available",
+      },
+      {
+        provider: "AWS",
+        name: "Solutions Architect Associate",
+        status: "soon",
+      },
+      {
+        provider: "Microsoft Azure",
+        name: "AZ-900 Fundamentals",
+        status: "soon",
+      },
+      {
+        provider: "Google Cloud",
+        name: "Cloud Digital Leader",
+        status: "soon",
+      },
+    ],
+  },
+  testimonials: {
+    title_start: "Trusted by",
+    title_highlight: "students",
+    subtitle: "Real preparation, real results.",
+    items: [
+      {
+        quote:
+          "I passed the AWS Cloud Practitioner on my first try. The timed simulations felt exactly like the real exam.",
+        name: "Lucas H.",
+        role: "IT Student, IFPR",
+      },
+      {
+        quote:
+          "Finally a platform that doesn't hide every question behind a paywall. The explanations are what made it click for me.",
+        name: "Leandro M.",
+        role: "Junior Cloud Engineer",
+      },
+      {
+        quote:
+          "The dashboard showed me my weak areas in Security, so I knew exactly what to study before exam day.",
+        name: "Flávia O.",
+        role: "Career switcher",
+      },
+    ],
+  },
+  faq: {
+    title_start: "Frequently asked",
+    title_highlight: "questions",
+    items: [
+      {
+        question: "Which certifications can I study for?",
+        answer:
+          "We're currently focused on the AWS Cloud Practitioner certification, with AWS Solutions Architect, Azure, and Google Cloud exams on the way.",
+      },
+      {
+        question: "Do the practice exams match the real test?",
+        answer:
+          "Our simulations mirror the official exam format, number of questions, and time limits, so you practice under realistic conditions.",
+      },
+      {
+        question: "Do I need an account to practice?",
+        answer:
+          "You can browse practice exams freely. Creating a free account lets you save your progress, track your scores, and review your history.",
+      },
+      {
+        question: "Who builds the questions?",
+        answer:
+          "NaHero is community-driven and open source. Questions are written and reviewed by students and contributors who care about accessible education.",
+      },
+    ],
+  },
   cta: {
     title: "Ready to get certified?",
     description:
-      "Join 1,000+ students from IFPR and beyond who are studying right now.",
+      "Join 1,000+ students who are studying for their certifications right now.",
     btn: "Create Free Account",
   },
   notFound: {
@@ -111,6 +228,10 @@ export const en = {
     dashboard: "Dashboard",
     history: "History",
     my_profile: "My Profile",
+    my_subscription: "My Subscription",
+    premium: "Go Premium",
+    free_tries_badge: "{{count}} free left",
+    premium_badge: "Premium",
     logout: "Log Out",
     menu: "Menu",
   },
@@ -125,6 +246,13 @@ export const en = {
     faq: "FAQ",
     support: "Support",
     contact: "Contact",
+  },
+  contact: {
+    title: "Get in touch",
+    subtitle:
+      "Have a question, found a bug, or want to contribute? We'd love to hear from you.",
+    email_label: "Email us at",
+    response_note: "We usually reply within a couple of days.",
   },
   practiceExams: {
     title: "Practice Exams",
@@ -426,6 +554,90 @@ export const en = {
         description: "Days you sat at least one attempt.",
         tooltip: "{{count}} attempt(s) on {{date}}",
       },
+    },
+  },
+  premium: {
+    title: "Go Premium",
+    subtitle: "Unlock every practice exam, at every difficulty, forever.",
+    loading: "Loading…",
+    fromPracticeAttempt: "You've used your free attempt on this difficulty. Subscribe to keep practicing without limits.",
+    alreadyPremiumTitle: "You're already Premium",
+    alreadyPremiumBody: "Your access is active until {{date}}. Manage your subscription from your profile.",
+    goToDashboard: "Go to dashboard",
+    plans: {
+      monthly: {
+        name: "Monthly",
+        price: "$5.99",
+        cadence: "per month",
+        description: "Full access, month to month. Cancel anytime.",
+        cta: "Subscribe monthly",
+      },
+      yearly: {
+        name: "Yearly",
+        price: "$65.99",
+        cadence: "per year",
+        description: "Full access for a whole year — about $5.50/mo.",
+        cta: "Subscribe yearly",
+        badge: "Most popular",
+        savings: "Save 8%",
+      },
+    },
+    features: {
+      title: "What's included",
+      items: [
+        "Unlimited attempts on every practice exam",
+        "Every difficulty level unlocked",
+        "Detailed answer explanations",
+        "Progress tracking across attempts",
+      ],
+    },
+    starting: "Starting…",
+    success: {
+      polling_title: "Finalizing your subscription…",
+      polling_subtitle: "This usually takes a couple of seconds.",
+      success_title: "Welcome to Premium!",
+      success_subtitle: "Your access is active. Enjoy every practice exam without limits.",
+      timeout_title: "Payment received",
+      timeout_subtitle: "It's taking a little longer than usual to activate your access. Try refreshing in a moment.",
+      cta_dashboard: "Go to dashboard",
+      cta_exams: "Browse practice exams",
+      cta_retry: "Refresh",
+    },
+    cancel: {
+      title: "Checkout cancelled",
+      subtitle: "No payment was made. You can pick a plan any time.",
+      cta_retry: "Back to plans",
+      cta_exams: "Continue with free plan",
+    },
+  },
+  subscription: {
+    title: "Your Subscription",
+    loading: "Loading…",
+    provider_label: "Provider",
+    status_label: "Status",
+    statuses: {
+      active: "Active",
+      canceled: "Canceled",
+      past_due: "Past due",
+      free: "Free plan",
+    },
+    renews_on: "Renews on {{date}}",
+    cancels_on: "Cancels on {{date}}",
+    canceled_on: "Ended on {{date}}",
+    free_tries_left: "Free attempts left: {{count}}",
+    cancel_button: "Cancel subscription",
+    cancel_pending: "Canceling…",
+    already_canceling: "This subscription is set to end at the current period.",
+    cancel_dialog: {
+      title: "Cancel your subscription?",
+      description: "You'll keep Premium access until {{date}}. After that, your account returns to the free plan.",
+      confirm: "Yes, cancel",
+      dismiss: "Keep subscription",
+    },
+    upgrade: {
+      title: "You're on the Free plan",
+      subtitle: "Upgrade to Premium to unlock every practice exam at every difficulty.",
+      cta: "See plans",
     },
   },
 } as const;

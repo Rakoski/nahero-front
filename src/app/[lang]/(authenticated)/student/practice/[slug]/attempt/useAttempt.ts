@@ -115,6 +115,43 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     },
   });
 
+  const { mutateAsync: abandonExam, isPending: isAbandoningExam } = useMutation<
+    void,
+    Error,
+    void
+  >({
+    mutationFn: async () => {
+      await studentPracticeAttemptsService.abandonStudentPracticeAttempt(
+        attemptId,
+      );
+    },
+  });
+
+  const { mutateAsync: timeOutExam, isPending: isTimingOutExam } = useMutation<
+    void,
+    Error,
+    void
+  >({
+    mutationFn: async () => {
+      const answersArray: AnswerRequest[] = Array.from(answers.entries()).map(
+        ([questionId, alternativeIds]) => ({
+          questionId,
+          alternativeIds,
+        }),
+      );
+
+      await studentPracticeAttemptsService.timeOutStudentPracticeAttempt({
+        attemptId,
+        answers: answersArray,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERIES.QUESTIONS.LIST_STUDENT, attemptId],
+      });
+    },
+  });
+
   const goToNextPage = () => {
     if (questionsData && !questionsData.last) {
       setCurrentPage((prev) => prev + 1);
@@ -160,5 +197,11 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     finishExam,
     isFinishingExam,
     isExamFinished,
+
+    abandonExam,
+    isAbandoningExam,
+
+    timeOutExam,
+    isTimingOutExam,
   };
 };

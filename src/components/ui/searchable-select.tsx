@@ -68,17 +68,16 @@ export function SearchableSelect({
   return (
     <div className="relative w-full">
       <Select
-        value={value} // Use the prop directly
+        value={value}
         onValueChange={(val) => {
           onValueChange?.(val);
           setIsOpen(false);
-          setSearchQuery(""); // Clear search after selection
+          setSearchQuery("");
         }}
         disabled={disabled}
         open={isOpen}
         onOpenChange={setIsOpen}
       >
-        {/* Added cursor-pointer here */}
         <SelectTrigger className="w-full cursor-pointer">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
@@ -87,7 +86,6 @@ export function SearchableSelect({
           position="popper"
           className="w-[var(--radix-select-trigger-width)]"
           sideOffset={4}
-          // Prevent the select from closing when clicking the input
           onPointerDownOutside={(e) => {
             if (e.target instanceof Element && e.target.closest("input")) {
               e.preventDefault();
@@ -103,7 +101,6 @@ export function SearchableSelect({
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-8 w-full border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               onKeyDown={(e) => {
-                // Stop the Select component from capturing keyboard events
                 e.stopPropagation();
                 if (e.key === "Escape") setIsOpen(false);
               }}
@@ -119,7 +116,7 @@ export function SearchableSelect({
                 <SelectItem
                   key={option.value}
                   value={option.value}
-                  className="cursor-pointer" // Make items show pointer too
+                  className="cursor-pointer"
                 >
                   {option.label}
                 </SelectItem>

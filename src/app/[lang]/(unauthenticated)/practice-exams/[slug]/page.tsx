@@ -128,13 +128,6 @@ export default async function PracticeExamDetailPage({ params }: Props) {
               value={exam.exam.title}
             />
           )}
-          {exam.teacher?.name && (
-            <Stat
-              icon={<User className="h-5 w-5" />}
-              label={dict.overview.taught_by}
-              value={exam.teacher.name}
-            />
-          )}
         </section>
 
         <div className="flex justify-end">

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Routes } from "@/routes/routes";
 import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
 import { handleError } from "@/utils/error-utils";
+import { handlePaywallError } from "@/utils/paywall-utils";
 
 interface Props {
   practiceExamId: number;
@@ -44,7 +45,9 @@ export function StartExamButton({ practiceExamId, slug, lang, dict }: Props) {
         router.push(`/${lang}${Routes.Practice}/${attemptId}/attempt`);
       }
     } catch (error) {
-      handleError(error);
+      if (!handlePaywallError(error, lang, router, "practice-attempt")) {
+        handleError(error);
+      }
       setIsStarting(false);
     }
   };

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogOut, Menu } from "lucide-react";
 import { UserNav } from "./user-nav";
+import { SubscriptionHeaderWidget } from "./subscription-header-widget";
 import { useState } from "react";
 import { SignOut } from "../../services/auth/sign-out";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -21,6 +22,10 @@ type HeaderDict = {
   dashboard: string;
   history: string;
   my_profile: string;
+  my_subscription: string;
+  premium: string;
+  free_tries_badge: string;
+  premium_badge: string;
   logout: string;
   menu: string;
 };
@@ -115,6 +120,18 @@ export function Header({ dict, lang }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-4">
+          {session && (
+            <div className="hidden md:block">
+              <SubscriptionHeaderWidget
+                lang={lang}
+                dict={{
+                  premium: dict.premium,
+                  premium_badge: dict.premium_badge,
+                  free_tries_badge: dict.free_tries_badge,
+                }}
+              />
+            </div>
+          )}
           {session ? (
             <div className="hidden md:block">
               <UserNav dict={dict} lang={lang} />
@@ -170,6 +187,21 @@ export function Header({ dict, lang }: HeaderProps) {
 
                 {session ? (
                   <div className="flex flex-col gap-4 items-center">
+                    <SubscriptionHeaderWidget
+                      lang={lang}
+                      dict={{
+                        premium: dict.premium,
+                        premium_badge: dict.premium_badge,
+                        free_tries_badge: dict.free_tries_badge,
+                      }}
+                    />
+                    <Link
+                      href={buildPath(lang, Routes.Subscription)}
+                      onClick={() => setIsOpen(false)}
+                      className="text-sm font-medium text-stone-300 hover:text-yellow-500"
+                    >
+                      {dict.my_subscription}
+                    </Link>
                     <div className="flex flex-col items-center gap-3 mb-2">
                       <Avatar className="h-10 w-10 border border-stone-700">
                         <AvatarImage src={session.user?.image || ""} />

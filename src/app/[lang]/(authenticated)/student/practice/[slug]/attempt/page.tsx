@@ -118,6 +118,9 @@ export default function ExamAttemptPage({ params }: Props) {
     updateAnswer,
     finishExam,
     isFinishingExam,
+    isExamFinished,
+    abandonExam,
+    timeOutExam,
     totalElements,
     currentPage,
     totalPages,
@@ -192,6 +195,7 @@ export default function ExamAttemptPage({ params }: Props) {
     !isLoadingQuestions &&
     !isLoadingAlternatives &&
     !isFinishingExam &&
+    !isExamFinished &&
     apiQuestions.length > 0;
 
   const { isLeaveDialogOpen, confirmLeave, cancelLeave } =
@@ -262,8 +266,17 @@ export default function ExamAttemptPage({ params }: Props) {
     router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
   };
 
-  const handleTimeUp = () => {
-    handleSubmitConfirm();
+  const handleTimeUp = async () => {
+    await timeOutExam();
+    router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
+  };
+
+  const handleConfirmLeave = async () => {
+    try {
+      await abandonExam();
+    } finally {
+      confirmLeave();
+    }
   };
 
   if (questionsError && dict) {
@@ -379,7 +392,7 @@ export default function ExamAttemptPage({ params }: Props) {
         onOpenChange={(open) => {
           if (!open) cancelLeave();
         }}
-        onConfirm={confirmLeave}
+        onConfirm={handleConfirmLeave}
         dict={dict.dialogs.confirm_leave}
       />
     </div>

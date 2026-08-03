@@ -1,5 +1,6 @@
 import { api } from "../../lib/api-manager";
 import { handleError } from "@/utils/error-utils";
+import { isPaymentRequiredError } from "@/utils/paywall-utils";
 
 export async function createStudentPracticeAttempt(practiceExamId: number) {
   try {
@@ -13,6 +14,9 @@ export async function createStudentPracticeAttempt(practiceExamId: number) {
 
     return null;
   } catch (error) {
+    if (isPaymentRequiredError(error)) {
+      throw error;
+    }
     handleError(error);
     return null;
   }

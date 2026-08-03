@@ -57,9 +57,9 @@ export function HistoryFilters({
         e.preventDefault();
         onSearch();
       }}
-      className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border rounded-lg p-4 shadow-sm mb-6"
+      className="border rounded-lg p-4 shadow-sm mb-6"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="flex flex-col gap-2 cursor-pointer">
           <label className="text-sm font-medium text-muted-foreground">
             {dict.filter_exam}
@@ -95,20 +95,6 @@ export function HistoryFilters({
             type="date"
             value={endDate || ""}
             onChange={(e) => onEndDateChange(e.target.value)}
-            className="w-full"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-muted-foreground">
-            {dict.filter_min_score}
-          </label>
-          <Input
-            type="number"
-            min={0}
-            max={100}
-            value={minScore ?? ""}
-            onChange={(e) => onMinScoreChange(e.target.value)}
             className="w-full"
           />
         </div>

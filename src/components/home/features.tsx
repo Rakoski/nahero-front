@@ -13,7 +13,6 @@ interface FeaturesProps {
 }
 
 export function Features({ dict }: FeaturesProps) {
-  // Map icons manually since they can't be stored in JSON
   const icons = [Target, Timer, Users];
 
   return (
@@ -32,9 +31,6 @@ export function Features({ dict }: FeaturesProps) {
             return (
               <FadeIn key={index} delay={index * 0.1} className="h-full">
                 <div className="bg-stone-950 dark:bg-background border border-border p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow h-full flex flex-col items-center text-center md:items-start md:text-left">
-                  <div className="p-3 bg-yellow-900/30 dark:bg-yellow-100 rounded-lg mb-4 w-fit">
-                    <Icon className="w-8 h-8 text-yellow-600" />
-                  </div>
                   <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     {item.description}

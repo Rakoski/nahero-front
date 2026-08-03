@@ -11,5 +11,10 @@ export const Routes = {
 
   StudentDashboard: "/student/dashboard",
 
+  Premium: "/premium",
+  PremiumSuccess: "/premium/success",
+  PremiumCancel: "/premium/cancel",
+  Subscription: "/subscription",
+
   TeacherDashboard: "/teacher/dashboard",
 };

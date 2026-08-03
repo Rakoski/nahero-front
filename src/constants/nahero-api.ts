@@ -6,6 +6,10 @@ export const NAHERO_API = {
   STUDENT_PRACTICE_ATTEMPTS: {
     CREATE: "/student-practice-attempts",
     FINISH: "/student-practice-attempts/finish",
+    ABANDON: (attemptId: string | number) =>
+      `/student-practice-attempts/${attemptId}/abandon`,
+    TIMEOUT: (attemptId: string | number) =>
+      `/student-practice-attempts/${attemptId}/timeout`,
     GET_RESULT: "/student-practice-attempts",
     GET_HISTORY: "/student-practice-attempts/history",
     GET_DASHBOARD_SUMMARY: "/student-practice-attempts/dashboard-summary",
@@ -22,5 +26,12 @@ export const NAHERO_API = {
   },
   USERS: {
     REGISTER: "/users",
+  },
+  PAYMENT: {
+    CREATE_CHECKOUT_SUBSCRIPTION: "/payment/checkout/subscription",
+  },
+  SUBSCRIPTION: {
+    GET: "/subscription",
+    CANCEL: "/subscription/cancel",
   },
 };
