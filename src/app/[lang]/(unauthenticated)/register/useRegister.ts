@@ -21,9 +21,7 @@ export function useRegister(lang: "en" | "pt" = "en") {
         redirect: false,
       });
 
-      if (loginResult?.error) {
-        throw new Error(loginResult.error);
-      }
+      if (loginResult?.error) throw new Error(loginResult.error);
 
       return loginResult;
     },

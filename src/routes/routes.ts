@@ -7,8 +7,14 @@ export const Routes = {
   NotFound: "/not-found",
   PracticeExams: "/practice-exams",
   Practice: "/student/practice",
+  History: "/student/history",
 
-  StudentDashboard: "/dashboard",
+  StudentDashboard: "/student/dashboard",
+
+  Premium: "/premium",
+  PremiumSuccess: "/premium/success",
+  PremiumCancel: "/premium/cancel",
+  Subscription: "/subscription",
 
   TeacherDashboard: "/teacher/dashboard",
 };

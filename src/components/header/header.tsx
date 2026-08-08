@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogOut, Menu } from "lucide-react";
 import { UserNav } from "./user-nav";
+import { SubscriptionHeaderWidget } from "./subscription-header-widget";
 import { useState } from "react";
 import { SignOut } from "../../services/auth/sign-out";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -21,6 +22,10 @@ type HeaderDict = {
   dashboard: string;
   history: string;
   my_profile: string;
+  my_subscription: string;
+  premium: string;
+  free_tries_badge: string;
+  premium_badge: string;
   logout: string;
   menu: string;
 };
@@ -86,7 +91,7 @@ export function Header({ dict, lang }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-stone-950/80 backdrop-blur supports-backdrop-filter:bg-stone-950/60">
-      <div className="container mx-auto flex h-16 items-center justify-between sm:px-6 lg:px-8">
+      <div className="container mx-auto flex h-16 items-center justify-between sm:px-6 lg:px-8 relative">
         <div className="flex items-center gap-8">
           <Link
             href={buildPath(lang, Routes.Home)}
@@ -102,7 +107,7 @@ export function Header({ dict, lang }: HeaderProps) {
           </Link>
         </div>
 
-        <nav className="hidden sm:flex md:flex gap-6">
+        <nav className="hidden sm:flex md:flex gap-6 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -115,9 +120,21 @@ export function Header({ dict, lang }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-4">
+          {session && (
+            <div className="hidden md:block">
+              <SubscriptionHeaderWidget
+                lang={lang}
+                dict={{
+                  premium: dict.premium,
+                  premium_badge: dict.premium_badge,
+                  free_tries_badge: dict.free_tries_badge,
+                }}
+              />
+            </div>
+          )}
           {session ? (
             <div className="hidden md:block">
-              <UserNav dict={dict} />
+              <UserNav dict={dict} lang={lang} />
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">
@@ -170,6 +187,21 @@ export function Header({ dict, lang }: HeaderProps) {
 
                 {session ? (
                   <div className="flex flex-col gap-4 items-center">
+                    <SubscriptionHeaderWidget
+                      lang={lang}
+                      dict={{
+                        premium: dict.premium,
+                        premium_badge: dict.premium_badge,
+                        free_tries_badge: dict.free_tries_badge,
+                      }}
+                    />
+                    <Link
+                      href={buildPath(lang, Routes.Subscription)}
+                      onClick={() => setIsOpen(false)}
+                      className="text-sm font-medium text-stone-300 hover:text-yellow-500"
+                    >
+                      {dict.my_subscription}
+                    </Link>
                     <div className="flex flex-col items-center gap-3 mb-2">
                       <Avatar className="h-10 w-10 border border-stone-700">
                         <AvatarImage src={session.user?.image || ""} />

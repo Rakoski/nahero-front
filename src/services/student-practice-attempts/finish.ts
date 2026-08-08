@@ -8,40 +8,18 @@ export interface FinishStudentPracticeAttemptRequestPayload {
   answers: AnswerRequest[];
 }
 
-export interface FinishStudentPracticeAttemptResponse {
-  passed: boolean;
-  score: number;
-  answers: number;
-  correctAnswers: number;
-  incorrectAnswers: number;
-  startTime: string;
-  endTime: string;
-  timeLimit: number;
-  timeSpentInMinutes: number;
-  passingPercentageScore: number;
-  attemptStatus: string;
-  numberOfQuestions: number;
-}
-
-/**
- * Finish a student practice attempt
- * @param request - Contains attemptId and answers array
- * @returns Response with attempt results
- */
 export async function finishStudentPracticeAttempt(
-  request: FinishStudentPracticeAttemptRequestPayload
-): Promise<FinishStudentPracticeAttemptResponse | null> {
+  request: FinishStudentPracticeAttemptRequestPayload,
+): Promise<void> {
   try {
-    const url = `${NAHERO_API.STUDENT_PRACTICE_ATTEMPTS.FINISH}/finish`;
+    const url = `${NAHERO_API.STUDENT_PRACTICE_ATTEMPTS.FINISH}`;
 
-    const response = await api.put<FinishStudentPracticeAttemptResponse>(url, {
+    await api.put(url, {
       studentPracticeAttemptId: Number(request.attemptId),
       answers: request.answers,
     });
-
-    return response.data;
   } catch (error) {
     handleError(error);
-    return null;
+    throw error;
   }
 }

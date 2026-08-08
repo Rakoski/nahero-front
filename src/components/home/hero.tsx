@@ -6,6 +6,7 @@ import { Routes } from "../../routes/routes";
 
 interface HeroProps {
   lang: "en" | "pt";
+  isAuthenticated: boolean;
   dict: {
     title_start: string;
     title_highlight: string;
@@ -16,7 +17,7 @@ interface HeroProps {
   };
 }
 
-export function Hero({ dict, lang }: HeroProps) {
+export function Hero({ dict, lang, isAuthenticated }: HeroProps) {
   return (
     <section className="relative py-32 md:py-48 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -59,16 +60,18 @@ export function Hero({ dict, lang }: HeroProps) {
                 {dict.btn_primary}
               </Link>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-yellow-600 text-yellow-600 hover:bg-yellow-400"
-            >
-              <Link href={`/${lang}/${Routes.Register}`}>
-                {dict.btn_secondary}
-              </Link>
-            </Button>
+            {!isAuthenticated && (
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-yellow-600 text-yellow-600 hover:bg-yellow-400"
+              >
+                <Link href={`/${lang}/${Routes.Register}`}>
+                  {dict.btn_secondary}
+                </Link>
+              </Button>
+            )}
           </FadeIn>
         </div>
       </div>

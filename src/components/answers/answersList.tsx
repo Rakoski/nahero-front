@@ -145,39 +145,45 @@ export function AnswersList({
 
                   {/* Alternatives */}
                   <div className="space-y-2">
-                    {answer.alternatives.map((alt) => (
-                      <div
-                        key={alt.alternativeId}
-                        className={`p-3 rounded-lg ${
-                          alt.isCorrect
-                            ? "bg-green-600 dark:bg-green-900/20"
-                            : alt.alternativeId === answer.selectedAlternativeId
-                              ? "bg-red-600 dark:bg-red-900/20"
-                              : "bg-muted"
-                        }`}
-                      >
-                        <div className="flex items-start gap-2">
-                          {alt.isCorrect && (
-                            <CheckCircle2 className="w-5 h-5 text-green-800 flex-shrink-0 mt-0.5" />
-                          )}
-                          {!alt.isCorrect &&
-                            alt.alternativeId ===
-                              answer.selectedAlternativeId && (
-                              <XCircle className="w-5 h-5 text-red-800 flex-shrink-0 mt-0.5" />
+                    {answer.alternatives.map((alt, altIndex) => {
+                      const isSelectedByUser =
+                        alt.wasSelected ||
+                        alt.alternativeId === answer.selectedAlternativeId;
+                      const shouldHighlightIncorrect =
+                        isSelectedByUser && !alt.isCorrect;
+
+                      return (
+                        <div
+                          key={`${alt.alternativeId}-${altIndex}`}
+                          className={`p-3 rounded-lg ${
+                            alt.isCorrect
+                              ? "bg-green-600 dark:bg-green-900/20"
+                              : shouldHighlightIncorrect
+                                ? "bg-red-600 dark:bg-red-900/20"
+                                : "bg-muted"
+                          }`}
+                        >
+                          <div className="flex items-start gap-2">
+                            {alt.isCorrect && (
+                              <CheckCircle2 className="w-5 h-5 text-green-800 dark:text-green-200 flex-shrink-0 mt-0.5" />
                             )}
-                          <div className="flex-1">
-                            <p>{alt.content}</p>
-                            {alt.imageUrl && (
-                              <img
-                                src={alt.imageUrl}
-                                alt={dict.alternativeAlt}
-                                className="mt-2 rounded max-w-xs"
-                              />
+                            {shouldHighlightIncorrect && (
+                              <XCircle className="w-5 h-5 text-red-800 dark:text-red-200 flex-shrink-0 mt-0.5" />
                             )}
+                            <div className="flex-1">
+                              <p>{alt.content}</p>
+                              {alt.imageUrl && (
+                                <img
+                                  src={alt.imageUrl}
+                                  alt={dict.alternativeAlt}
+                                  className="mt-2 rounded max-w-xs"
+                                />
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {/* Explanation */}

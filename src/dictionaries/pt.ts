@@ -29,6 +29,113 @@ export const pt = {
       },
     ],
   },
+  stats: {
+    items: [
+      { value: "5.000+", label: "Questões de prática" },
+      { value: "1.000+", label: "Estudantes se preparando" },
+      { value: "3", label: "Provedores de nuvem" },
+      { value: "R$0", label: "De custo para simulados fundacionais" },
+    ],
+  },
+  howItWorks: {
+    title_start: "Certifique-se em",
+    title_highlight: "quatro passos",
+    subtitle:
+      "Sem barreiras de cadastro, sem cartão de crédito. Abra um simulado e comece agora mesmo.",
+    steps: [
+      {
+        title: "Escolha uma certificação",
+        description:
+          "Escolha no nosso catálogo crescente de provas de certificação em nuvem, começando pela AWS Cloud Practitioner.",
+      },
+      {
+        title: "Pratique em condições reais",
+        description:
+          "Faça simulados cronometrados que reproduzem o formato, a quantidade de questões e a dificuldade da prova real.",
+      },
+      {
+        title: "Revise cada resposta",
+        description:
+          "Veja explicações detalhadas, as alternativas corretas e exatamente onde você errou em cada questão.",
+      },
+      {
+        title: "Acompanhe sua evolução",
+        description:
+          "Seu painel mostra notas, pontos fracos e histórico para você saber exatamente quando está pronto.",
+      },
+    ],
+  },
+  certifications: {
+    title_start: "Certificações que",
+    title_highlight: "cobrimos",
+    subtitle:
+      "Focados nas certificações que impulsionam carreiras em nuvem — com novas adicionadas todo mês.",
+    available_label: "Disponível agora",
+    soon_label: "Em breve",
+    items: [
+      {
+        provider: "AWS",
+        name: "Cloud Practitioner (CLF-C02)",
+        status: "available",
+      },
+      {
+        provider: "AWS",
+        name: "Solutions Architect Associate",
+        status: "soon",
+      },
+      {
+        provider: "Microsoft Azure",
+        name: "AZ-900 Fundamentals",
+        status: "soon",
+      },
+      {
+        provider: "Google Cloud",
+        name: "Cloud Digital Leader",
+        status: "soon",
+      },
+    ],
+  },
+  testimonials: {
+    title_start: "Aprovado por",
+    title_highlight: "estudantes",
+    subtitle: "Preparação de verdade, resultados de verdade.",
+    items: [
+      {
+        quote:
+          "Passei na AWS Cloud Practitioner na primeira tentativa. Os simulados cronometrados eram idênticos à prova real.",
+        name: "Lucas H.",
+        role: "Estudante de TI, IFPR",
+      },
+      {
+        quote:
+          "Finalmente uma plataforma que não esconde toda questão atrás de um paywall. As explicações fizeram tudo fazer sentido.",
+        name: "Leandro M.",
+        role: "Engenheiro de Nuvem Júnior",
+      },
+      {
+        quote:
+          "O painel mostrou meus pontos fracos em Segurança, então eu sabia exatamente o que estudar antes da prova.",
+        name: "Flávia O.",
+        role: "Em transição de carreira",
+      },
+    ],
+  },
+  faq: {
+    title_start: "Perguntas",
+    title_highlight: "frequentes",
+    items: [
+      {
+        question: "Os simulados são parecidos com a prova real?",
+        answer:
+          "Nossos simulados reproduzem o formato oficial, o número de questões e o tempo limite, para você praticar em condições realistas.",
+      },
+      {
+        question: "Preciso de conta para praticar?",
+        answer:
+          "Você pode navegar pelos simulados livremente. Criar uma conta gratuita permite salvar seu progresso, acompanhar suas notas e revisar seu histórico.",
+      },
+    ],
+  },
   cta: {
     title: "Pronto para começar?",
     description:
@@ -111,6 +218,10 @@ export const pt = {
     dashboard: "Painel",
     history: "Histórico",
     my_profile: "Meu Perfil",
+    my_subscription: "Minha Assinatura",
+    premium: "Me inscrever",
+    free_tries_badge: "{{count}} grátis",
+    premium_badge: "Premium",
     logout: "Sair",
     menu: "Menu",
   },
@@ -125,6 +236,13 @@ export const pt = {
     faq: "FAQ",
     support: "Suporte",
     contact: "Contato",
+  },
+  contact: {
+    title: "Fale conosco",
+    subtitle:
+      "Tem uma dúvida, encontrou um bug ou quer contribuir? Adoraríamos ouvir você.",
+    email_label: "Envie um e-mail para",
+    response_note: "Normalmente respondemos em alguns dias.",
   },
   practiceExams: {
     title: "Simulados",
@@ -185,13 +303,22 @@ export const pt = {
   },
   examAttempt: {
     title: "Questão",
+    loading: "Carregando simulado e sincronizando o cronômetro...",
+    empty: {
+      title: "Nenhuma questão encontrada para este simulado.",
+      back: "Voltar para os simulados",
+    },
+    error: {
+      not_enough_questions:
+        "Este simulado ainda não tem questões suficientes. Tente outro simulado.",
+      generic: "Algo deu errado ao carregar o simulado.",
+    },
     time_remaining: "Tempo restante:",
     question_of: "de",
     select_answer: "Selecione sua resposta",
     select_answers: "Selecione todas que se aplicam",
     single_choice: "(Selecione uma)",
     multiple_choice: "(Selecione duas)",
-    multiple_choice_many: "(Selecione {{count}})",
     answered: "Respondida",
     unanswered: "Não respondida",
     current: "Atual",
@@ -219,6 +346,45 @@ export const pt = {
         cancel: "Cancelar",
         submit: "Enviar Simulado",
       },
+      confirm_leave: {
+        title: "Sair do simulado?",
+        description:
+          "Se você sair agora, seu progresso nesta tentativa será perdido e a tentativa não será salva.",
+        stay: "Continuar no simulado",
+        leave: "Sair mesmo assim",
+      },
+    },
+  },
+  practiceExamDetail: {
+    not_found: {
+      title: "Simulado não encontrado",
+      description: "Este simulado não existe ou foi removido.",
+      back: "Voltar para os simulados",
+    },
+    meta: {
+      description_template:
+        "Simulado gratuito de {{title}}. {{questions}} questões, {{minutes}} minutos, nota mínima de aprovação {{score}}%.",
+    },
+    overview: {
+      heading: "Sobre este simulado",
+      time_limit: "Tempo limite",
+      questions: "Questões",
+      passing_score: "Nota mínima",
+      difficulty: "Dificuldade",
+      category: "Categoria",
+      taught_by: "Criado por",
+    },
+    cta: {
+      start_logged_in: "Iniciar simulado",
+      start_logged_out: "Entre para começar",
+      starting: "Iniciando...",
+      back: "Voltar para os simulados",
+    },
+    difficulty_levels: {
+      beginner: "Iniciante",
+      intermediate: "Intermediário",
+      advanced: "Avançado",
+      expert: "Especialista",
     },
   },
   examResults: {
@@ -228,6 +394,11 @@ export const pt = {
     status: {
       passed: "Parabéns! Você passou!",
       failed: "Continue praticando! Você pode tentar novamente.",
+    },
+    statusLabels: {
+      completed: "Concluído",
+      timed_out: "Tempo Esgotado",
+      in_progress: "Em Progresso",
     },
     stats: {
       score: "Pontuação",
@@ -269,6 +440,194 @@ export const pt = {
       questionAlt: "Questão",
       alternativeAlt: "Alternativa",
       explanation: "Explicação:",
+    },
+  },
+  history: {
+    title: "Histórico de Simulados",
+    subtitle: "Veja todas as suas tentativas anteriores de simulados",
+    loading: "Carregando histórico...",
+    error: {
+      title: "Erro ao carregar histórico",
+      description:
+        "Por favor, tente novamente mais tarde ou entre em contato com o suporte se o problema persistir.",
+    },
+    empty: {
+      title: "Nenhum Histórico Ainda",
+      description:
+        "Você ainda não completou nenhum simulado. Comece a praticar para ver seu histórico aqui!",
+      action: "Ver Simulados",
+    },
+    card: {
+      score: "Pontuação",
+      timeSpent: "Tempo Gasto",
+      timeLimit: "Tempo Limite",
+      passingScore: "Nota de Aprovação",
+      seeResults: "Ver Resultados",
+      retry: "Tentar Novamente",
+    },
+    timeFormat: {
+      minutes: "{{time}} min",
+      hours: "{{hours}}h {{minutes}}m",
+    },
+    filters: {
+      filter_exam: "Filtrar por Simulado",
+      filter_date_from: "Data Inicial",
+      filter_date_to: "Data Final",
+      filter_min_score: "Pontuação Mínima",
+      clear_filters: "Limpar Filtros",
+      all_exams: "Todos os Simulados",
+      search: "Buscar",
+      search_exam_placeholder: "Buscar simulado...",
+      loading_exams: "Carregando...",
+      no_exam_found: "Nenhum simulado encontrado",
+    },
+  },
+  studentDashboard: {
+    title: "Seu painel",
+    welcome: "Bem-vindo de volta, {{name}}",
+    loading: "Carregando seu painel…",
+    empty: {
+      title: "Você ainda não fez nenhum simulado",
+      description: "Comece um simulado para acompanhar seu progresso.",
+      cta: "Ver simulados",
+    },
+    resume: {
+      heading: "Você tem uma tentativa em andamento",
+      description: "Continue de onde parou em “{{title}}”.",
+      cta: "Continuar tentativa",
+    },
+    retry: {
+      heading: "Sua última tentativa não foi aprovada",
+      description: "“{{title}}” — pontuação {{score}}",
+      cta: "Tentar novamente",
+    },
+    kpi: {
+      total_attempts: "Total de tentativas",
+      pass_rate: "Taxa de aprovação",
+      average_score: "Pontuação média",
+      best_score: "Melhor pontuação",
+      total_time: "Tempo estudado",
+      streak: "Sequência atual",
+      days: "{{count}} dia(s)",
+      no_data: "—",
+    },
+    charts: {
+      score_over_time: {
+        title: "Pontuação ao longo do tempo",
+        description: "Suas últimas tentativas concluídas",
+        score_label: "Pontuação",
+        passing_label: "Nota de aprovação",
+        empty: "Conclua uma tentativa para ver sua evolução.",
+      },
+      status_breakdown: {
+        title: "Tentativas por status",
+        description:
+          "Como suas sessões terminam — tentativas abandonadas não contam para sua pontuação.",
+        empty: "Nenhuma tentativa ainda.",
+        labels: {
+          completed: "Concluídas",
+          timed_out: "Tempo esgotado",
+          abandoned: "Abandonadas",
+          in_progress: "Em andamento",
+        },
+      },
+      by_exam: {
+        title: "Por simulado",
+        description: "Seu desempenho em cada simulado.",
+        attempts_label: "{{count}} tentativa(s)",
+        best: "Melhor",
+        last: "Última",
+        empty: "Conclua uma tentativa para ver as estatísticas.",
+      },
+      activity: {
+        title: "Atividade — últimos 30 dias",
+        description: "Dias em que você fez pelo menos uma tentativa.",
+        tooltip: "{{count}} tentativa(s) em {{date}}",
+      },
+    },
+  },
+  premium: {
+    title: "Seja Premium",
+    subtitle: "Libere todos os simulados, em todos os níveis, para sempre.",
+    loading: "Carregando…",
+    fromPracticeAttempt: "Você já usou sua tentativa gratuita nesta dificuldade. Assine para continuar praticando sem limites.",
+    alreadyPremiumTitle: "Você já é Premium",
+    alreadyPremiumBody: "Seu acesso está ativo até {{date}}. Gerencie sua assinatura pelo seu perfil.",
+    goToDashboard: "Ir para o dashboard",
+    plans: {
+      monthly: {
+        name: "Mensal",
+        price: "R$ 29,99",
+        cadence: "por mês",
+        description: "Acesso total, mês a mês. Cancele quando quiser.",
+        cta: "Assinar mensal",
+      },
+      yearly: {
+        name: "Anual",
+        price: "R$ 330",
+        cadence: "por ano",
+        description: "Acesso total por um ano inteiro — cerca de R$ 27,50/mês.",
+        cta: "Assinar anual",
+        badge: "Mais popular",
+        savings: "Economize 8%",
+      },
+    },
+    features: {
+      title: "O que está incluso",
+      items: [
+        "Tentativas ilimitadas em todos os simulados",
+        "Todos os níveis de dificuldade liberados",
+        "Explicações detalhadas das respostas",
+        "Acompanhamento do seu progresso",
+      ],
+    },
+    starting: "Iniciando…",
+    success: {
+      polling_title: "Finalizando sua assinatura…",
+      polling_subtitle: "Isso costuma levar apenas alguns segundos.",
+      success_title: "Bem-vindo ao Premium!",
+      success_subtitle: "Seu acesso está ativo. Aproveite todos os simulados sem limites.",
+      timeout_title: "Pagamento recebido",
+      timeout_subtitle: "Está levando um pouco mais que o normal para liberar seu acesso. Tente atualizar a página em alguns instantes.",
+      cta_dashboard: "Ir para o painel",
+      cta_exams: "Explorar simulados",
+      cta_retry: "Atualizar",
+    },
+    cancel: {
+      title: "Pagamento cancelado",
+      subtitle: "Nenhum pagamento foi feito. Você pode escolher um plano quando quiser.",
+      cta_retry: "Voltar para os planos",
+      cta_exams: "Continuar no plano gratuito",
+    },
+  },
+  subscription: {
+    title: "Sua Assinatura",
+    loading: "Carregando…",
+    provider_label: "Provedor",
+    status_label: "Status",
+    statuses: {
+      active: "Ativa",
+      canceled: "Cancelada",
+      past_due: "Pagamento pendente",
+      free: "Plano gratuito",
+    },
+    renews_on: "Renova em {{date}}",
+    cancels_on: "Cancela em {{date}}",
+    canceled_on: "Encerrada em {{date}}",
+    free_tries_left: "Tentativas gratuitas restantes: {{count}}",
+    cancel_button: "Cancelar assinatura",
+    cancel_pending: "Cancelando…",
+    already_canceling: "Esta assinatura está programada para encerrar no período atual.",
+    cancel_dialog: {
+      title: "Cancelar sua assinatura?",
+      description: "Você continuará com o Premium até {{date}}. Depois disso, sua conta volta ao plano gratuito.",
+      confirm: "Sim, cancelar",
+      dismiss: "Manter assinatura",
+    },
+    upgrade: {
+      title: "Você está no plano Gratuito",
+      subtitle: "Faça upgrade para o Premium e libere todos os simulados em todos os níveis.",
+      cta: "Ver planos",
     },
   },
 } as const;

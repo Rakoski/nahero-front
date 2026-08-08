@@ -3,7 +3,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { setCookie } from "@/storages/cookies";
 import { Routes } from "@/routes/routes";
 import { handleError } from "../../../../utils/error-utils";
 
@@ -35,14 +34,7 @@ export function useLogin() {
 
       return newSession;
     },
-    onSuccess: (session) => {
-      if (session?.user?.accessToken) {
-        setCookie("@nahero:accessToken", session.user.accessToken, 90);
-      }
-      if (session?.user?.refreshToken) {
-        setCookie("@nahero:refreshToken", session.user.refreshToken, 90);
-      }
-
+    onSuccess: () => {
       const destination = callbackUrl || `/${lang}${Routes.Home}`;
       router.push(destination);
     },
