@@ -42,16 +42,10 @@ export function Footer({ dict, lang }: FooterProps) {
             </h3>
             <nav className="flex flex-col gap-2">
               <Link
-                href={buildPath(lang, "/exams")}
+                href={buildPath(lang, "/practice-exams")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
                 {dict.practice_exams}
-              </Link>
-              <Link
-                href={buildPath(lang, "/certifications")}
-                className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
-              >
-                {dict.certifications}
               </Link>
               <Link
                 href={buildPath(lang, "/")}
@@ -68,16 +62,10 @@ export function Footer({ dict, lang }: FooterProps) {
             </h3>
             <nav className="flex flex-col gap-2">
               <Link
-                href={buildPath(lang, "/faq")}
+                href={`${buildPath(lang, "/")}#faq`}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
                 {dict.faq}
-              </Link>
-              <Link
-                href={buildPath(lang, "/support")}
-                className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
-              >
-                {dict.support}
               </Link>
               <Link
                 href={buildPath(lang, "/contact")}

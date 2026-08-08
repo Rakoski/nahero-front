@@ -153,17 +153,11 @@ export function getSelectionText(
   dict: {
     single_choice: string;
     multiple_choice: string;
-    multiple_choice_many: string;
   }
 ): string {
   if (question.type === "single") {
     return dict.single_choice;
   }
 
-  const count = question.correctAnswers.length;
-  if (count === 2) {
-    return dict.multiple_choice;
-  }
-
-  return dict.multiple_choice_many.replace("{{count}}", count.toString());
+  return dict.multiple_choice;
 }

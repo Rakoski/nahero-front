@@ -16,10 +16,24 @@ export interface PracticeExamExam {
 
 export interface PracticeExamDTO {
   id: number;
+  slug: string;
   title: string;
   description: string;
   passingScore: number;
   timeLimit: number;
+  numberOfQuestions: number | null;
+  teacher: PracticeExamTeacher;
+  exam: PracticeExamExam;
+}
+
+export interface PracticeExamBySlugDTO {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  passingScore: number;
+  timeLimit: number;
+  numberOfQuestions: number | null;
   teacher: PracticeExamTeacher;
   exam: PracticeExamExam;
 }
@@ -149,6 +163,7 @@ export interface AlternativeResponse {
   imageUrl: string | null;
   isCorrect: boolean;
   isActive: boolean;
+  wasSelected?: boolean;
 }
 
 export interface ListAnsweredAnswersResponse {

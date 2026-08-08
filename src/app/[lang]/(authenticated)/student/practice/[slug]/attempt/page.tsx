@@ -7,6 +7,7 @@ import {
   QuestionNavigation,
   NavigationButtons,
   SubmitDialog,
+  LeaveExamDialog,
 } from "@/components/attempt/components";
 import {
   Answer,
@@ -18,17 +19,27 @@ import {
 } from "./utils";
 import { Routes } from "@/routes/routes";
 import { useAttempt } from "./useAttempt";
+import { useLeaveConfirmation } from "@/hooks/useLeaveConfirmation";
 import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
+import { AxiosError } from "axios";
 
 type ExamAttemptDict = {
   title: string;
+  loading: string;
+  empty: {
+    title: string;
+    back: string;
+  };
+  error: {
+    not_enough_questions: string;
+    generic: string;
+  };
   time_remaining: string;
   question_of: string;
   select_answer: string;
   select_answers: string;
   single_choice: string;
   multiple_choice: string;
-  multiple_choice_many: string;
   answered: string;
   unanswered: string;
   current: string;
@@ -54,6 +65,12 @@ type ExamAttemptDict = {
       cancel: string;
       submit: string;
     };
+    confirm_leave: {
+      title: string;
+      description: string;
+      stay: string;
+      leave: string;
+    };
   };
 };
 
@@ -64,12 +81,12 @@ interface Props {
 function mapApiQuestionToQuestion(
   apiQuestion: ListQuestionsByStudentResponse,
   index: number,
-  alternatives: { id: number; imageUrl?: string; content: string }[]
+  alternatives: { id: number; imageUrl?: string; content: string }[],
 ): Question {
   return {
     id: parseInt(apiQuestion.id) || index,
     text: apiQuestion.content,
-    type: apiQuestion.questionType.id === 1 ? "single" : "multiple",
+    type: apiQuestion.questionType.id === 3 ? "single" : "multiple",
     options: alternatives.map((alt) => ({
       id: alt.id,
       text: alt.content,
@@ -88,17 +105,12 @@ export default function ExamAttemptPage({ params }: Props) {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [startedAt] = useState(new Date());
-
-  useEffect(() => {
-    params.then((p) => {
-      setAttemptId(p.slug);
-      setLang(p.lang);
-    });
-  }, [params]);
+  const [timeRemaining, setTimeRemaining] = useState(0);
 
   const {
     questions: apiQuestions,
     isLoadingQuestions,
+    questionsError,
     alternatives,
     isLoadingAlternatives,
     answers: attemptAnswers,
@@ -106,7 +118,9 @@ export default function ExamAttemptPage({ params }: Props) {
     updateAnswer,
     finishExam,
     isFinishingExam,
-    finishExamResult,
+    isExamFinished,
+    abandonExam,
+    timeOutExam,
     totalElements,
     currentPage,
     totalPages,
@@ -119,21 +133,39 @@ export default function ExamAttemptPage({ params }: Props) {
     pageSize: 10,
   });
 
+  const timeLimit = apiQuestions[0]?.timeLimit || 3600;
+
+  const isDataReady = !isLoadingQuestions && !!dict && !questionsError;
+  const errorStatus =
+    questionsError instanceof AxiosError
+      ? questionsError.response?.status
+      : undefined;
+
+  useEffect(() => {
+    params.then((p) => {
+      setAttemptId(p.slug);
+      setLang(p.lang);
+    });
+  }, [params]);
+
   const questions = useMemo(
     () =>
       apiQuestions.map((q, idx) =>
-        mapApiQuestionToQuestion(q, idx, alternatives[q.id] || [])
+        mapApiQuestionToQuestion(q, idx, alternatives[q.id] || []),
       ),
-    [apiQuestions, alternatives]
-  );
-
-  const timeLimit = apiQuestions[0]?.timeLimit || 3600;
-
-  const [timeRemaining, setTimeRemaining] = useState(
-    calculateRemainingTime(startedAt, timeLimit)
+    [apiQuestions, alternatives],
   );
 
   useEffect(() => {
+    if (isDataReady) {
+      const initialTime = calculateRemainingTime(startedAt, timeLimit);
+      setTimeRemaining(initialTime);
+    }
+  }, [isDataReady, startedAt, timeLimit]);
+
+  useEffect(() => {
+    if (!isDataReady) return;
+
     const timer = setInterval(() => {
       const remaining = calculateRemainingTime(startedAt, timeLimit);
       setTimeRemaining(remaining);
@@ -145,7 +177,7 @@ export default function ExamAttemptPage({ params }: Props) {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [startedAt, timeLimit]);
+  }, [isDataReady, startedAt, timeLimit]);
 
   useEffect(() => {
     params.then(async (p) => {
@@ -157,6 +189,17 @@ export default function ExamAttemptPage({ params }: Props) {
 
   const currentQuestion = questions[currentQuestionIndex];
   const { unanswered } = getQuestionStats(questions.length, answers);
+
+  const guardEnabled =
+    !!dict &&
+    !isLoadingQuestions &&
+    !isLoadingAlternatives &&
+    !isFinishingExam &&
+    !isExamFinished &&
+    apiQuestions.length > 0;
+
+  const { isLeaveDialogOpen, confirmLeave, cancelLeave } =
+    useLeaveConfirmation(guardEnabled);
 
   const globalQuestionNumber = currentPage * 10 + currentQuestionIndex + 1;
   const totalQuestionsAcrossPages = totalElements;
@@ -174,21 +217,17 @@ export default function ExamAttemptPage({ params }: Props) {
       questionId,
       optionId,
       isSingleChoice,
-      answers
+      answers,
     );
     setAnswers(newAnswers);
 
-    // Update the answers in the hook (convert to string for API)
     const answer = newAnswers.find((a) => a.questionId === questionId);
     if (answer) {
       const apiQuestion = apiQuestions.find(
-        (q) => parseInt(q.id) === questionId
+        (q) => parseInt(q.id) === questionId,
       );
       if (apiQuestion) {
-        updateAnswer(
-          apiQuestion.id, // Use original string ID from API
-          answer.selectedOptions.map(String) // Convert to string array
-        );
+        updateAnswer(apiQuestion.id, answer.selectedOptions.map(String));
       }
     }
   };
@@ -222,27 +261,53 @@ export default function ExamAttemptPage({ params }: Props) {
   const handleSubmitConfirm = async () => {
     setShowSubmitDialog(false);
 
-    const result = await finishExam();
+    await finishExam();
 
-    if (result) {
-      router.push(
-        `/${lang}/student/practice/${attemptId}/attempt/results?data=${encodeURIComponent(
-          JSON.stringify(result)
-        )}`
-      );
+    router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
+  };
+
+  const handleTimeUp = async () => {
+    await timeOutExam();
+    router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
+  };
+
+  const handleConfirmLeave = async () => {
+    try {
+      await abandonExam();
+    } finally {
+      confirmLeave();
     }
   };
 
-  const handleTimeUp = () => {
-    handleSubmitConfirm();
-  };
+  if (questionsError && dict) {
+    const message =
+      errorStatus === 422
+        ? dict.error.not_enough_questions
+        : dict.error.generic;
 
-  if (!dict || isLoadingQuestions || isLoadingAlternatives || !attemptId) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-destructive mb-4">{message}</p>
+          <button
+            onClick={() => router.push(Routes.PracticeExams)}
+            className="text-primary hover:underline"
+          >
+            {dict.empty.back}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isDataReady || isLoadingAlternatives || !attemptId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading exam...</p>
+          <p className="text-muted-foreground">
+            {dict?.loading ?? "Loading..."}
+          </p>
         </div>
       </div>
     );
@@ -252,14 +317,12 @@ export default function ExamAttemptPage({ params }: Props) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-destructive mb-4">
-            No questions found for this exam.
-          </p>
+          <p className="text-destructive mb-4">{dict.empty.title}</p>
           <button
             onClick={() => router.push(Routes.PracticeExams)}
             className="text-primary hover:underline"
           >
-            Return to practice exams
+            {dict.empty.back}
           </button>
         </div>
       </div>
@@ -322,6 +385,15 @@ export default function ExamAttemptPage({ params }: Props) {
         unansweredCount={unanswered}
         totalAnswered={answersCount}
         dict={dict.dialogs.confirm_submit}
+      />
+
+      <LeaveExamDialog
+        open={isLeaveDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) cancelLeave();
+        }}
+        onConfirm={handleConfirmLeave}
+        dict={dict.dialogs.confirm_leave}
       />
     </div>
   );

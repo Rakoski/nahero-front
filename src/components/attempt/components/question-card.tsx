@@ -23,7 +23,6 @@ export interface QuestionCardProps {
     select_answers: string;
     single_choice: string;
     multiple_choice: string;
-    multiple_choice_many: string;
   };
 }
 

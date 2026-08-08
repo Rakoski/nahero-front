@@ -12,10 +12,7 @@ import type {
   ListAlternativeByQuestionResponse,
   AnswerRequest,
 } from "@/lib/dtos";
-import type {
-  FinishStudentPracticeAttemptResponse,
-  FinishStudentPracticeAttemptRequestPayload,
-} from "@/services/student-practice-attempts/finish";
+import type { FinishStudentPracticeAttemptRequestPayload } from "@/services/student-practice-attempts/finish";
 
 interface UseAttemptProps {
   attemptId: string | number;
@@ -69,7 +66,7 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
               questionId,
             });
           alternativesMap[questionId] = alternatives;
-        })
+        }),
       );
 
       return alternativesMap;
@@ -85,22 +82,21 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
         return newAnswers;
       });
     },
-    []
+    [],
   );
 
   const {
     mutateAsync: finishExam,
     isPending: isFinishingExam,
     isSuccess: isExamFinished,
-    data: finishExamResult,
-  } = useMutation<FinishStudentPracticeAttemptResponse | null, Error, void>({
+  } = useMutation<void, Error, void>({
     mutationFn: async () => {
       // Convert answers Map to AnswerRequest array
       const answersArray: AnswerRequest[] = Array.from(answers.entries()).map(
         ([questionId, alternativeIds]) => ({
           questionId,
           alternativeIds,
-        })
+        }),
       );
 
       const payload: FinishStudentPracticeAttemptRequestPayload = {
@@ -108,9 +104,46 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
         answers: answersArray,
       };
 
-      return await studentPracticeAttemptsService.finishStudentPracticeAttempt(
-        payload
+      await studentPracticeAttemptsService.finishStudentPracticeAttempt(
+        payload,
       );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERIES.QUESTIONS.LIST_STUDENT, attemptId],
+      });
+    },
+  });
+
+  const { mutateAsync: abandonExam, isPending: isAbandoningExam } = useMutation<
+    void,
+    Error,
+    void
+  >({
+    mutationFn: async () => {
+      await studentPracticeAttemptsService.abandonStudentPracticeAttempt(
+        attemptId,
+      );
+    },
+  });
+
+  const { mutateAsync: timeOutExam, isPending: isTimingOutExam } = useMutation<
+    void,
+    Error,
+    void
+  >({
+    mutationFn: async () => {
+      const answersArray: AnswerRequest[] = Array.from(answers.entries()).map(
+        ([questionId, alternativeIds]) => ({
+          questionId,
+          alternativeIds,
+        }),
+      );
+
+      await studentPracticeAttemptsService.timeOutStudentPracticeAttempt({
+        attemptId,
+        answers: answersArray,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -164,6 +197,11 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     finishExam,
     isFinishingExam,
     isExamFinished,
-    finishExamResult,
+
+    abandonExam,
+    isAbandoningExam,
+
+    timeOutExam,
+    isTimingOutExam,
   };
 };

@@ -51,11 +51,13 @@ export function QuestionNavigation({
   const globalQuestionNumber =
     (apiCurrentPage ?? 0) * 10 + currentQuestionIndex + 1;
 
+  const currentQuestion = questions[currentQuestionIndex];
+
   const getButtonClasses = (status: QuestionStatus): string => {
     if (status === "current") {
-      const answered = answers.some(
-        (a) => a.questionId === questions[currentQuestionIndex].id
-      );
+      const answered =
+        currentQuestion &&
+        answers.some((a) => a.questionId === currentQuestion.id);
       if (answered) {
         return "bg-[#9e751d] border-[#773712] text-[#5e410c] font-semibold";
       }
@@ -132,8 +134,8 @@ export function QuestionNavigation({
               const globalIndex = (apiCurrentPage ?? 0) * 10 + idx;
               const status = getQuestionStatus(
                 question.id,
-                questions[currentQuestionIndex].id,
-                answers
+                currentQuestion?.id ?? -1,
+                answers,
               );
 
               return (
@@ -144,7 +146,7 @@ export function QuestionNavigation({
                   size="sm"
                   className={cn(
                     "h-10 w-10 md:h-12 md:w-12 p-0 border transition-all shrink-0 text-sm md:text-xl cursor-pointer",
-                    getButtonClasses(status)
+                    getButtonClasses(status),
                   )}
                 >
                   {globalIndex + 1}
@@ -157,8 +159,8 @@ export function QuestionNavigation({
               const globalIndex = (apiCurrentPage ?? 0) * 10 + idx + 5;
               const status = getQuestionStatus(
                 question.id,
-                questions[currentQuestionIndex].id,
-                answers
+                currentQuestion?.id ?? -1,
+                answers,
               );
 
               return (
@@ -169,7 +171,7 @@ export function QuestionNavigation({
                   size="sm"
                   className={cn(
                     "h-10 w-10 md:h-12 md:w-12 p-0 border transition-all shrink-0 text-sm md:text-xl cursor-pointer",
-                    getButtonClasses(status)
+                    getButtonClasses(status),
                   )}
                 >
                   {globalIndex + 1}
