@@ -173,14 +173,6 @@ export default function StudentDashboardPage({ params }: Props) {
         </p>
       </header>
 
-      <ResumeBanner
-        lang={lang}
-        inProgress={data.currentInProgress}
-        lastFailed={data.lastFailed}
-        resumeDict={dict.resume}
-        retryDict={dict.retry}
-      />
-
       <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <KpiCard
           icon={ListChecks}
@@ -233,10 +225,7 @@ export default function StudentDashboardPage({ params }: Props) {
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ByExamList
-          data={data.byPracticeExam}
-          dict={dict.charts.by_exam}
-        />
+        <ByExamList data={data.byPracticeExam} dict={dict.charts.by_exam} />
         <ActivityHeatmap
           data={data.activityLast30Days}
           dict={dict.charts.activity}
