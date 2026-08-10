@@ -58,8 +58,8 @@ export function ComboboxSelect({
         setOpen(false);
       }}
       open={open ?? false}
-      onOpenChange={(event) => {
-        setOpen(event.open ?? false);
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen ?? false);
       }}
       disabled={disabled}
       modal={false}
@@ -72,11 +72,6 @@ export function ComboboxSelect({
         readOnly={!!value}
         showTrigger
         showClear={!!value}
-        onClear={() => {
-          onValueChange?.("");
-          setSearchQuery("");
-          setOpen(false);
-        }}
       />
       <ComboboxContent>
         <ComboboxList className="min-h-[100px]">
