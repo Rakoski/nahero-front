@@ -8,13 +8,13 @@ import "./globals.css";
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
 
-  const dict = await getDictionary(lang);
+  const dict = await getDictionary(lang as "en" | "pt");
   return {
     title:
       lang === "pt"

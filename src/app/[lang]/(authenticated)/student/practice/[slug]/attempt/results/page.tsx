@@ -68,6 +68,13 @@ type ExamResultsDict = {
     showCorrect: string;
     showIncorrect: string;
     searchPlaceholder: string;
+    loading: string;
+    questionNumber: string;
+    correct: string;
+    incorrect: string;
+    questionAlt: string;
+    alternativeAlt: string;
+    explanation: string;
   };
 };
 
