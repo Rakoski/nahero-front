@@ -1,4 +1,3 @@
-"use client";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { BackendErrorResponse } from "@/types/api-error";
@@ -88,6 +87,10 @@ export function handleError(error: unknown) {
 }
 
 function showErrorToast(title: string, message: string) {
+  if (typeof window === "undefined") {
+    console.error(`[error] ${title}: ${message}`);
+    return;
+  }
   toast.custom(
     (t) => (
       <div
