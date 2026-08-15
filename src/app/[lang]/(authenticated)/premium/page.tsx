@@ -17,6 +17,7 @@ import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useCreateCheckoutSession } from "@/hooks/useCreateCheckoutSession";
 import type { PlanInterval } from "@/services/payment/create-checkout-session";
+import { resolveLocale } from "@/lib/locale";
 
 type PremiumDict = {
   title: string;
@@ -52,7 +53,7 @@ type PremiumDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 }
 
 export default function PremiumPage({ params }: Props) {
@@ -67,9 +68,9 @@ export default function PremiumPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.premium as unknown as PremiumDict);
     });
   }, [params]);

@@ -30,6 +30,7 @@ import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import Link from "next/link";
 import { useLogin } from "./useLogin";
+import { resolveLocale } from "@/lib/locale";
 
 type LoginDict = {
   title: string;
@@ -76,7 +77,7 @@ const createLoginSchema = (dict: LoginDict) =>
 type LoginFormData = z.infer<ReturnType<typeof createLoginSchema>>;
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export default function LoginPage({ params }: Props) {
@@ -85,8 +86,8 @@ export default function LoginPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
-      const dictionary = await getDictionary(p.lang);
+      setLang(resolveLocale(p.lang));
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.login);
     });
   }, [params]);

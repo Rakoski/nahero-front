@@ -4,9 +4,10 @@ import { getDictionary } from "@/dictionaries";
 import { getSiteUrl } from "@/lib/site-url";
 import { FadeIn } from "@/components/ui/fade-in";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { resolveLocale } from "@/lib/locale";
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export async function generateStaticParams() {
@@ -14,7 +15,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
   const dict = await getDictionary(lang);
   const canonical = `${getSiteUrl()}/${lang}/privacy`;
   return {
@@ -25,7 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PrivacyPage({ params }: Props) {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
   const dict = await getDictionary(lang);
 
   return (

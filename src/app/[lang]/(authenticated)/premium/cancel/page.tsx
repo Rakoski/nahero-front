@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Routes } from "@/routes/routes";
+import { resolveLocale } from "@/lib/locale";
 
 type CancelDict = {
   title: string;
@@ -21,7 +22,7 @@ type CancelDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 }
 
 export default function PremiumCancelPage({ params }: Props) {
@@ -30,9 +31,9 @@ export default function PremiumCancelPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.premium.cancel as unknown as CancelDict);
     });
   }, [params]);

@@ -28,6 +28,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useStudentDashboardSummary } from "@/hooks/useStudentDashboardSummary";
+import { resolveLocale } from "@/lib/locale";
 
 type StudentDashboardDict = {
   title: string;
@@ -94,7 +95,7 @@ type StudentDashboardDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 }
 
 function formatHours(totalMinutes: number): string {
@@ -113,9 +114,9 @@ export default function StudentDashboardPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.studentDashboard as unknown as StudentDashboardDict);
     });
   }, [params]);

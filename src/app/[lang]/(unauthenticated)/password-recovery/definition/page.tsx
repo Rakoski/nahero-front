@@ -34,6 +34,7 @@ import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import Link from "next/link";
 import { useResetPassword } from "./useResetPassword";
+import { resolveLocale } from "@/lib/locale";
 
 type PasswordRecoveryDefinitionDict = {
   title: string;
@@ -81,7 +82,7 @@ type ResetPasswordFormData = z.infer<
 >;
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export default function PasswordRecoveryDefinitionPage({ params }: Props) {
@@ -113,8 +114,8 @@ function PasswordRecoveryDefinitionContent({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
-      const dictionary = await getDictionary(p.lang);
+      setLang(resolveLocale(p.lang));
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.passwordRecoveryDefinition);
     });
   }, [params]);
@@ -176,7 +177,7 @@ function PasswordRecoveryDefinitionContent({ params }: Props) {
                       {dict.success_title}
                     </Typography>
                   </CardTitle>
-                  <CardDescription classname="mt-2">
+                  <CardDescription className="mt-2">
                     {dict.success_description}
                   </CardDescription>
                 </CardHeader>
@@ -207,7 +208,7 @@ function PasswordRecoveryDefinitionContent({ params }: Props) {
                       {dict.missing_token_title}
                     </Typography>
                   </CardTitle>
-                  <CardDescription classname="mb-2">
+                  <CardDescription className="mb-2">
                     {isTokenRejected
                       ? dict.invalid_token_description
                       : dict.missing_token_description}

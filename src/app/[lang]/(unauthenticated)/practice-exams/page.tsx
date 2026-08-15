@@ -19,6 +19,7 @@ import {
 import type { PracticeExamDTO } from "@/lib/dtos";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { resolveLocale } from "@/lib/locale";
 
 type PracticeExamsDict = {
   title: string;
@@ -65,7 +66,7 @@ type PracticeExamsDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 }
 
 function mapPracticeExamToExam(dto: PracticeExamDTO) {
@@ -101,8 +102,8 @@ export default function PracticeExamsPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
-      const dictionary = await getDictionary(p.lang);
+      setLang(resolveLocale(p.lang));
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.practiceExams);
       setBreadcrumbsDict(dictionary.breadcrumbs);
     });

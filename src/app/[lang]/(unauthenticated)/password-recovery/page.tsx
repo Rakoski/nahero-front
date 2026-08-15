@@ -26,6 +26,7 @@ import { getDictionary } from "@/dictionaries";
 import { Typography } from "@/components/ui/typography";
 import Link from "next/link";
 import { usePasswordRecovery } from "./usePasswordRecovery";
+import { resolveLocale } from "@/lib/locale";
 
 type PasswordRecoveryDict = {
   title: string;
@@ -58,7 +59,7 @@ type PasswordRecoveryFormData = z.infer<
 >;
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export default function PasswordRecoveryPage({ params }: Props) {
@@ -68,8 +69,8 @@ export default function PasswordRecoveryPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
-      const dictionary = await getDictionary(p.lang);
+      setLang(resolveLocale(p.lang));
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.passwordRecovery);
     });
   }, [params]);

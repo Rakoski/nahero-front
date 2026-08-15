@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { getDictionary } from "@/dictionaries";
 import { getSiteUrl } from "@/lib/site-url";
+import { resolveLocale } from "@/lib/locale";
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
   const dict = await getDictionary(lang);
   const canonical = `${getSiteUrl()}/${lang}/practice-exams`;
   return {

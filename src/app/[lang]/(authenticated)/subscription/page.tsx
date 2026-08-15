@@ -25,6 +25,7 @@ import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useCancelSubscription } from "@/hooks/useCancelSubscription";
 import type { SubscriptionStatus } from "@/services/subscription/get-status";
+import { resolveLocale } from "@/lib/locale";
 
 type SubscriptionDict = {
   title: string;
@@ -58,7 +59,7 @@ type SubscriptionDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 }
 
 export default function SubscriptionPage({ params }: Props) {
@@ -71,9 +72,9 @@ export default function SubscriptionPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.subscription as unknown as SubscriptionDict);
     });
   }, [params]);
