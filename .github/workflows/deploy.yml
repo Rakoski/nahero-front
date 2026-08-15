@@ -13,6 +13,7 @@ jobs:
   deploy:
     name: Build and restart on VPS
     runs-on: ubuntu-latest
+    environment: nahero-vps
     steps:
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
