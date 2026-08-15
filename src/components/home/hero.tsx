@@ -23,7 +23,8 @@ export function Hero({ dict, lang, isAuthenticated }: HeroProps) {
       <div className="absolute inset-0 z-0">
         <Image
           src="/certifications2.jpeg"
-          alt="Background"
+          alt=""
+          role="presentation"
           fill
           className="object-cover opacity-20"
           priority

@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { getDictionary } from "@/dictionaries";
+import { getSiteUrl } from "@/lib/site-url";
 import { authOptions } from "@/lib/auth";
 import { Hero } from "@/components/home/hero";
 import { Stats } from "@/components/home/stats";
@@ -9,6 +11,7 @@ import { Certifications } from "@/components/home/certifications";
 import { Testimonials } from "@/components/home/testimonials";
 import { FAQ } from "@/components/home/faq";
 import { CTA } from "@/components/home/cta";
+import { StickyMobileCta } from "@/components/home/sticky-mobile-cta";
 
 type Props = {
   params: Promise<{ lang: "en" | "pt" }>;
@@ -16,6 +19,22 @@ type Props = {
 
 export async function generateStaticParams() {
   return [{ lang: "en" }, { lang: "pt" }];
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
+  const canonical = `${getSiteUrl()}/${lang}`;
+  return {
+    title: dict.metadata.home.title,
+    description: dict.metadata.home.description,
+    alternates: { canonical },
+    openGraph: {
+      title: dict.metadata.home.title,
+      description: dict.metadata.home.description,
+      url: canonical,
+    },
+  };
 }
 
 export default async function HomePage({ params }: Props) {
@@ -44,6 +63,9 @@ export default async function HomePage({ params }: Props) {
       <FAQ dict={dict.faq} />
 
       {!isAuthenticated && <CTA dict={dict.cta} lang={lang} />}
+      {!isAuthenticated && (
+        <StickyMobileCta dict={dict.stickyCta} lang={lang} />
+      )}
     </main>
   );
 }

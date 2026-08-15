@@ -1,4 +1,80 @@
 export const en = {
+  metadata: {
+    home: {
+      title: "Free AWS, Azure & Google Cloud Practice Exams",
+      description:
+        "Prepare for AWS, Azure and Google Cloud certifications with 5,000+ free practice questions. Realistic timed simulations, detailed explanations, no paywalls.",
+    },
+    practiceExams: {
+      title: "Practice Exams — AWS, Azure & Google Cloud",
+      description:
+        "Browse free practice exams for AWS Cloud Practitioner and more. Timed simulations that mirror the real certification test.",
+    },
+    login: {
+      title: "Log In",
+      description:
+        "Log in to NaHero to save your practice exam progress, track scores, and review your history.",
+    },
+    register: {
+      title: "Create a Free Account",
+      description:
+        "Create a free NaHero account to save your progress, track scores across attempts, and prepare for your cloud certification exam.",
+    },
+    contact: {
+      title: "Contact",
+      description:
+        "Have a question, found a bug, or want to contribute? Get in touch with the NaHero team.",
+    },
+    faq: {
+      title: "FAQ",
+      description:
+        "Answers to common questions about NaHero practice exams, cloud certifications, accounts, and how our platform works.",
+    },
+    dashboard: {
+      title: "Your Dashboard",
+      description: "Track your progress and see your scores over time.",
+    },
+    history: {
+      title: "Exam History",
+      description: "Review your previous practice exam attempts.",
+    },
+    premium: {
+      title: "Go Premium",
+      description:
+        "Unlock every practice exam at every difficulty with a NaHero Premium subscription.",
+    },
+    subscription: {
+      title: "Your Subscription",
+      description: "Manage your NaHero subscription.",
+    },
+    privacy: {
+      title: "Privacy Policy",
+      description: "How NaHero collects, uses, and protects your data.",
+    },
+    passwordRecovery: {
+      title: "Recover Your Password",
+      description:
+        "Reset the password for your NaHero account and get back to your practice exams.",
+    },
+    passwordRecoveryDefinition: {
+      title: "Choose a New Password",
+      description: "Set a new password for your NaHero account.",
+    },
+  },
+  privacy: {
+    title: "Privacy Policy",
+    placeholder:
+      "The full privacy policy is being finalized. If you have questions about how your data is handled, please contact us.",
+    contact_link: "Contact us",
+  },
+  stickyCta: {
+    text: "Start practicing free",
+    aria: "Start practicing for free",
+  },
+  breadcrumbs: {
+    home: "Home",
+    aria: "Breadcrumb",
+  },
   hero: {
     title_start: "Free practice for",
     title_highlight: "your future",
@@ -218,6 +294,52 @@ export const en = {
       unexpected_error: "An unexpected error occurred. Please try again.",
     },
   },
+  passwordRecovery: {
+    title: "Recover Your Password",
+    subtitle:
+      "Enter the email you signed up with and we will send you a link to choose a new password.",
+    email_label: "Email",
+    email_placeholder: "Enter your email",
+    submit_btn: "Send recovery link",
+    submit_loading: "Sending...",
+    back_to_login: "Back to Login",
+    sent_title: "Check your inbox",
+    sent_description:
+      "If an account exists for {{email}}, we just sent it a link to reset the password. The link expires in 60 minutes.",
+    sent_hint: "Nothing arrived? Check your spam folder or try again.",
+    resend_btn: "Use a different email",
+    validation: {
+      email_required: "Email is required",
+      email_invalid: "Please enter a valid email",
+    },
+  },
+  passwordRecoveryDefinition: {
+    title: "Choose a New Password",
+    subtitle: "Pick a new password for your account.",
+    password_label: "New Password",
+    password_placeholder: "Enter your new password",
+    confirm_password_label: "Confirm New Password",
+    confirm_password_placeholder: "Enter your new password again",
+    submit_btn: "Save new password",
+    submit_loading: "Saving...",
+    back_to_login: "Back to Login",
+    success_title: "Password updated",
+    success_description:
+      "Your password has been changed. You can now log in with it.",
+    go_to_login: "Go to Login",
+    missing_token_title: "This link is not valid",
+    missing_token_description:
+      "The recovery link is missing its token. Request a new one to continue.",
+    invalid_token_description:
+      "This recovery link has expired or has already been used. Request a new one to continue.",
+    request_new_link: "Request a new link",
+    validation: {
+      password_required: "Password is required",
+      password_min: "Password must be at least 6 characters",
+      confirm_password_required: "Please confirm your password",
+      passwords_must_match: "Passwords do not match",
+    },
+  },
   header: {
     home: "Home",
     exams: "Practice Exams",
@@ -246,6 +368,8 @@ export const en = {
     faq: "FAQ",
     support: "Support",
     contact: "Contact",
+    legal: "Legal",
+    privacy: "Privacy Policy",
   },
   contact: {
     title: "Get in touch",

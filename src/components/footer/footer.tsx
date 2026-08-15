@@ -10,6 +10,8 @@ type FooterDict = {
   faq: string;
   support: string;
   contact: string;
+  legal: string;
+  privacy: string;
 };
 
 interface FooterProps {
@@ -24,8 +26,8 @@ const buildPath = (lang: string, route: string) => {
 export function Footer({ dict, lang }: FooterProps) {
   return (
     <footer className=" w-full border-t border-white/10 bg-stone-900/95">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="flex flex-col gap-3 md:items-center md:text-center">
             <h3 className="text-xl font-bold text-yellow-500">NaHero</h3>
             <p className="text-sm text-stone-400 max-w-xs">
@@ -72,6 +74,20 @@ export function Footer({ dict, lang }: FooterProps) {
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
                 {dict.contact}
+              </Link>
+            </nav>
+          </div>
+
+          <div className="flex flex-col gap-3 md:items-center md:text-center">
+            <h3 className="text-lg font-semibold text-stone-200">
+              {dict.legal}
+            </h3>
+            <nav className="flex flex-col gap-2">
+              <Link
+                href={buildPath(lang, "/privacy")}
+                className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
+              >
+                {dict.privacy}
               </Link>
             </nav>
           </div>

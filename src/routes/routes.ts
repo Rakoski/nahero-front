@@ -3,6 +3,7 @@ export const Routes = {
   Login: "/login",
   Register: "/register",
   PasswordRecovery: "/password-recovery",
+  PasswordRecoveryDefinition: "/password-recovery/definition",
   Profile: "/public/profile",
   NotFound: "/not-found",
   PracticeExams: "/practice-exams",

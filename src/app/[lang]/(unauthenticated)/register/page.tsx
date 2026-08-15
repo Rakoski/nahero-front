@@ -143,7 +143,7 @@ export default function RegisterPage({ params }: Props) {
             width={600}
             height={600}
             src="/clouds.png"
-            alt="Register Banner"
+            alt="Cloud illustration"
             className="object-contain"
             priority
           />

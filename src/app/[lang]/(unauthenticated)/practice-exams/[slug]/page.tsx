@@ -15,6 +15,7 @@ import { getDictionary } from "@/dictionaries";
 import { practiceExamsService } from "@/services/practice-exams";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
 import { BackToPracticeExamsButton } from "@/components/practice-exams/components/back-to-practice-exams-button";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import {
   formatTimeLimit,
   getDifficultyColors,
@@ -77,6 +78,17 @@ export default async function PracticeExamDetailPage({ params }: Props) {
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       <AutoStartOnReturn practiceExamId={exam.id} lang={lang} />
+      <Breadcrumbs
+        lang={lang}
+        items={[
+          {
+            label: dictionary.practiceExams.title,
+            href: `/${lang}${Routes.PracticeExams}`,
+          },
+          { label: exam.title },
+        ]}
+        dict={dictionary.breadcrumbs}
+      />
       <BackToPracticeExamsButton lang={lang} label={dict.cta.back} />
       <Badge className={cn("text-sm mb-2", getDifficultyColors(difficulty))}>
         {difficultyLabel}

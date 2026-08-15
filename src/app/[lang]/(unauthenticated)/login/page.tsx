@@ -137,7 +137,7 @@ export default function LoginPage({ params }: Props) {
             width={600}
             height={600}
             src="/clouds.png"
-            alt="Login Banner"
+            alt="Cloud illustration"
             className="object-contain"
             priority
           />
@@ -218,7 +218,7 @@ export default function LoginPage({ params }: Props) {
 
                   <div className="flex items-center justify-between text-sm">
                     <Link
-                      href={Routes.PasswordRecovery}
+                      href={`/${lang}${Routes.PasswordRecovery}`}
                       className="font-bold text-yellow-600 hover:text-yellow-700 hover:underline"
                     >
                       {dict.forgot_password}
