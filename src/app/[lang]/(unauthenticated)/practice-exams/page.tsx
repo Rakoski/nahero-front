@@ -8,6 +8,7 @@ import { ExamCard } from "../../../../components/practice-exams/components/exam-
 import { ExamFilters as ExamFiltersComponent } from "../../../../components/practice-exams/components/exam-filters";
 import { SkeletonCard } from "../../../../components/practice-exams/components/skeleton-card";
 import { EmptyState } from "../../../../components/practice-exams/components/empty-state";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { getDictionary } from "@/dictionaries";
 import {
   usePracticeExams,
@@ -87,6 +88,10 @@ function mapPracticeExamToExam(dto: PracticeExamDTO) {
 
 export default function PracticeExamsPage({ params }: Props) {
   const [dict, setDict] = useState<PracticeExamsDict | null>(null);
+  const [breadcrumbsDict, setBreadcrumbsDict] = useState<{
+    home: string;
+    aria: string;
+  } | null>(null);
   const [lang, setLang] = useState<"en" | "pt">("en");
   const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
   const [category, setCategory] = useAtom(categoryPracticeExamAtom);
@@ -99,6 +104,7 @@ export default function PracticeExamsPage({ params }: Props) {
       setLang(p.lang);
       const dictionary = await getDictionary(p.lang);
       setDict(dictionary.practiceExams);
+      setBreadcrumbsDict(dictionary.breadcrumbs);
     });
   }, [params]);
 
@@ -162,6 +168,13 @@ export default function PracticeExamsPage({ params }: Props) {
 
   return (
     <div className="container mx-auto px-4 py-4 space-y-8">
+      {breadcrumbsDict && (
+        <Breadcrumbs
+          lang={lang}
+          items={[{ label: dict.title }]}
+          dict={breadcrumbsDict}
+        />
+      )}
       <FadeIn>
         <div className="space-y-2 text-center">
           <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>

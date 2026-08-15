@@ -24,13 +24,20 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+// These answer 401 to mean "these credentials are wrong", not "your session died",
+// so signing the caller out on them would be wrong.
+const CREDENTIAL_ENDPOINTS = new Set<string>([
+  NAHERO_API.AUTH.LOGIN,
+  NAHERO_API.AUTH.RESET_PASSWORD,
+]);
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (
       typeof window !== "undefined" &&
       error.response?.status === 401 &&
-      error.config?.url !== NAHERO_API.AUTH.LOGIN
+      !CREDENTIAL_ENDPOINTS.has(error.config?.url)
     ) {
       SignOut();
     }

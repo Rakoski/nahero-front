@@ -1,4 +1,80 @@
 export const pt = {
+  metadata: {
+    home: {
+      title: "Simulados Gratuitos AWS, Azure & Google Cloud",
+      description:
+        "Prepare-se para as certificações AWS, Azure e Google Cloud com mais de 5.000 questões gratuitas. Simulados cronometrados, explicações detalhadas, sem pagar nada.",
+    },
+    practiceExams: {
+      title: "Simulados — AWS, Azure & Google Cloud",
+      description:
+        "Explore simulados gratuitos para AWS Cloud Practitioner e mais. Simulações cronometradas que refletem a prova real de certificação.",
+    },
+    login: {
+      title: "Entrar",
+      description:
+        "Entre no NaHero para salvar seu progresso nos simulados, acompanhar sua pontuação e revisar seu histórico.",
+    },
+    register: {
+      title: "Criar Conta Grátis",
+      description:
+        "Crie uma conta gratuita no NaHero para salvar seu progresso, acompanhar sua pontuação e se preparar para sua certificação em nuvem.",
+    },
+    contact: {
+      title: "Contato",
+      description:
+        "Tem uma dúvida, encontrou um bug ou quer contribuir? Fale com o time do NaHero.",
+    },
+    faq: {
+      title: "Perguntas Frequentes",
+      description:
+        "Respostas para dúvidas comuns sobre os simulados NaHero, certificações em nuvem, contas e como nossa plataforma funciona.",
+    },
+    dashboard: {
+      title: "Seu Painel",
+      description: "Acompanhe seu progresso e veja suas pontuações ao longo do tempo.",
+    },
+    history: {
+      title: "Histórico de Simulados",
+      description: "Revise suas tentativas anteriores de simulados.",
+    },
+    premium: {
+      title: "Assinar Premium",
+      description:
+        "Desbloqueie todos os simulados em todas as dificuldades com a assinatura NaHero Premium.",
+    },
+    subscription: {
+      title: "Sua Assinatura",
+      description: "Gerencie sua assinatura no NaHero.",
+    },
+    privacy: {
+      title: "Política de Privacidade",
+      description: "Como o NaHero coleta, usa e protege seus dados.",
+    },
+    passwordRecovery: {
+      title: "Recupere Sua Senha",
+      description:
+        "Redefina a senha da sua conta NaHero e volte para os seus simulados.",
+    },
+    passwordRecoveryDefinition: {
+      title: "Escolha uma Nova Senha",
+      description: "Defina uma nova senha para a sua conta NaHero.",
+    },
+  },
+  privacy: {
+    title: "Política de Privacidade",
+    placeholder:
+      "A política de privacidade completa está sendo finalizada. Se tiver dúvidas sobre como seus dados são tratados, entre em contato conosco.",
+    contact_link: "Fale conosco",
+  },
+  stickyCta: {
+    text: "Comece a praticar grátis",
+    aria: "Comece a praticar gratuitamente",
+  },
+  breadcrumbs: {
+    home: "Início",
+    aria: "Trilha de navegação",
+  },
   hero: {
     title_start: "Simulados gratuitos para",
     title_highlight: "suas certificações",
@@ -208,6 +284,52 @@ export const pt = {
       unexpected_error: "Ocorreu um erro inesperado. Tente novamente.",
     },
   },
+  passwordRecovery: {
+    title: "Recupere Sua Senha",
+    subtitle:
+      "Digite o e-mail que você usou no cadastro e enviaremos um link para escolher uma nova senha.",
+    email_label: "E-mail",
+    email_placeholder: "Digite seu e-mail",
+    submit_btn: "Enviar link de recuperação",
+    submit_loading: "Enviando...",
+    back_to_login: "Voltar para Login",
+    sent_title: "Verifique sua caixa de entrada",
+    sent_description:
+      "Se existir uma conta para {{email}}, acabamos de enviar um link para redefinir a senha. O link expira em 60 minutos.",
+    sent_hint: "Não chegou nada? Verifique sua caixa de spam ou tente de novo.",
+    resend_btn: "Usar outro e-mail",
+    validation: {
+      email_required: "E-mail é obrigatório",
+      email_invalid: "Por favor, insira um e-mail válido",
+    },
+  },
+  passwordRecoveryDefinition: {
+    title: "Escolha uma Nova Senha",
+    subtitle: "Defina uma nova senha para a sua conta.",
+    password_label: "Nova Senha",
+    password_placeholder: "Digite sua nova senha",
+    confirm_password_label: "Confirmar Nova Senha",
+    confirm_password_placeholder: "Digite sua nova senha novamente",
+    submit_btn: "Salvar nova senha",
+    submit_loading: "Salvando...",
+    back_to_login: "Voltar para Login",
+    success_title: "Senha atualizada",
+    success_description:
+      "Sua senha foi alterada. Agora você já pode entrar com ela.",
+    go_to_login: "Ir para o Login",
+    missing_token_title: "Este link não é válido",
+    missing_token_description:
+      "O link de recuperação está sem o token. Solicite um novo para continuar.",
+    invalid_token_description:
+      "Este link de recuperação expirou ou já foi utilizado. Solicite um novo para continuar.",
+    request_new_link: "Solicitar um novo link",
+    validation: {
+      password_required: "Senha é obrigatória",
+      password_min: "A senha deve ter pelo menos 6 caracteres",
+      confirm_password_required: "Confirme sua senha",
+      passwords_must_match: "As senhas não coincidem",
+    },
+  },
   header: {
     home: "Início",
     exams: "Simulados",
@@ -236,6 +358,8 @@ export const pt = {
     faq: "FAQ",
     support: "Suporte",
     contact: "Contato",
+    legal: "Legal",
+    privacy: "Política de Privacidade",
   },
   contact: {
     title: "Fale conosco",
