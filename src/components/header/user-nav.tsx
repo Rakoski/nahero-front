@@ -13,6 +13,8 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { LogOut, Sparkles } from "lucide-react";
 import { Routes } from "@/routes/routes";
+import { useActiveAttempt } from "@/providers/active-attempt-provider";
+import { useRef } from "react";
 
 type UserNavDict = {
   dashboard: string;
@@ -23,7 +25,20 @@ type UserNavDict = {
 
 export function UserNav({ dict, lang }: { dict: UserNavDict; lang: string }) {
   const { data: session } = useSession();
+  const { abandonActiveAttempt } = useActiveAttempt();
+  const isLoggingOutRef = useRef(false);
   const user = session?.user;
+
+  const handleLogout = async () => {
+    if (isLoggingOutRef.current) return;
+    isLoggingOutRef.current = true;
+    try {
+      await abandonActiveAttempt();
+    } catch {
+      // a failed abandon must not trap the user in a logged-in state
+    }
+    await signOut({ callbackUrl: "/" });
+  };
 
   if (!user) return null;
 
@@ -62,7 +77,7 @@ export function UserNav({ dict, lang }: { dict: UserNavDict; lang: string }) {
         <DropdownMenuSeparator className="bg-stone-800" />
         <DropdownMenuItem
           className="text-red-500 focus:bg-red-900/20 focus:text-red-500 cursor-pointer"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={handleLogout}
         >
           <LogOut className="mr-2 h-4 w-4" />
           {dict.logout}

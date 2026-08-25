@@ -176,7 +176,7 @@ function PasswordRecoveryDefinitionContent({ params }: Props) {
                       {dict.success_title}
                     </Typography>
                   </CardTitle>
-                  <CardDescription classname="mt-2">
+                  <CardDescription className="mb-2">
                     {dict.success_description}
                   </CardDescription>
                 </CardHeader>

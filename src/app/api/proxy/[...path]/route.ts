@@ -92,8 +92,6 @@ async function handler(
   const contentType = upstream.headers.get("content-type");
   if (contentType) responseHeaders.set("Content-Type", contentType);
 
-  // 204/205/304 must have a null body per the Fetch spec — passing an empty
-  // ArrayBuffer makes the Response constructor throw.
   const isNullBodyStatus =
     upstream.status === 204 ||
     upstream.status === 205 ||

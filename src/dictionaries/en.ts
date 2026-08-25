@@ -596,7 +596,6 @@ export const en = {
       timeLimit: "Time Limit",
       passingScore: "Passing Score",
       seeResults: "See Results",
-      retry: "Retry",
     },
     timeFormat: {
       minutes: "{{time}} min",

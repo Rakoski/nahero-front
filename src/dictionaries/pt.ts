@@ -587,7 +587,6 @@ export const pt = {
       timeLimit: "Tempo Limite",
       passingScore: "Nota de Aprovação",
       seeResults: "Ver Resultados",
-      retry: "Tentar Novamente",
     },
     timeFormat: {
       minutes: "{{time}} min",

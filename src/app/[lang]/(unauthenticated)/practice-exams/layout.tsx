@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getDictionary } from "@/dictionaries";
 import { getSiteUrl } from "@/lib/site-url";
+import { resolveLocale } from "@/lib/locale";
+import { OG_IMAGE } from "@/lib/og-image";
 
 type Props = {
   children: React.ReactNode;
@@ -19,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: dict.metadata.practiceExams.title,
       description: dict.metadata.practiceExams.description,
       url: canonical,
+      images: [OG_IMAGE],
     },
   };
 }
