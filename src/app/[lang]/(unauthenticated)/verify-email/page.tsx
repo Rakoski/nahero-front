@@ -15,6 +15,7 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { verifyEmail } from "@/services/auth/verify-email";
 import { Routes } from "@/routes/routes";
+import { resolveLocale, type Locale } from "@/lib/locale";
 import { useResendVerification } from "./useResendVerification";
 
 export type VerifyEmailDict = {
@@ -33,8 +34,7 @@ export type VerifyEmailDict = {
   back_to_login: string;
 };
 
-type Lang = "en" | "pt";
-type Props = { params: Promise<{ lang: Lang }> };
+type Props = { params: Promise<{ lang: string }> };
 
 function Shell({
   title,
@@ -122,7 +122,7 @@ function ConfirmView({
   token,
 }: {
   dict: VerifyEmailDict;
-  lang: Lang;
+  lang: Locale;
   token: string;
 }) {
   const router = useRouter();
@@ -165,7 +165,7 @@ function ConfirmView({
 
 function VerifyEmailContent({ params }: Props) {
   const [dict, setDict] = useState<VerifyEmailDict | null>(null);
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useState<Locale>("en");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email") ?? "";
@@ -173,9 +173,10 @@ function VerifyEmailContent({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      const locale = resolveLocale(p.lang);
+      setLang(locale);
       const { getDictionary } = await import("@/dictionaries");
-      setDict((await getDictionary(p.lang)).verifyEmail);
+      setDict((await getDictionary(locale)).verifyEmail);
     });
   }, [params]);
 
