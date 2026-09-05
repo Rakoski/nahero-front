@@ -23,7 +23,6 @@ import {
 } from "../utils";
 import { StartExamButton } from "./start-exam-button";
 import { AutoStartOnReturn } from "./auto-start-on-return";
-import { resolveLocale } from "@/lib/locale";
 import { OG_IMAGE } from "@/lib/og-image";
 
 interface Props {

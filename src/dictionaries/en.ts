@@ -15,6 +15,11 @@ export const en = {
       description:
         "Log in to NaHero to save your practice exam progress, track scores, and review your history.",
     },
+    verifyEmail: {
+      title: "Verify Your Email",
+      description:
+        "Verify your email address to complete your registration and gain full access to your NaHero account.",
+    },
     register: {
       title: "Create a Free Account",
       description:
@@ -244,6 +249,7 @@ export const en = {
     btn_home: "Back to Home",
   },
   login: {
+    verified_success: "Email confirmed. You can sign in now.",
     title: "Access Your Account",
     subtitle: "Enter your email and password to login",
     email_label: "Email",
@@ -293,6 +299,22 @@ export const en = {
       registration_failed: "Registration failed. Please try again.",
       unexpected_error: "An unexpected error occurred. Please try again.",
     },
+  },
+  verifyEmail: {
+    pending_title: "Check your inbox",
+    pending_subtitle: "We sent a verification link to",
+    email_placeholder: "Enter your email",
+    resend_btn: "Resend verification email",
+    resend_cooldown: "Resend in {seconds}s",
+    resend_success: "Verification email sent",
+    confirm_title: "Confirming your email",
+    confirm_subtitle: "Hang tight while we activate your account.",
+    confirm_loading: "Confirming...",
+    invalid_title: "Link expired",
+    invalid_subtitle:
+      "This verification link is invalid or has already been used.",
+    request_new_link: "Request a new link",
+    back_to_login: "Back to login",
   },
   passwordRecovery: {
     title: "Recover Your Password",
@@ -683,9 +705,11 @@ export const en = {
     title: "Go Premium",
     subtitle: "Unlock every practice exam, at every difficulty, forever.",
     loading: "Loading…",
-    fromPracticeAttempt: "You've used your free attempt on this difficulty. Subscribe to keep practicing without limits.",
+    fromPracticeAttempt:
+      "You've used your free attempt on this difficulty. Subscribe to keep practicing without limits.",
     alreadyPremiumTitle: "You're already Premium",
-    alreadyPremiumBody: "Your access is active until {{date}}. Manage your subscription from your profile.",
+    alreadyPremiumBody:
+      "Your access is active until {{date}}. Manage your subscription from your profile.",
     goToDashboard: "Go to dashboard",
     plans: {
       monthly: {
@@ -719,9 +743,11 @@ export const en = {
       polling_title: "Finalizing your subscription…",
       polling_subtitle: "This usually takes a couple of seconds.",
       success_title: "Welcome to Premium!",
-      success_subtitle: "Your access is active. Enjoy every practice exam without limits.",
+      success_subtitle:
+        "Your access is active. Enjoy every practice exam without limits.",
       timeout_title: "Payment received",
-      timeout_subtitle: "It's taking a little longer than usual to activate your access. Try refreshing in a moment.",
+      timeout_subtitle:
+        "It's taking a little longer than usual to activate your access. Try refreshing in a moment.",
       cta_dashboard: "Go to dashboard",
       cta_exams: "Browse practice exams",
       cta_retry: "Refresh",
@@ -753,13 +779,15 @@ export const en = {
     already_canceling: "This subscription is set to end at the current period.",
     cancel_dialog: {
       title: "Cancel your subscription?",
-      description: "You'll keep Premium access until {{date}}. After that, your account returns to the free plan.",
+      description:
+        "You'll keep Premium access until {{date}}. After that, your account returns to the free plan.",
       confirm: "Yes, cancel",
       dismiss: "Keep subscription",
     },
     upgrade: {
       title: "You're on the Free plan",
-      subtitle: "Upgrade to Premium to unlock every practice exam at every difficulty.",
+      subtitle:
+        "Upgrade to Premium to unlock every practice exam at every difficulty.",
       cta: "See plans",
     },
   },
