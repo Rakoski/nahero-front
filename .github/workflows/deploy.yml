@@ -20,20 +20,20 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.VPS_PORT }}
           script_stop: true
           script: |
             set -euo pipefail
             cd ~/nahero/nahero-front
             git pull --ff-only
-            docker build -t nahero-front .
-            docker stop nahero-front || true
-            docker rm nahero-front || true
-            docker run -d \
-              --name nahero-front \
-              --restart unless-stopped \
-              -p 127.0.0.1:3000:3000 \
-              --env-file .env.docker \
-              nahero-front
-            docker image prune -f
+              docker build -t nahero-front .
+              docker stop nahero-front || true
+              docker rm nahero-front || true
+              docker run -d \
+                --name nahero-front \
+                --restart unless-stopped \
+                -p 127.0.0.1:3000:3000 \
+                --env-file .env.docker \
+                nahero-front
+              docker image prune -f
