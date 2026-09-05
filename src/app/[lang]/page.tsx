@@ -13,6 +13,7 @@ import { FAQ } from "@/components/home/faq";
 import { CTA } from "@/components/home/cta";
 import { StickyMobileCta } from "@/components/home/sticky-mobile-cta";
 import { resolveLocale } from "@/lib/locale";
+import { OG_IMAGE } from "@/lib/og-image";
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -35,6 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: dict.metadata.home.title,
       description: dict.metadata.home.description,
       url: canonical,
+      images: [OG_IMAGE],
     },
   };
 }
@@ -49,7 +51,7 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <main className="flex flex-col min-h-screen">
-      <Hero dict={dict.hero} lang={lang} isAuthenticated={isAuthenticated} />
+      <Hero dict={dict.hero} lang={lang} />
 
       {!isAuthenticated && <Stats dict={dict.stats} />}
 

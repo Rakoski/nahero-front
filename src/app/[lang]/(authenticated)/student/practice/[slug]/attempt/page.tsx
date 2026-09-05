@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   QuestionCard,
@@ -20,6 +20,7 @@ import {
 import { Routes } from "@/routes/routes";
 import { useAttempt } from "./useAttempt";
 import { useLeaveConfirmation } from "@/hooks/useLeaveConfirmation";
+import { useRegisterActiveAttempt } from "@/providers/active-attempt-provider";
 import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
 import { AxiosError } from "axios";
 import { resolveLocale } from "@/lib/locale";
@@ -79,6 +80,8 @@ interface Props {
   params: Promise<{ lang: string; slug: string }>;
 }
 
+const PAGE_SIZE = 10;
+
 function mapApiQuestionToQuestion(
   apiQuestion: ListQuestionsByStudentResponse,
   index: number,
@@ -102,7 +105,7 @@ export default function ExamAttemptPage({ params }: Props) {
   const [dict, setDict] = useState<ExamAttemptDict | null>(null);
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [lang, setLang] = useState<"en" | "pt">("en");
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [startedAt] = useState(new Date());
@@ -131,7 +134,7 @@ export default function ExamAttemptPage({ params }: Props) {
     isLastPage,
   } = useAttempt({
     attemptId: attemptId || "",
-    pageSize: 10,
+    pageSize: PAGE_SIZE,
   });
 
   const timeLimit = apiQuestions[0]?.timeLimit || 3600;
@@ -156,6 +159,9 @@ export default function ExamAttemptPage({ params }: Props) {
       ),
     [apiQuestions, alternatives],
   );
+
+  const currentQuestionIndex =
+    questions.length > 0 ? Math.min(questionIndex, questions.length - 1) : 0;
 
   useEffect(() => {
     if (isDataReady) {
@@ -199,10 +205,18 @@ export default function ExamAttemptPage({ params }: Props) {
     !isExamFinished &&
     apiQuestions.length > 0;
 
-  const { isLeaveDialogOpen, confirmLeave, cancelLeave } =
+  const { isLeaveDialogOpen, confirmLeave, cancelLeave, allowNext } =
     useLeaveConfirmation(guardEnabled);
 
-  const globalQuestionNumber = currentPage * 10 + currentQuestionIndex + 1;
+  const abandonOnLogout = useCallback(async () => {
+    allowNext();
+    await abandonExam();
+  }, [allowNext, abandonExam]);
+
+  useRegisterActiveAttempt(guardEnabled, abandonOnLogout);
+
+  const globalQuestionNumber =
+    currentPage * PAGE_SIZE + currentQuestionIndex + 1;
   const totalQuestionsAcrossPages = totalElements;
 
   const isOnLastQuestionOfExam =
@@ -235,24 +249,34 @@ export default function ExamAttemptPage({ params }: Props) {
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setQuestionIndex(currentQuestionIndex - 1);
     } else if (currentQuestionIndex === 0 && !isFirstPage) {
       goToPreviousPage();
-      setCurrentQuestionIndex(9);
+      setQuestionIndex(PAGE_SIZE - 1);
     }
   };
 
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setQuestionIndex(currentQuestionIndex + 1);
     } else if (currentQuestionIndex === questions.length - 1 && !isLastPage) {
       goToNextPage();
-      setCurrentQuestionIndex(0);
+      setQuestionIndex(0);
     }
   };
 
   const handleQuestionSelect = (index: number) => {
-    setCurrentQuestionIndex(index);
+    setQuestionIndex(index);
+  };
+
+  const handleNextPage = () => {
+    goToNextPage();
+    setQuestionIndex(0);
+  };
+
+  const handlePreviousPage = () => {
+    goToPreviousPage();
+    setQuestionIndex(0);
   };
 
   const handleSubmitClick = () => {
@@ -344,8 +368,8 @@ export default function ExamAttemptPage({ params }: Props) {
             totalElements={totalElements}
             currentPage={currentPage}
             totalPages={totalPages}
-            onNextPage={goToNextPage}
-            onPreviousPage={goToPreviousPage}
+            onNextPage={handleNextPage}
+            onPreviousPage={handlePreviousPage}
             dict={{
               ...dict,
               timeRemaining: dict.time_remaining,

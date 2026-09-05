@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Routes } from "@/routes/routes";
 import { handleError } from "../../../../utils/error-utils";
+import { EMAIL_NOT_VERIFIED } from "@/constants/auth-errors";
 
 type LoginCredentials = {
   identifier: string;
@@ -38,7 +39,14 @@ export function useLogin() {
       const destination = callbackUrl || `/${lang}${Routes.Home}`;
       router.push(destination);
     },
-    onError: (error: Error) => {
+    onError: (error: Error, variables) => {
+      if (error.message === EMAIL_NOT_VERIFIED) {
+        router.push(
+          `/${lang}${Routes.VerifyEmail}?email=${encodeURIComponent(variables.identifier)}`,
+        );
+        return;
+      }
+
       handleError(error);
     },
   });

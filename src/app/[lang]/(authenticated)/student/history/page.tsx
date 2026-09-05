@@ -37,7 +37,6 @@ type HistoryDict = {
     timeLimit: string;
     passingScore: string;
     seeResults: string;
-    retry: string;
   };
   timeFormat: {
     minutes: string;
@@ -102,10 +101,6 @@ export default function HistoryPage({ params }: Props) {
 
   const handleSeeResults = (attemptId: number) => {
     router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
-  };
-
-  const handleRetry = (practiceExamTitle: string) => {
-    router.push(`/${lang}${Routes.PracticeExams}`);
   };
 
   if (!dict) {
@@ -292,13 +287,6 @@ export default function HistoryPage({ params }: Props) {
                     variant="default"
                   >
                     {dict.card.seeResults}
-                  </Button>
-                  <Button
-                    onClick={() => handleRetry(attempt.practiceExamTitle)}
-                    className="flex-1"
-                    variant="outline"
-                  >
-                    {dict.card.retry}
                   </Button>
                 </CardFooter>
               </Card>

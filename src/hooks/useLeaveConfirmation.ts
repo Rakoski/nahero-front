@@ -9,21 +9,27 @@ export function useLeaveConfirmation(enabled: boolean) {
   const router = useRouter();
   const [pendingHref, setPendingHref] = useState<string | null>(null);
   const allowNavigationRef = useRef(false);
+  const enabledRef = useRef(enabled);
+  const sentinelPushedRef = useRef(false);
 
   useEffect(() => {
-    if (!enabled) return;
+    enabledRef.current = enabled;
+  }, [enabled]);
+
+  useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
+      if (!enabledRef.current) return;
       if (allowNavigationRef.current) return;
       e.preventDefault();
       e.returnValue = "";
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
-  }, [enabled]);
+  }, []);
 
   useEffect(() => {
-    if (!enabled) return;
     const handler = (e: MouseEvent) => {
+      if (!enabledRef.current) return;
       if (allowNavigationRef.current) return;
       if (e.defaultPrevented) return;
       if (e.button !== 0) return;
@@ -49,18 +55,23 @@ export function useLeaveConfirmation(enabled: boolean) {
     };
     document.addEventListener("click", handler, true);
     return () => document.removeEventListener("click", handler, true);
-  }, [enabled]);
+  }, []);
 
   useEffect(() => {
-    if (!enabled) return;
-    window.history.pushState(null, "", window.location.href);
     const handler = () => {
+      if (!enabledRef.current) return;
       if (allowNavigationRef.current) return;
       window.history.pushState(null, "", window.location.href);
       setPendingHref(BACK_SENTINEL);
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled || sentinelPushedRef.current) return;
+    window.history.pushState(null, "", window.location.href);
+    sentinelPushedRef.current = true;
   }, [enabled]);
 
   const allowNext = useCallback(() => {

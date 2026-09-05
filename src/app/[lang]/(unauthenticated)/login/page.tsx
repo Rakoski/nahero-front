@@ -28,11 +28,13 @@ import {
 import { getDictionary } from "@/dictionaries";
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
+import toast from "react-hot-toast";
 import Link from "next/link";
 import { useLogin } from "./useLogin";
 import { resolveLocale } from "@/lib/locale";
 
 type LoginDict = {
+  verified_success: string;
   title: string;
   subtitle: string;
   email_label: string;
@@ -69,7 +71,7 @@ const createLoginSchema = (dict: LoginDict) =>
         },
         {
           message: dict.validation.identifier_invalid,
-        }
+        },
       ),
     password: z.string().min(6, dict.validation.password_min),
   });

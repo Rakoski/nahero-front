@@ -2,6 +2,7 @@ export interface BackendErrorResponse {
   timestamp: string;
   status: string;
   error: string;
+  errorCode?: string;
   path: string;
 }
 
