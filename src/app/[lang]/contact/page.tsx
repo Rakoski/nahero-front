@@ -11,7 +11,7 @@ import { OG_IMAGE } from "@/lib/og-image";
 const SUPPORT_EMAIL = "support@nahero.site";
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export async function generateStaticParams() {
@@ -19,7 +19,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
   const dict = await getDictionary(lang);
   const canonical = `${getSiteUrl()}/${lang}/contact`;
   return {
@@ -36,7 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ContactPage({ params }: Props) {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
   const dict = await getDictionary(lang);
 
   return (

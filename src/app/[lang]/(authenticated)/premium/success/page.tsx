@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
+import { resolveLocale } from "@/lib/locale";
 
 const POLL_INTERVAL_MS = 1500;
 const POLL_TIMEOUT_MS = 15000;
@@ -30,7 +31,7 @@ type SuccessDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 }
 
 export default function PremiumSuccessPage({ params }: Props) {
@@ -45,9 +46,9 @@ export default function PremiumSuccessPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.premium.success as unknown as SuccessDict);
     });
   }, [params]);

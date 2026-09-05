@@ -24,13 +24,15 @@ import {
 import { StartExamButton } from "./start-exam-button";
 import { AutoStartOnReturn } from "./auto-start-on-return";
 import { OG_IMAGE } from "@/lib/og-image";
+import { resolveLocale } from "@/lib/locale";
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt"; slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang, slug } = await params;
+  const { lang: langParam, slug } = await params;
+  const lang = resolveLocale(langParam);
   const dictionary = await getDictionary(lang);
   const dict = dictionary.practiceExamDetail;
 
@@ -63,7 +65,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PracticeExamDetailPage({ params }: Props) {
-  const { lang, slug } = await params;
+  const { lang: langParam, slug } = await params;
+  const lang = resolveLocale(langParam);
   const exam = await practiceExamsService.getPracticeExamBySlug(slug);
 
   const dictionary = await getDictionary(lang);

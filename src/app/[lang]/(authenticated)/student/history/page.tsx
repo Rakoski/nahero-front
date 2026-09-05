@@ -16,6 +16,7 @@ import { Clock, Trophy, Target, AlertCircle } from "lucide-react";
 import { Routes } from "@/routes/routes";
 import { HistoryFilters } from "@/components/history/history-filters";
 import { useHistory } from "./useHistory";
+import { resolveLocale } from "@/lib/locale";
 
 type HistoryDict = {
   title: string;
@@ -56,7 +57,7 @@ type HistoryDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 }
 
 export default function HistoryPage({ params }: Props) {
@@ -77,9 +78,9 @@ export default function HistoryPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.history);
     });
   }, [params]);

@@ -21,6 +21,7 @@ import { CheckCircle2, XCircle, Clock, Award } from "lucide-react";
 import type { AnswerFilters } from "@/services/answers";
 import { useAnswers } from "./useAnswers";
 import { AnswersList } from "../../../../../../../../components/answers/answersList";
+import { resolveLocale } from "@/lib/locale";
 
 type ExamResultsDict = {
   title: string;
@@ -79,7 +80,7 @@ type ExamResultsDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt"; slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }
 
 export default function ExamResultsPage({ params }: Props) {
@@ -117,9 +118,9 @@ export default function ExamResultsPage({ params }: Props) {
   useEffect(() => {
     params.then(async (p) => {
       setAttemptId(parseInt(p.slug));
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.examResults);
     });
   }, [params]);

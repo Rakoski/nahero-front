@@ -16,7 +16,7 @@ import { resolveLocale } from "@/lib/locale";
 import { OG_IMAGE } from "@/lib/og-image";
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export async function generateStaticParams() {
@@ -24,7 +24,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
   const dict = await getDictionary(lang);
   const canonical = `${getSiteUrl()}/${lang}`;
   return {
@@ -41,7 +42,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function HomePage({ params }: Props) {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
 
   const dict = await getDictionary(lang);
   const session = await getServerSession(authOptions);

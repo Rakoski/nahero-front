@@ -23,6 +23,7 @@ import { useLeaveConfirmation } from "@/hooks/useLeaveConfirmation";
 import { useRegisterActiveAttempt } from "@/providers/active-attempt-provider";
 import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
 import { AxiosError } from "axios";
+import { resolveLocale } from "@/lib/locale";
 
 type ExamAttemptDict = {
   title: string;
@@ -76,7 +77,7 @@ type ExamAttemptDict = {
 };
 
 interface Props {
-  params: Promise<{ lang: "en" | "pt"; slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }
 
 const PAGE_SIZE = 10;
@@ -147,7 +148,7 @@ export default function ExamAttemptPage({ params }: Props) {
   useEffect(() => {
     params.then((p) => {
       setAttemptId(p.slug);
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
     });
   }, [params]);
 
@@ -188,7 +189,7 @@ export default function ExamAttemptPage({ params }: Props) {
   useEffect(() => {
     params.then(async (p) => {
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.examAttempt);
     });
   }, [params]);

@@ -28,6 +28,7 @@ import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import Link from "next/link";
 import { useRegister } from "./useRegister";
+import { resolveLocale } from "@/lib/locale";
 
 type RegisterDict = {
   title: string;
@@ -82,7 +83,7 @@ const createRegisterSchema = (dict: RegisterDict) =>
 type RegisterFormData = z.infer<ReturnType<typeof createRegisterSchema>>;
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export default function RegisterPage({ params }: Props) {
@@ -91,9 +92,9 @@ export default function RegisterPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
+      setLang(resolveLocale(p.lang));
       const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(p.lang);
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.register);
     });
   }, [params]);

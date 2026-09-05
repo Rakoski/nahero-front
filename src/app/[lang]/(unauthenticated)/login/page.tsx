@@ -31,6 +31,7 @@ import { Routes } from "@/routes/routes";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useLogin } from "./useLogin";
+import { resolveLocale } from "@/lib/locale";
 
 type LoginDict = {
   verified_success: string;
@@ -78,7 +79,7 @@ const createLoginSchema = (dict: LoginDict) =>
 type LoginFormData = z.infer<ReturnType<typeof createLoginSchema>>;
 
 type Props = {
-  params: Promise<{ lang: "en" | "pt" }>;
+  params: Promise<{ lang: string }>;
 };
 
 export default function LoginPage({ params }: Props) {
@@ -87,8 +88,8 @@ export default function LoginPage({ params }: Props) {
 
   useEffect(() => {
     params.then(async (p) => {
-      setLang(p.lang);
-      const dictionary = await getDictionary(p.lang);
+      setLang(resolveLocale(p.lang));
+      const dictionary = await getDictionary(resolveLocale(p.lang));
       setDict(dictionary.login);
     });
   }, [params]);
