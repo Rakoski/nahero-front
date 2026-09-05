@@ -28,6 +28,8 @@ export const NAHERO_API = {
   },
   USERS: {
     REGISTER: "/users",
+    VERIFY_EMAIL: "/users/verify-email",
+    RESEND_VERIFICATION: "/users/verify-email/resend",
   },
   PAYMENT: {
     CREATE_CHECKOUT_SUBSCRIPTION: "/payment/checkout/subscription",

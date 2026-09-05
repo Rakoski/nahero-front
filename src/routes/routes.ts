@@ -9,6 +9,7 @@ export const Routes = {
   PracticeExams: "/practice-exams",
   Practice: "/student/practice",
   History: "/student/history",
+  VerifyEmail: "/verify-email",
 
   StudentDashboard: "/student/dashboard",
 

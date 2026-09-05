@@ -8,6 +8,7 @@ const ERROR_TITLES: Record<string, { en: string; pt: string }> = {
   DENIED: { en: "Access Denied", pt: "Acesso Negado" },
   NOT_FOUND: { en: "Not Found", pt: "Não Encontrado" },
   DUPLICATE: { en: "Duplicate Entry", pt: "Registro Duplicado" },
+  RATE_LIMIT: { en: "Too Many Requests", pt: "Muitas Tentativas" },
   SERVER: { en: "Server Error", pt: "Erro no Servidor" },
   NETWORK: { en: "Network Error", pt: "Erro de Conexão" },
   DEFAULT: { en: "Error", pt: "Erro" },
@@ -56,6 +57,13 @@ export function handleError(error: unknown) {
         break;
       case 409:
         title = ERROR_TITLES.DUPLICATE[lang];
+        break;
+      case 429:
+        title = ERROR_TITLES.RATE_LIMIT[lang];
+        if (!message)
+          message = isPt
+            ? "Aguarde alguns minutos e tente novamente."
+            : "Please wait a few minutes and try again.";
         break;
       case 500:
         title = ERROR_TITLES.SERVER[lang];

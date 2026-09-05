@@ -15,6 +15,11 @@ export const pt = {
       description:
         "Entre no NaHero para salvar seu progresso nos simulados, acompanhar sua pontuação e revisar seu histórico.",
     },
+    verifyEmail: {
+      title: "Verifique seu E-mail",
+      description:
+        "Verifique seu e-mail para ativar sua conta NaHero e começar a praticar simulados.",
+    },
     register: {
       title: "Criar Conta Grátis",
       description:
@@ -32,7 +37,8 @@ export const pt = {
     },
     dashboard: {
       title: "Seu Painel",
-      description: "Acompanhe seu progresso e veja suas pontuações ao longo do tempo.",
+      description:
+        "Acompanhe seu progresso e veja suas pontuações ao longo do tempo.",
     },
     history: {
       title: "Histórico de Simulados",
@@ -234,6 +240,7 @@ export const pt = {
     btn_home: "Voltar ao Início",
   },
   login: {
+    verified_success: "E-mail confirmado. Você já pode entrar.",
     title: "Acesse Sua Conta",
     subtitle: "Digite seu e-mail e senha para entrar",
     email_label: "E-mail",
@@ -302,6 +309,22 @@ export const pt = {
       email_required: "E-mail é obrigatório",
       email_invalid: "Por favor, insira um e-mail válido",
     },
+  },
+  verifyEmail: {
+    pending_title: "Verifique sua caixa de entrada",
+    pending_subtitle: "Enviamos um link de verificação para",
+    email_placeholder: "Digite seu e-mail",
+    resend_btn: "Reenviar e-mail de verificação",
+    resend_cooldown: "Reenviar em {seconds}s",
+    resend_success: "E-mail de verificação enviado",
+    confirm_title: "Confirmando seu e-mail",
+    confirm_subtitle: "Aguarde um instante enquanto ativamos sua conta.",
+    confirm_loading: "Confirmando...",
+    invalid_title: "Link expirado",
+    invalid_subtitle:
+      "Este link de verificação é inválido ou já foi utilizado.",
+    request_new_link: "Solicitar novo link",
+    back_to_login: "Voltar para o login",
   },
   passwordRecoveryDefinition: {
     title: "Escolha uma Nova Senha",
@@ -587,7 +610,6 @@ export const pt = {
       timeLimit: "Tempo Limite",
       passingScore: "Nota de Aprovação",
       seeResults: "Ver Resultados",
-      retry: "Tentar Novamente",
     },
     timeFormat: {
       minutes: "{{time}} min",
@@ -674,9 +696,11 @@ export const pt = {
     title: "Seja Premium",
     subtitle: "Libere todos os simulados, em todos os níveis, para sempre.",
     loading: "Carregando…",
-    fromPracticeAttempt: "Você já usou sua tentativa gratuita nesta dificuldade. Assine para continuar praticando sem limites.",
+    fromPracticeAttempt:
+      "Você já usou sua tentativa gratuita nesta dificuldade. Assine para continuar praticando sem limites.",
     alreadyPremiumTitle: "Você já é Premium",
-    alreadyPremiumBody: "Seu acesso está ativo até {{date}}. Gerencie sua assinatura pelo seu perfil.",
+    alreadyPremiumBody:
+      "Seu acesso está ativo até {{date}}. Gerencie sua assinatura pelo seu perfil.",
     goToDashboard: "Ir para o dashboard",
     plans: {
       monthly: {
@@ -710,16 +734,19 @@ export const pt = {
       polling_title: "Finalizando sua assinatura…",
       polling_subtitle: "Isso costuma levar apenas alguns segundos.",
       success_title: "Bem-vindo ao Premium!",
-      success_subtitle: "Seu acesso está ativo. Aproveite todos os simulados sem limites.",
+      success_subtitle:
+        "Seu acesso está ativo. Aproveite todos os simulados sem limites.",
       timeout_title: "Pagamento recebido",
-      timeout_subtitle: "Está levando um pouco mais que o normal para liberar seu acesso. Tente atualizar a página em alguns instantes.",
+      timeout_subtitle:
+        "Está levando um pouco mais que o normal para liberar seu acesso. Tente atualizar a página em alguns instantes.",
       cta_dashboard: "Ir para o painel",
       cta_exams: "Explorar simulados",
       cta_retry: "Atualizar",
     },
     cancel: {
       title: "Pagamento cancelado",
-      subtitle: "Nenhum pagamento foi feito. Você pode escolher um plano quando quiser.",
+      subtitle:
+        "Nenhum pagamento foi feito. Você pode escolher um plano quando quiser.",
       cta_retry: "Voltar para os planos",
       cta_exams: "Continuar no plano gratuito",
     },
@@ -741,16 +768,19 @@ export const pt = {
     free_tries_left: "Tentativas gratuitas restantes: {{count}}",
     cancel_button: "Cancelar assinatura",
     cancel_pending: "Cancelando…",
-    already_canceling: "Esta assinatura está programada para encerrar no período atual.",
+    already_canceling:
+      "Esta assinatura está programada para encerrar no período atual.",
     cancel_dialog: {
       title: "Cancelar sua assinatura?",
-      description: "Você continuará com o Premium até {{date}}. Depois disso, sua conta volta ao plano gratuito.",
+      description:
+        "Você continuará com o Premium até {{date}}. Depois disso, sua conta volta ao plano gratuito.",
       confirm: "Sim, cancelar",
       dismiss: "Manter assinatura",
     },
     upgrade: {
       title: "Você está no plano Gratuito",
-      subtitle: "Faça upgrade para o Premium e libere todos os simulados em todos os níveis.",
+      subtitle:
+        "Faça upgrade para o Premium e libere todos os simulados em todos os níveis.",
       cta: "Ver planos",
     },
   },

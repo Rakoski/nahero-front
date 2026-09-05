@@ -6,6 +6,7 @@ import { getDictionary } from "@/dictionaries";
 import { Metadata } from "next";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site-url";
+import { OG_IMAGE } from "@/lib/og-image";
 import "./globals.css";
 
 type Props = {
@@ -47,20 +48,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "NaHero",
       locale: lang === "pt" ? "pt_BR" : "en_US",
       type: "website",
-      images: [
-        {
-          url: "/og-image.png",
-          width: 1200,
-          height: 630,
-          alt: "NaHero — Free cloud certification practice exams",
-        },
-      ],
+      images: [OG_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/og-image.png"],
+      images: [OG_IMAGE],
     },
     robots: {
       index: true,

@@ -23,6 +23,7 @@ import {
 } from "../utils";
 import { StartExamButton } from "./start-exam-button";
 import { AutoStartOnReturn } from "./auto-start-on-return";
+import { OG_IMAGE } from "@/lib/og-image";
 
 interface Props {
   params: Promise<{ lang: "en" | "pt"; slug: string }>;
@@ -56,6 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: exam.title,
       description,
       type: "website",
+      images: [OG_IMAGE],
     },
   };
 }
