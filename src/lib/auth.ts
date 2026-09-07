@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authorizeUser } from "@/services/auth/login";
+import { authorizeByVerificationToken } from "@/services/auth/verify-email";
 import { refreshAccessToken } from "@/services/auth/refresh-token";
 
 /**
@@ -58,6 +59,17 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
         return await authorizeUser(credentials.email, credentials.password);
+      },
+    }),
+    CredentialsProvider({
+      id: "email-verification",
+      name: "Email verification",
+      credentials: {
+        verificationToken: { label: "Verification token", type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.verificationToken) return null;
+        return await authorizeByVerificationToken(credentials.verificationToken);
       },
     }),
   ],

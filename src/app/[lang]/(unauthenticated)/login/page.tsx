@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { useSession, signIn } from "next-auth/react";
+import { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -97,6 +97,7 @@ export default function LoginPage({ params }: Props) {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const justVerified = searchParams.get("verified") === "1";
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -112,10 +113,18 @@ export default function LoginPage({ params }: Props) {
 
   useEffect(() => {
     if (session?.user) {
-      const destination = callbackUrl || Routes.Home;
+      const destination = callbackUrl || `/${lang}${Routes.PracticeExams}`;
       router.push(destination);
     }
-  }, [session, router, callbackUrl]);
+  }, [session, router, callbackUrl, lang]);
+
+  const verifiedToastShown = useRef(false);
+
+  useEffect(() => {
+    if (!dict || !justVerified || verifiedToastShown.current) return;
+    verifiedToastShown.current = true;
+    toast.success(dict.verified_success);
+  }, [dict, justVerified]);
 
   const onSubmit = (data: LoginFormData) => {
     login({
@@ -255,7 +264,7 @@ export default function LoginPage({ params }: Props) {
                     variant="outline"
                     size="lg"
                     className="w-full h-11 font-bold"
-                    onClick={() => router.push(Routes.Register)}
+                    onClick={() => router.push(`/${lang}${Routes.Register}`)}
                   >
                     {dict.new_here}{" "}
                     <span className="ml-1 text-yellow-600 hover:underline">

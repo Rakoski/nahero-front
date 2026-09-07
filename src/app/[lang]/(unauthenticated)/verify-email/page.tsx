@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-import { verifyEmail } from "@/services/auth/verify-email";
 import { Routes } from "@/routes/routes";
 import { resolveLocale, type Locale } from "@/lib/locale";
 import { useResendVerification } from "./useResendVerification";
@@ -126,9 +126,19 @@ function ConfirmView({
   token: string;
 }) {
   const router = useRouter();
+  const { update } = useSession();
   const { mutate, isError } = useMutation({
-    mutationFn: verifyEmail,
-    onSuccess: () => router.replace(`/${lang}${Routes.Login}?verified=1`),
+    mutationFn: async (verificationToken: string) => {
+      const result = await signIn("email-verification", {
+        verificationToken,
+        redirect: false,
+      });
+
+      if (!result?.ok || result.error) throw new Error("VerificationFailed");
+
+      await update();
+    },
+    onSuccess: () => router.replace(`/${lang}${Routes.PracticeExams}`),
   });
 
   const requested = useRef(false);

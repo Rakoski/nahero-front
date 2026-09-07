@@ -36,7 +36,7 @@ export function useLogin() {
       return newSession;
     },
     onSuccess: () => {
-      const destination = callbackUrl || `/${lang}${Routes.Home}`;
+      const destination = callbackUrl || `/${lang}${Routes.PracticeExams}`;
       router.push(destination);
     },
     onError: (error: Error, variables) => {
