@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
+import { EMAIL_ALREADY_VERIFIED } from "@/constants/auth-errors";
 import { resolveLocale, type Locale } from "@/lib/locale";
 import { useResendVerification } from "./useResendVerification";
 
@@ -134,11 +135,20 @@ function ConfirmView({
         redirect: false,
       });
 
+      if (result?.error === EMAIL_ALREADY_VERIFIED) return "already-verified";
+
       if (!result?.ok || result.error) throw new Error("VerificationFailed");
 
       await update();
+
+      return "signed-in";
     },
-    onSuccess: () => router.replace(`/${lang}${Routes.PracticeExams}`),
+    onSuccess: (outcome) =>
+      router.replace(
+        outcome === "signed-in"
+          ? `/${lang}${Routes.PracticeExams}`
+          : `/${lang}${Routes.Login}?verified=1`,
+      ),
   });
 
   const requested = useRef(false);

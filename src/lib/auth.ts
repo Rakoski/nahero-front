@@ -3,6 +3,7 @@ import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authorizeUser } from "@/services/auth/login";
 import { authorizeByVerificationToken } from "@/services/auth/verify-email";
+import { EMAIL_ALREADY_VERIFIED } from "@/constants/auth-errors";
 import { refreshAccessToken } from "@/services/auth/refresh-token";
 
 /**
@@ -69,7 +70,19 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.verificationToken) return null;
-        return await authorizeByVerificationToken(credentials.verificationToken);
+        try {
+          return await authorizeByVerificationToken(
+            credentials.verificationToken,
+          );
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.message === EMAIL_ALREADY_VERIFIED
+          ) {
+            throw error;
+          }
+          return null;
+        }
       },
     }),
   ],
