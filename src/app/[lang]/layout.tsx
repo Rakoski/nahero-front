@@ -3,6 +3,8 @@ import { Header } from "@/components/header/header";
 import { Footer } from "@/components/footer/footer";
 import { Toaster } from "react-hot-toast";
 import { getDictionary } from "@/dictionaries";
+import { resolveLocale } from "@/lib/locale";
+import { LocaleProvider } from "@/providers/locale-provider";
 import { Metadata } from "next";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site-url";
@@ -17,14 +19,15 @@ type Props = {
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as "en" | "pt");
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
+  const dict = await getDictionary(lang);
   const siteUrl = getSiteUrl();
   const title =
     lang === "pt"
       ? "NaHero | Simulados Gratuitos AWS, Azure & Google Cloud"
       : "NaHero | Free AWS, Azure & Google Cloud Practice Exams";
-  const description = dict?.hero.description;
+  const description = dict.hero.description;
   const canonical = `${siteUrl}/${lang}`;
 
   return {
@@ -64,9 +67,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children, params }: Props) {
-  const { lang } = await params;
-
-  const dict = await getDictionary(lang as "en" | "pt");
+  const { lang: langParam } = await params;
+  const lang = resolveLocale(langParam);
+  const dict = await getDictionary(lang);
 
   return (
     <html lang={lang} suppressHydrationWarning>
@@ -87,14 +90,16 @@ export default async function RootLayout({ children, params }: Props) {
             </Script>
           </>
         )}
-        <Providers>
-          <Header dict={dict.header} lang={lang} />
+        <LocaleProvider lang={lang} dict={dict}>
+          <Providers>
+            <Header />
 
-          <main className="flex-1">{children}</main>
+            <main className="flex-1">{children}</main>
 
-          <Footer dict={dict.footer} lang={lang} />
-          <Toaster position="top-center" />
-        </Providers>
+            <Footer dict={dict.footer} lang={lang} />
+            <Toaster position="top-center" />
+          </Providers>
+        </LocaleProvider>
       </body>
     </html>
   );

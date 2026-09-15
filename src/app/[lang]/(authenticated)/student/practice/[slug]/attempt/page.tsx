@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   QuestionCard,
   QuestionNavigation,
@@ -11,8 +11,6 @@ import {
 } from "@/components/attempt/components";
 import {
   Answer,
-  toggleOption,
-  getQuestionStats,
   calculateRemainingTime,
   formatTime,
   Question,
@@ -23,64 +21,16 @@ import { useLeaveConfirmation } from "@/hooks/useLeaveConfirmation";
 import { useRegisterActiveAttempt } from "@/providers/active-attempt-provider";
 import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
 import { AxiosError } from "axios";
-import { resolveLocale } from "@/lib/locale";
-
-type ExamAttemptDict = {
-  title: string;
-  loading: string;
-  empty: {
-    title: string;
-    back: string;
-  };
-  error: {
-    not_enough_questions: string;
-    generic: string;
-  };
-  time_remaining: string;
-  question_of: string;
-  select_answer: string;
-  select_answers: string;
-  single_choice: string;
-  multiple_choice: string;
-  answered: string;
-  unanswered: string;
-  current: string;
-  navigation: {
-    previous: string;
-    next: string;
-    submit: string;
-    submitting: string;
-  };
-  dialogs: {
-    time_up: {
-      title: string;
-      description: string;
-      question: string;
-      continue: string;
-      submit: string;
-    };
-    confirm_submit: {
-      title: string;
-      description: string;
-      unanswered_warning: string;
-      no_answers_error: string;
-      cancel: string;
-      submit: string;
-    };
-    confirm_leave: {
-      title: string;
-      description: string;
-      stay: string;
-      leave: string;
-    };
-  };
-};
-
-interface Props {
-  params: Promise<{ lang: string; slug: string }>;
-}
+import { useLocale } from "@/providers/locale-provider";
 
 const PAGE_SIZE = 10;
+
+function toQuestionId(
+  apiQuestion: ListQuestionsByStudentResponse,
+  index: number,
+): number {
+  return parseInt(apiQuestion.id) || index;
+}
 
 function mapApiQuestionToQuestion(
   apiQuestion: ListQuestionsByStudentResponse,
@@ -88,7 +38,7 @@ function mapApiQuestionToQuestion(
   alternatives: { id: number; imageUrl?: string; content: string }[],
 ): Question {
   return {
-    id: parseInt(apiQuestion.id) || index,
+    id: toQuestionId(apiQuestion, index),
     text: apiQuestion.content,
     type: apiQuestion.questionType.id === 3 ? "single" : "multiple",
     options: alternatives.map((alt) => ({
@@ -100,13 +50,12 @@ function mapApiQuestionToQuestion(
   };
 }
 
-export default function ExamAttemptPage({ params }: Props) {
+export default function ExamAttemptPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.examAttempt;
+  const { slug: attemptId } = useParams<{ slug: string }>();
   const router = useRouter();
-  const [dict, setDict] = useState<ExamAttemptDict | null>(null);
-  const [attemptId, setAttemptId] = useState<string | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Answer[]>([]);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [startedAt] = useState(new Date());
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -119,7 +68,7 @@ export default function ExamAttemptPage({ params }: Props) {
     isLoadingAlternatives,
     answers: attemptAnswers,
     answersCount,
-    updateAnswer,
+    toggleAnswer,
     finishExam,
     isFinishingExam,
     isExamFinished,
@@ -133,24 +82,17 @@ export default function ExamAttemptPage({ params }: Props) {
     isFirstPage,
     isLastPage,
   } = useAttempt({
-    attemptId: attemptId || "",
+    attemptId,
     pageSize: PAGE_SIZE,
   });
 
   const timeLimit = apiQuestions[0]?.timeLimit || 3600;
 
-  const isDataReady = !isLoadingQuestions && !!dict && !questionsError;
+  const isDataReady = !isLoadingQuestions && !questionsError;
   const errorStatus =
     questionsError instanceof AxiosError
       ? questionsError.response?.status
       : undefined;
-
-  useEffect(() => {
-    params.then((p) => {
-      setAttemptId(p.slug);
-      setLang(resolveLocale(p.lang));
-    });
-  }, [params]);
 
   const questions = useMemo(
     () =>
@@ -158,6 +100,19 @@ export default function ExamAttemptPage({ params }: Props) {
         mapApiQuestionToQuestion(q, idx, alternatives[q.id] || []),
       ),
     [apiQuestions, alternatives],
+  );
+
+  const answers = useMemo<Answer[]>(
+    () =>
+      apiQuestions
+        .map((apiQuestion, idx) => ({
+          questionId: toQuestionId(apiQuestion, idx),
+          selectedOptions: (attemptAnswers.get(apiQuestion.id) ?? []).map(
+            Number,
+          ),
+        }))
+        .filter((answer) => answer.selectedOptions.length > 0),
+    [apiQuestions, attemptAnswers],
   );
 
   const currentQuestionIndex =
@@ -186,19 +141,10 @@ export default function ExamAttemptPage({ params }: Props) {
     return () => clearInterval(timer);
   }, [isDataReady, startedAt, timeLimit]);
 
-  useEffect(() => {
-    params.then(async (p) => {
-      const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.examAttempt);
-    });
-  }, [params]);
-
   const currentQuestion = questions[currentQuestionIndex];
-  const { unanswered } = getQuestionStats(questions.length, answers);
+  const unanswered = Math.max(0, totalElements - answersCount);
 
   const guardEnabled =
-    !!dict &&
     !isLoadingQuestions &&
     !isLoadingAlternatives &&
     !isFinishingExam &&
@@ -224,27 +170,14 @@ export default function ExamAttemptPage({ params }: Props) {
   const isOnFirstQuestionOfExam = isFirstPage && currentQuestionIndex === 0;
 
   const handleAnswerChange = (questionId: number, optionId: number) => {
-    const question = questions.find((q) => q.id === questionId);
-    if (!question) return;
+    const index = questions.findIndex((q) => q.id === questionId);
+    if (index === -1) return;
 
-    const isSingleChoice = question.type === "single";
-    const newAnswers = toggleOption(
-      questionId,
-      optionId,
-      isSingleChoice,
-      answers,
+    toggleAnswer(
+      apiQuestions[index].id,
+      String(optionId),
+      questions[index].type === "single",
     );
-    setAnswers(newAnswers);
-
-    const answer = newAnswers.find((a) => a.questionId === questionId);
-    if (answer) {
-      const apiQuestion = apiQuestions.find(
-        (q) => parseInt(q.id) === questionId,
-      );
-      if (apiQuestion) {
-        updateAnswer(apiQuestion.id, answer.selectedOptions.map(String));
-      }
-    }
   };
 
   const handlePrevious = () => {
@@ -304,7 +237,7 @@ export default function ExamAttemptPage({ params }: Props) {
     }
   };
 
-  if (questionsError && dict) {
+  if (questionsError) {
     const message =
       errorStatus === 422
         ? dict.error.not_enough_questions
@@ -325,13 +258,13 @@ export default function ExamAttemptPage({ params }: Props) {
     );
   }
 
-  if (!isDataReady || isLoadingAlternatives || !attemptId) {
+  if (!isDataReady || isLoadingAlternatives) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">
-            {dict?.loading ?? "Loading..."}
+            {dict.loading}
           </p>
         </div>
       </div>

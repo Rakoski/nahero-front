@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -22,31 +22,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDictionary } from "@/dictionaries";
+import type { Dictionary } from "@/dictionaries";
 import { Typography } from "@/components/ui/typography";
 import Link from "next/link";
 import { usePasswordRecovery } from "./usePasswordRecovery";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type PasswordRecoveryDict = {
-  title: string;
-  subtitle: string;
-  email_label: string;
-  email_placeholder: string;
-  submit_btn: string;
-  submit_loading: string;
-  back_to_login: string;
-  sent_title: string;
-  sent_description: string;
-  sent_hint: string;
-  resend_btn: string;
-  validation: {
-    email_required: string;
-    email_invalid: string;
-  };
-};
-
-const createPasswordRecoverySchema = (dict: PasswordRecoveryDict) =>
+const createPasswordRecoverySchema = (dict: Dictionary["passwordRecovery"]) =>
   z.object({
     email: z
       .string()
@@ -58,29 +40,17 @@ type PasswordRecoveryFormData = z.infer<
   ReturnType<typeof createPasswordRecoverySchema>
 >;
 
-type Props = {
-  params: Promise<{ lang: string }>;
-};
-
-export default function PasswordRecoveryPage({ params }: Props) {
-  const [dict, setDict] = useState<PasswordRecoveryDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
+export default function PasswordRecoveryPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.passwordRecovery;
   const [sentTo, setSentTo] = useState<string | null>(null);
-
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.passwordRecovery);
-    });
-  }, [params]);
 
   const { mutate: requestRecovery, isPending } = usePasswordRecovery({
     onSent: setSentTo,
   });
 
   const form = useForm<PasswordRecoveryFormData>({
-    resolver: dict ? zodResolver(createPasswordRecoverySchema(dict)) : undefined,
+    resolver: zodResolver(createPasswordRecoverySchema(dict)),
     defaultValues: {
       email: "",
     },
@@ -94,14 +64,6 @@ export default function PasswordRecoveryPage({ params }: Props) {
     setSentTo(null);
     form.reset();
   };
-
-  if (!dict) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-yellow-600" />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full min-h-[calc(85vh-200px)] flex items-center justify-center p-5 sm:p-10">

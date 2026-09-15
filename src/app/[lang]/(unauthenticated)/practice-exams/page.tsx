@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
 import { FadeIn } from "@/components/ui/fade-in";
@@ -9,7 +9,6 @@ import { ExamFilters as ExamFiltersComponent } from "../../../../components/prac
 import { SkeletonCard } from "../../../../components/practice-exams/components/skeleton-card";
 import { EmptyState } from "../../../../components/practice-exams/components/empty-state";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { getDictionary } from "@/dictionaries";
 import {
   usePracticeExams,
   searchPracticeExamAtom,
@@ -19,55 +18,7 @@ import {
 import type { PracticeExamDTO } from "@/lib/dtos";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { resolveLocale } from "@/lib/locale";
-
-type PracticeExamsDict = {
-  title: string;
-  subtitle: string;
-  search_placeholder: string;
-  search_button: string;
-  clear_filters: string;
-  filter_difficulty: string;
-  filter_category: string;
-  all_levels: string;
-  all_categories: string;
-  difficulty_levels: {
-    beginner: string;
-    intermediate: string;
-    advanced: string;
-    expert: string;
-  };
-  categories: {
-    aws: string;
-    azure: string;
-    google: string;
-  };
-  card: {
-    start_exam: string;
-    time_limit: string;
-    minimum_score: string;
-    questions: string;
-    category: string;
-  };
-  empty_state: {
-    title: string;
-    description_filtered: string;
-    description_empty: string;
-    clear_button: string;
-  };
-  error_state: {
-    title: string;
-  };
-  pagination?: {
-    loading_more: string;
-    load_more: string;
-    showing_all: string;
-  };
-};
-
-interface Props {
-  params: Promise<{ lang: string }>;
-}
+import { useLocale } from "@/providers/locale-provider";
 
 function mapPracticeExamToExam(dto: PracticeExamDTO) {
   return {
@@ -87,27 +38,14 @@ function mapPracticeExamToExam(dto: PracticeExamDTO) {
   };
 }
 
-export default function PracticeExamsPage({ params }: Props) {
-  const [dict, setDict] = useState<PracticeExamsDict | null>(null);
-  const [breadcrumbsDict, setBreadcrumbsDict] = useState<{
-    home: string;
-    aria: string;
-  } | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
+export default function PracticeExamsPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.practiceExams;
   const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
   const [category, setCategory] = useAtom(categoryPracticeExamAtom);
   const [difficulty, setDifficulty] = useAtom(difficultyPracticeExamAtom);
 
   const observerTarget = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.practiceExams);
-      setBreadcrumbsDict(dictionary.breadcrumbs);
-    });
-  }, [params]);
 
   const {
     practiceExams,
@@ -165,17 +103,13 @@ export default function PracticeExamsPage({ params }: Props) {
     searchInput || difficulty > 0 || category !== "all",
   );
 
-  if (!dict) return null;
-
   return (
     <div className="container mx-auto px-4 py-4 space-y-8">
-      {breadcrumbsDict && (
-        <Breadcrumbs
-          lang={lang}
-          items={[{ label: dict.title }]}
-          dict={breadcrumbsDict}
-        />
-      )}
+      <Breadcrumbs
+        lang={lang}
+        items={[{ label: dict.title }]}
+        dict={dictionary.breadcrumbs}
+      />
       <FadeIn>
         <div className="space-y-2 text-center">
           <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>
@@ -216,12 +150,7 @@ export default function PracticeExamsPage({ params }: Props) {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {practiceExamsMapped.map((practiceExam) => (
-              <ExamCard
-                key={practiceExam.id}
-                exam={practiceExam}
-                lang={lang}
-                dict={dict}
-              />
+              <ExamCard key={practiceExam.id} exam={practiceExam} />
             ))}
           </div>
 

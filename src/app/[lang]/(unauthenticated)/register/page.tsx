@@ -28,38 +28,10 @@ import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import Link from "next/link";
 import { useRegister } from "./useRegister";
-import { resolveLocale } from "@/lib/locale";
+import type { Dictionary } from "@/dictionaries";
+import { useLocale } from "@/providers/locale-provider";
 
-type RegisterDict = {
-  title: string;
-  subtitle: string;
-  name_label: string;
-  name_placeholder: string;
-  email_label: string;
-  email_placeholder: string;
-  password_label: string;
-  password_placeholder: string;
-  confirm_password_label: string;
-  confirm_password_placeholder: string;
-  back_to_login: string;
-  submit_btn: string;
-  submit_loading: string;
-  validation: {
-    name_required: string;
-    name_min: string;
-    email_required: string;
-    email_invalid: string;
-    password_min: string;
-    confirm_password_required: string;
-    passwords_must_match: string;
-  };
-  errors: {
-    registration_failed: string;
-    unexpected_error: string;
-  };
-};
-
-const createRegisterSchema = (dict: RegisterDict) =>
+const createRegisterSchema = (dict: Dictionary["register"]) =>
   z
     .object({
       name: z
@@ -82,23 +54,9 @@ const createRegisterSchema = (dict: RegisterDict) =>
 
 type RegisterFormData = z.infer<ReturnType<typeof createRegisterSchema>>;
 
-type Props = {
-  params: Promise<{ lang: string }>;
-};
-
-export default function RegisterPage({ params }: Props) {
-  const [dict, setDict] = useState<RegisterDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
-
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.register);
-    });
-  }, [params]);
-
+export default function RegisterPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.register;
   const { data: session } = useSession();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -107,7 +65,7 @@ export default function RegisterPage({ params }: Props) {
   const { mutate: register, isPending } = useRegister(lang);
 
   const form = useForm<RegisterFormData>({
-    resolver: dict ? zodResolver(createRegisterSchema(dict)) : undefined,
+    resolver: zodResolver(createRegisterSchema(dict)),
     defaultValues: {
       name: "",
       email: "",
@@ -123,18 +81,8 @@ export default function RegisterPage({ params }: Props) {
   }, [session, router]);
 
   const onSubmit = (data: RegisterFormData) => {
-    if (!dict) return;
-
     register(data);
   };
-
-  if (!dict) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-yellow-600" />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full min-h-[calc(85vh-200px)] flex items-center justify-center p-5 sm:p-10">

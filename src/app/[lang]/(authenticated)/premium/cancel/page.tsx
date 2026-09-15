@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,39 +11,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Routes } from "@/routes/routes";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type CancelDict = {
-  title: string;
-  subtitle: string;
-  cta_retry: string;
-  cta_exams: string;
-};
-
-interface Props {
-  params: Promise<{ lang: string }>;
-}
-
-export default function PremiumCancelPage({ params }: Props) {
-  const [dict, setDict] = useState<CancelDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
-
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.premium.cancel as unknown as CancelDict);
-    });
-  }, [params]);
-
-  if (!dict) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
-      </div>
-    );
-  }
+export default function PremiumCancelPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.premium.cancel;
 
   return (
     <div className="container mx-auto py-16 px-4 max-w-xl">

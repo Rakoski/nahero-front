@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Check, Loader2, Sparkles } from "lucide-react";
@@ -17,72 +16,26 @@ import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useCreateCheckoutSession } from "@/hooks/useCreateCheckoutSession";
 import type { PlanInterval } from "@/services/payment/create-checkout-session";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type PremiumDict = {
-  title: string;
-  subtitle: string;
-  loading: string;
-  fromPracticeAttempt: string;
-  alreadyPremiumTitle: string;
-  alreadyPremiumBody: string;
-  goToDashboard: string;
-  plans: {
-    monthly: {
-      name: string;
-      price: string;
-      cadence: string;
-      description: string;
-      cta: string;
-    };
-    yearly: {
-      name: string;
-      price: string;
-      cadence: string;
-      description: string;
-      cta: string;
-      badge: string;
-      savings: string;
-    };
-  };
-  features: {
-    title: string;
-    items: readonly string[];
-  };
-  starting: string;
-};
-
-interface Props {
-  params: Promise<{ lang: string }>;
-}
-
-export default function PremiumPage({ params }: Props) {
+export default function PremiumPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.premium;
   const searchParams = useSearchParams();
-  const [dict, setDict] = useState<PremiumDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
 
   const { data: subscription, isLoading: isLoadingSubscription } =
     useSubscriptionStatus();
   const { mutate: startCheckout, isPending: isStartingCheckout, variables } =
     useCreateCheckoutSession();
 
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.premium as unknown as PremiumDict);
-    });
-  }, [params]);
-
   const fromPaywall = searchParams.get("from") === "practice-attempt";
 
-  if (!dict || isLoadingSubscription) {
+  if (isLoadingSubscription) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">{dict?.loading ?? "Loading…"}</p>
+          <p className="text-muted-foreground">{dict.loading}</p>
         </div>
       </div>
     );

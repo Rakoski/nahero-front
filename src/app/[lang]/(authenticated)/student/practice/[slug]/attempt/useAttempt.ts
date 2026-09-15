@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { questionsService } from "@/services/questions";
 import { alternativesService } from "@/services/alternatives";
 import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
@@ -74,15 +74,27 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     enabled: questionIds.length > 0,
   });
 
-  const updateAnswer = useCallback(
-    (questionId: string, alternativeIds: string[]) => {
+  const toggleAnswer = useCallback(
+    (questionId: string, alternativeId: string, isSingleChoice: boolean) => {
       setAnswers((prev) => {
+        const current = prev.get(questionId) ?? [];
+        const next = isSingleChoice
+          ? [alternativeId]
+          : current.includes(alternativeId)
+            ? current.filter((id) => id !== alternativeId)
+            : [...current, alternativeId];
+
         const newAnswers = new Map(prev);
-        newAnswers.set(questionId, alternativeIds);
+        newAnswers.set(questionId, next);
         return newAnswers;
       });
     },
     [],
+  );
+
+  const answeredCount = useMemo(
+    () => Array.from(answers.values()).filter((ids) => ids.length > 0).length,
+    [answers],
   );
 
   const {
@@ -182,8 +194,8 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     alternativesError: alternativesQueries.error,
 
     answers,
-    answersCount: answers.size,
-    updateAnswer,
+    answersCount: answeredCount,
+    toggleAnswer,
 
     currentPage,
     totalPages: questionsData?.totalPages ?? 0,

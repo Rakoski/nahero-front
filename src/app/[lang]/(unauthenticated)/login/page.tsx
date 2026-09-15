@@ -25,40 +25,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDictionary } from "@/dictionaries";
+import type { Dictionary } from "@/dictionaries";
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useLogin } from "./useLogin";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type LoginDict = {
-  verified_success: string;
-  title: string;
-  subtitle: string;
-  email_label: string;
-  email_placeholder: string;
-  password_label: string;
-  password_placeholder: string;
-  forgot_password: string;
-  instructor_link: string;
-  submit_btn: string;
-  submit_loading: string;
-  new_here: string;
-  register_now: string;
-  validation: {
-    identifier_required: string;
-    identifier_invalid: string;
-    password_min: string;
-  };
-  errors: {
-    invalid_credentials: string;
-    unexpected_error: string;
-  };
-};
-
-const createLoginSchema = (dict: LoginDict) =>
+const createLoginSchema = (dict: Dictionary["login"]) =>
   z.object({
     identifier: z
       .string()
@@ -78,22 +53,9 @@ const createLoginSchema = (dict: LoginDict) =>
 
 type LoginFormData = z.infer<ReturnType<typeof createLoginSchema>>;
 
-type Props = {
-  params: Promise<{ lang: string }>;
-};
-
-export default function LoginPage({ params }: Props) {
-  const [dict, setDict] = useState<LoginDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
-
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.login);
-    });
-  }, [params]);
-
+export default function LoginPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.login;
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
@@ -104,7 +66,7 @@ export default function LoginPage({ params }: Props) {
   const { mutate: login, isPending } = useLogin();
 
   const form = useForm<LoginFormData>({
-    resolver: dict ? zodResolver(createLoginSchema(dict)) : undefined,
+    resolver: zodResolver(createLoginSchema(dict)),
     defaultValues: {
       identifier: "",
       password: "",
@@ -121,7 +83,7 @@ export default function LoginPage({ params }: Props) {
   const verifiedToastShown = useRef(false);
 
   useEffect(() => {
-    if (!dict || !justVerified || verifiedToastShown.current) return;
+    if (!justVerified || verifiedToastShown.current) return;
     verifiedToastShown.current = true;
     toast.success(dict.verified_success);
   }, [dict, justVerified]);
@@ -132,14 +94,6 @@ export default function LoginPage({ params }: Props) {
       password: data.password,
     });
   };
-
-  if (!dict) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-yellow-600" />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full min-h-[calc(85vh-200px)] flex items-center justify-center p-5 sm:p-10">

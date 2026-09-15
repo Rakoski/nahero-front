@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
   Card,
@@ -21,73 +21,14 @@ import { CheckCircle2, XCircle, Clock, Award } from "lucide-react";
 import type { AnswerFilters } from "@/services/answers";
 import { useAnswers } from "./useAnswers";
 import { AnswersList } from "../../../../../../../../components/answers/answersList";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type ExamResultsDict = {
-  title: string;
-  subtitle: string;
-  loading: string;
-  status: {
-    passed: string;
-    failed: string;
-  };
-  statusLabels: {
-    completed: string;
-    timed_out: string;
-    in_progress: string;
-  };
-  stats: {
-    score: string;
-    correct: string;
-    incorrect: string;
-    total: string;
-    timeSpent: string;
-    passingScore: string;
-    attemptStatus: string;
-    answered: string;
-    startTime: string;
-    endTime: string;
-    limit: string;
-  };
-  details: string;
-  percentages: {
-    correct: string;
-    incorrect: string;
-  };
-  actions: {
-    retry: string;
-    backToExams: string;
-    viewDetails: string;
-  };
-  timeFormat: {
-    minutes: string;
-    hours: string;
-  };
-  answers: {
-    title: string;
-    showAll: string;
-    showCorrect: string;
-    showIncorrect: string;
-    searchPlaceholder: string;
-    loading: string;
-    questionNumber: string;
-    correct: string;
-    incorrect: string;
-    questionAlt: string;
-    alternativeAlt: string;
-    explanation: string;
-  };
-};
-
-interface Props {
-  params: Promise<{ lang: string; slug: string }>;
-}
-
-export default function ExamResultsPage({ params }: Props) {
+export default function ExamResultsPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.examResults;
+  const { slug } = useParams<{ slug: string }>();
+  const attemptId = parseInt(slug);
   const router = useRouter();
-  const [dict, setDict] = useState<ExamResultsDict | null>(null);
-  const [attemptId, setAttemptId] = useState<number | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
   const [showAnswers, setShowAnswers] = useState(false);
   const [filters, setFilters] = useState<AnswerFilters>({});
   const answersRef = useRef<HTMLDivElement>(null);
@@ -98,7 +39,7 @@ export default function ExamResultsPage({ params }: Props) {
     hasNextPage,
     isFetchingNextPage,
     isLoading: isLoadingAnswers,
-  } = useAnswers(attemptId || 0, filters, 10);
+  } = useAnswers(attemptId, filters, 10);
 
   // Fetch results from API
   const {
@@ -108,22 +49,10 @@ export default function ExamResultsPage({ params }: Props) {
   } = useQuery<GetResultResponse>({
     queryKey: [QUERIES.STUDENT_PRACTICE_ATTEMPTS.GET_RESULT, attemptId],
     queryFn: () =>
-      studentPracticeAttemptsService.getStudentPracticeAttemptResult(
-        attemptId!,
-      ),
-    enabled: !!attemptId,
+      studentPracticeAttemptsService.getStudentPracticeAttemptResult(attemptId),
+    enabled: !Number.isNaN(attemptId),
     retry: 1,
   });
-
-  useEffect(() => {
-    params.then(async (p) => {
-      setAttemptId(parseInt(p.slug));
-      setLang(resolveLocale(p.lang));
-      const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.examResults);
-    });
-  }, [params]);
 
   useEffect(() => {
     if (resultsError) {
@@ -162,13 +91,13 @@ export default function ExamResultsPage({ params }: Props) {
     }, 100);
   }, []);
 
-  if (!dict || !results || isLoadingResults) {
+  if (!results || isLoadingResults) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">
-            {dict?.loading || "Loading results..."}
+            {dict.loading}
           </p>
         </div>
       </div>

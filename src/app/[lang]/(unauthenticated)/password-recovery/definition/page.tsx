@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,39 +29,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDictionary } from "@/dictionaries";
+import type { Dictionary } from "@/dictionaries";
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import Link from "next/link";
 import { useResetPassword } from "./useResetPassword";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type PasswordRecoveryDefinitionDict = {
-  title: string;
-  subtitle: string;
-  password_label: string;
-  password_placeholder: string;
-  confirm_password_label: string;
-  confirm_password_placeholder: string;
-  submit_btn: string;
-  submit_loading: string;
-  back_to_login: string;
-  success_title: string;
-  success_description: string;
-  go_to_login: string;
-  missing_token_title: string;
-  missing_token_description: string;
-  invalid_token_description: string;
-  request_new_link: string;
-  validation: {
-    password_required: string;
-    password_min: string;
-    confirm_password_required: string;
-    passwords_must_match: string;
-  };
-};
-
-const createResetPasswordSchema = (dict: PasswordRecoveryDefinitionDict) =>
+const createResetPasswordSchema = (
+  dict: Dictionary["passwordRecoveryDefinition"],
+) =>
   z
     .object({
       password: z
@@ -81,14 +58,10 @@ type ResetPasswordFormData = z.infer<
   ReturnType<typeof createResetPasswordSchema>
 >;
 
-type Props = {
-  params: Promise<{ lang: string }>;
-};
-
-export default function PasswordRecoveryDefinitionPage({ params }: Props) {
+export default function PasswordRecoveryDefinitionPage() {
   return (
     <Suspense fallback={<PageLoader />}>
-      <PasswordRecoveryDefinitionContent params={params} />
+      <PasswordRecoveryDefinitionContent />
     </Suspense>
   );
 }
@@ -101,9 +74,9 @@ function PageLoader() {
   );
 }
 
-function PasswordRecoveryDefinitionContent({ params }: Props) {
-  const [dict, setDict] = useState<PasswordRecoveryDefinitionDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
+function PasswordRecoveryDefinitionContent() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.passwordRecoveryDefinition;
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isDone, setIsDone] = useState(false);
@@ -112,21 +85,13 @@ function PasswordRecoveryDefinitionContent({ params }: Props) {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.passwordRecoveryDefinition);
-    });
-  }, [params]);
-
   const { mutate: submitNewPassword, isPending } = useResetPassword({
     onDone: () => setIsDone(true),
     onTokenRejected: () => setIsTokenRejected(true),
   });
 
   const form = useForm<ResetPasswordFormData>({
-    resolver: dict ? zodResolver(createResetPasswordSchema(dict)) : undefined,
+    resolver: zodResolver(createResetPasswordSchema(dict)),
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -142,8 +107,6 @@ function PasswordRecoveryDefinitionContent({ params }: Props) {
       confirmPassword: data.confirmPassword,
     });
   };
-
-  if (!dict) return <PageLoader />;
 
   const isTokenUnusable = !token || isTokenRejected;
 

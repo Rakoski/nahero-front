@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Routes } from "@/routes/routes";
 import { type Exam } from "@/services/practice-exams/use-exams";
+import { useLocale } from "@/providers/locale-provider";
 import {
   getDifficultyLabel,
   formatTimeLimit,
@@ -23,25 +24,11 @@ import {
 
 export interface ExamCardProps {
   exam: Exam;
-  lang: "en" | "pt";
-  dict: {
-    card: {
-      start_exam: string;
-      time_limit: string;
-      minimum_score: string;
-      questions: string;
-      category: string;
-    };
-    difficulty_levels: {
-      beginner: string;
-      intermediate: string;
-      advanced: string;
-      expert: string;
-    };
-  };
 }
 
-export function ExamCard({ exam, lang, dict }: ExamCardProps) {
+export function ExamCard({ exam }: ExamCardProps) {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.practiceExams;
   const difficultyValue = exam.difficulty_level || exam.difficulty;
   const difficultyLabel = getDifficultyLabel(
     difficultyValue,

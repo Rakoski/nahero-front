@@ -784,4 +784,4 @@ export const pt = {
       cta: "Ver planos",
     },
   },
-} as const;
+};

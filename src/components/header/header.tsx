@@ -11,35 +11,15 @@ import { useState } from "react";
 import { SignOut } from "../../services/auth/sign-out";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Routes } from "../../routes/routes";
-
-type HeaderDict = {
-  home: string;
-  exams: string;
-  certifications: string;
-  about: string;
-  login: string;
-  register: string;
-  dashboard: string;
-  history: string;
-  my_profile: string;
-  my_subscription: string;
-  premium: string;
-  free_tries_badge: string;
-  premium_badge: string;
-  logout: string;
-  menu: string;
-};
-
-interface HeaderProps {
-  lang: string;
-  dict: HeaderDict;
-}
+import { useLocale } from "@/providers/locale-provider";
 
 const buildPath = (lang: string, route: string) => {
   return `/${lang}${route}`.replace(/\/+/g, "/");
 };
 
-export function Header({ dict, lang }: HeaderProps) {
+export function Header() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.header;
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -134,7 +114,7 @@ export function Header({ dict, lang }: HeaderProps) {
           )}
           {session ? (
             <div className="hidden md:block">
-              <UserNav dict={dict} lang={lang} />
+              <UserNav />
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">

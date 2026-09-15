@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Loader2, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -25,66 +25,22 @@ import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useCancelSubscription } from "@/hooks/useCancelSubscription";
 import type { SubscriptionStatus } from "@/services/subscription/get-status";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type SubscriptionDict = {
-  title: string;
-  loading: string;
-  provider_label: string;
-  status_label: string;
-  statuses: {
-    active: string;
-    canceled: string;
-    past_due: string;
-    free: string;
-  };
-  renews_on: string;
-  cancels_on: string;
-  canceled_on: string;
-  free_tries_left: string;
-  cancel_button: string;
-  cancel_pending: string;
-  already_canceling: string;
-  cancel_dialog: {
-    title: string;
-    description: string;
-    confirm: string;
-    dismiss: string;
-  };
-  upgrade: {
-    title: string;
-    subtitle: string;
-    cta: string;
-  };
-};
-
-interface Props {
-  params: Promise<{ lang: string }>;
-}
-
-export default function SubscriptionPage({ params }: Props) {
-  const [dict, setDict] = useState<SubscriptionDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
+export default function SubscriptionPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.subscription;
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: subscription, isLoading } = useSubscriptionStatus();
   const { mutate: cancelSub, isPending: isCanceling } = useCancelSubscription();
 
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.subscription as unknown as SubscriptionDict);
-    });
-  }, [params]);
-
-  if (!dict || isLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">{dict?.loading ?? "Loading…"}</p>
+          <p className="text-muted-foreground">{dict.loading}</p>
         </div>
       </div>
     );

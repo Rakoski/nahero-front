@@ -791,4 +791,4 @@ export const en = {
       cta: "See plans",
     },
   },
-} as const;
+};

@@ -15,15 +15,11 @@ import { LogOut, Sparkles } from "lucide-react";
 import { Routes } from "@/routes/routes";
 import { useActiveAttempt } from "@/providers/active-attempt-provider";
 import { useRef } from "react";
+import { useLocale } from "@/providers/locale-provider";
 
-type UserNavDict = {
-  dashboard: string;
-  my_profile: string;
-  my_subscription: string;
-  logout: string;
-};
-
-export function UserNav({ dict, lang }: { dict: UserNavDict; lang: string }) {
+export function UserNav() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.header;
   const { data: session } = useSession();
   const { abandonActiveAttempt } = useActiveAttempt();
   const isLoggingOutRef = useRef(false);
@@ -37,7 +33,7 @@ export function UserNav({ dict, lang }: { dict: UserNavDict; lang: string }) {
     } catch {
       // a failed abandon must not trap the user in a logged-in state
     }
-    await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: `/${lang}` });
   };
 
   if (!user) return null;

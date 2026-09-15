@@ -1,7 +1,10 @@
+import type { Locale } from "@/lib/locale";
 import { en } from "./en";
 import { pt } from "./pt";
 
-const dictionaries = { en, pt };
+export type Dictionary = typeof en;
 
-export const getDictionary = async (locale: "en" | "pt") =>
+const dictionaries: Record<Locale, Dictionary> = { en, pt };
+
+export const getDictionary = async (locale: Locale): Promise<Dictionary> =>
   dictionaries[locale];

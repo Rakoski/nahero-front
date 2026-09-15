@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -16,54 +15,12 @@ import { Clock, Trophy, Target, AlertCircle } from "lucide-react";
 import { Routes } from "@/routes/routes";
 import { HistoryFilters } from "@/components/history/history-filters";
 import { useHistory } from "./useHistory";
-import { resolveLocale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 
-type HistoryDict = {
-  title: string;
-  subtitle: string;
-  loading: string;
-  error: {
-    title: string;
-    description: string;
-  };
-  empty: {
-    title: string;
-    description: string;
-    action: string;
-  };
-  card: {
-    score: string;
-    timeSpent: string;
-    timeLimit: string;
-    passingScore: string;
-    seeResults: string;
-  };
-  timeFormat: {
-    minutes: string;
-    hours: string;
-  };
-  filters: {
-    filter_exam: string;
-    filter_date_from: string;
-    filter_date_to: string;
-    filter_min_score: string;
-    clear_filters: string;
-    all_exams: string;
-    search: string;
-    search_exam_placeholder: string;
-    loading_exams: string;
-    no_exam_found: string;
-  };
-};
-
-interface Props {
-  params: Promise<{ lang: string }>;
-}
-
-export default function HistoryPage({ params }: Props) {
+export default function HistoryPage() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.history;
   const router = useRouter();
-  const [dict, setDict] = useState<HistoryDict | null>(null);
-  const [lang, setLang] = useState<"en" | "pt">("en");
 
   const {
     history,
@@ -76,17 +33,7 @@ export default function HistoryPage({ params }: Props) {
     hasActiveFilters,
   } = useHistory();
 
-  useEffect(() => {
-    params.then(async (p) => {
-      setLang(resolveLocale(p.lang));
-      const { getDictionary } = await import("@/dictionaries");
-      const dictionary = await getDictionary(resolveLocale(p.lang));
-      setDict(dictionary.history);
-    });
-  }, [params]);
-
   const formatTime = (minutes: number | null): string => {
-    if (!dict) return minutes !== null ? `${minutes} min` : "N/A";
     if (minutes === null) return "N/A";
 
     if (minutes < 60) {
@@ -102,17 +49,6 @@ export default function HistoryPage({ params }: Props) {
   const handleSeeResults = (attemptId: number) => {
     router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
   };
-
-  if (!dict) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   // Only show full-page spinner on initial load
   if (isLoading && (!history || history.length === 0)) {

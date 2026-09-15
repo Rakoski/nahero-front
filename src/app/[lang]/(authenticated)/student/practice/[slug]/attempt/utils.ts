@@ -57,50 +57,6 @@ export function isOptionSelected(
   return answer ? answer.selectedOptions.includes(optionId) : false;
 }
 
-export function toggleOption(
-  questionId: number,
-  optionId: number,
-  isSingleChoice: boolean,
-  answers: Answer[]
-): Answer[] {
-  const existingAnswerIndex = answers.findIndex(
-    (a) => a.questionId === questionId
-  );
-
-  if (existingAnswerIndex === -1) {
-    return [
-      ...answers,
-      {
-        questionId,
-        selectedOptions: [optionId],
-      },
-    ];
-  }
-
-  const existingAnswer = answers[existingAnswerIndex];
-  let newSelectedOptions: number[];
-
-  if (isSingleChoice) {
-    newSelectedOptions = [optionId];
-  } else {
-    if (existingAnswer.selectedOptions.includes(optionId)) {
-      newSelectedOptions = existingAnswer.selectedOptions.filter(
-        (id) => id !== optionId
-      );
-    } else {
-      newSelectedOptions = [...existingAnswer.selectedOptions, optionId];
-    }
-  }
-
-  const newAnswers = [...answers];
-  newAnswers[existingAnswerIndex] = {
-    ...existingAnswer,
-    selectedOptions: newSelectedOptions,
-  };
-
-  return newAnswers;
-}
-
 export function calculateRemainingTime(
   startedAt: Date,
   timeLimitMinutes: number
@@ -131,17 +87,6 @@ export function formatTimeLong(seconds: number): string {
   }
 
   return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-}
-
-export function getQuestionStats(
-  totalQuestions: number,
-  answers: Answer[]
-): { answered: number; unanswered: number } {
-  const answered = answers.filter((a) => a.selectedOptions.length > 0).length;
-  return {
-    answered,
-    unanswered: totalQuestions - answered,
-  };
 }
 
 export function getExpectedSelections(question: Question): number {

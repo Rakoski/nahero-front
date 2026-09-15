@@ -16,7 +16,8 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
 import { EMAIL_ALREADY_VERIFIED } from "@/constants/auth-errors";
-import { resolveLocale, type Locale } from "@/lib/locale";
+import { type Locale } from "@/lib/locale";
+import { useLocale } from "@/providers/locale-provider";
 import { useResendVerification } from "./useResendVerification";
 
 export type VerifyEmailDict = {
@@ -34,8 +35,6 @@ export type VerifyEmailDict = {
   request_new_link: string;
   back_to_login: string;
 };
-
-type Props = { params: Promise<{ lang: string }> };
 
 function Shell({
   title,
@@ -183,30 +182,13 @@ function ConfirmView({
   );
 }
 
-function VerifyEmailContent({ params }: Props) {
-  const [dict, setDict] = useState<VerifyEmailDict | null>(null);
-  const [lang, setLang] = useState<Locale>("en");
+function VerifyEmailContent() {
+  const { lang, dict: dictionary } = useLocale();
+  const dict = dictionary.verifyEmail;
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email") ?? "";
   const justSent = searchParams.get("sent") === "1";
-
-  useEffect(() => {
-    params.then(async (p) => {
-      const locale = resolveLocale(p.lang);
-      setLang(locale);
-      const { getDictionary } = await import("@/dictionaries");
-      setDict((await getDictionary(locale)).verifyEmail);
-    });
-  }, [params]);
-
-  if (!dict) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-yellow-600" />
-      </div>
-    );
-  }
 
   return token ? (
     <ConfirmView dict={dict} lang={lang} token={token} />
@@ -215,10 +197,10 @@ function VerifyEmailContent({ params }: Props) {
   );
 }
 
-export default function VerifyEmailPage(props: Props) {
+export default function VerifyEmailPage() {
   return (
     <Suspense fallback={null}>
-      <VerifyEmailContent {...props} />
+      <VerifyEmailContent />
     </Suspense>
   );
 }

@@ -1,72 +1,101 @@
 import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-const locales = ["en", "pt"];
-const defaultLocale = "en";
+const locales = ["en", "pt"] as const;
+type Locale = (typeof locales)[number];
+
+const defaultLocale: Locale = "en";
+const LOCALE_COOKIE = "NEXT_LOCALE";
+
+const isLocale = (value?: string | null): value is Locale =>
+  !!value && locales.includes(value as Locale);
+
+const localeFromPathname = (pathname: string): Locale | null => {
+  const segment = pathname.split("/")[1];
+  return isLocale(segment) ? segment : null;
+};
+
+const resolveLocale = (req: NextRequest): Locale => {
+  const cookieLocale = req.cookies.get(LOCALE_COOKIE)?.value;
+  if (isLocale(cookieLocale)) return cookieLocale;
+
+  const referer = req.headers.get("referer");
+  if (referer) {
+    try {
+      const refererLocale = localeFromPathname(new URL(referer).pathname);
+      if (refererLocale) return refererLocale;
+    } catch {
+      // malformed referer — fall through to the default
+    }
+  }
+
+  return defaultLocale;
+};
+
+const PROTECTED_SEGMENTS = [
+  { segment: "/student", role: "IS_STUDENT" },
+  { segment: "/teacher", role: "IS_TEACHER" },
+  { segment: "/admin", role: "IS_ADMIN" },
+] as const;
 
 export default withAuth(
   function middleware(req) {
-    const { pathname } = req.nextUrl;
+    const { pathname, search } = req.nextUrl;
     const token = req.nextauth.token;
-    const userRoles = token?.roles || [];
+
+    const pathLocale = localeFromPathname(pathname);
+
+    if (!pathLocale) {
+      const locale = resolveLocale(req);
+      const rest = pathname === "/" ? "" : pathname;
+      return NextResponse.redirect(
+        new URL(`/${locale}${rest}${search}`, req.url),
+      );
+    }
+
+    const protectedMatch = PROTECTED_SEGMENTS.find(({ segment }) =>
+      pathname.includes(segment),
+    );
+
+    if (protectedMatch) {
+      if (!token) {
+        const loginUrl = new URL(`/${pathLocale}/login`, req.url);
+        loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
+        return NextResponse.redirect(loginUrl);
+      }
+
+      const userRoles = (token.roles as string[] | undefined) ?? [];
+      if (!userRoles.includes(protectedMatch.role)) {
+        return NextResponse.redirect(
+          new URL(`/${pathLocale}/unauthorized`, req.url),
+        );
+      }
+    }
 
     const requestHeaders = new Headers(req.headers);
     requestHeaders.set("x-pathname", pathname);
 
-    if (pathname.includes("/student") && !userRoles.includes("IS_STUDENT")) {
-      return NextResponse.redirect(
-        new URL(`/${defaultLocale}/unauthorized`, req.url)
-      );
-    }
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    });
 
-    if (pathname.includes("/teacher") && !userRoles.includes("IS_TEACHER")) {
-      return NextResponse.redirect(
-        new URL(`/${defaultLocale}/unauthorized`, req.url)
-      );
-    }
-
-    if (pathname.includes("/admin") && !userRoles.includes("IS_ADMIN")) {
-      return NextResponse.redirect(
-        new URL(`/${defaultLocale}/unauthorized`, req.url)
-      );
-    }
-
-    const pathnameHasLocale = locales.some(
-      (locale) =>
-        pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-    );
-
-    if (pathnameHasLocale) {
-      return NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
+    if (req.cookies.get(LOCALE_COOKIE)?.value !== pathLocale) {
+      response.cookies.set(LOCALE_COOKIE, pathLocale, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
       });
     }
 
-    const locale = defaultLocale;
-    return NextResponse.redirect(new URL(`/${locale}${pathname}`, req.url));
+    return response;
   },
   {
     callbacks: {
-      authorized: ({ req, token }) => {
-        const path = req.nextUrl.pathname;
-
-        if (
-          path.includes("/student") ||
-          path.includes("/teacher") ||
-          path.includes("/admin")
-        ) {
-          return !!token;
-        }
-
-        return true;
-      },
+      // Auth is enforced inside the middleware above so the redirect can keep
+      // the locale the user is browsing in.
+      authorized: () => true,
     },
-    pages: {
-      signIn: `/${defaultLocale}/login`,
-    },
-  }
+  },
 );
 
 export const config = {
