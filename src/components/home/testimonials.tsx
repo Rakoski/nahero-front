@@ -1,9 +1,9 @@
-import { Quote } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
-import { Card, CardContent } from "@/components/ui/card";
+import { SectionHeading } from "./section-heading";
 
 interface TestimonialsProps {
   dict: {
+    eyebrow: string;
     title_start: string;
     title_highlight: string;
     subtitle: string;
@@ -17,29 +17,37 @@ interface TestimonialsProps {
 
 export function Testimonials({ dict }: TestimonialsProps) {
   return (
-    <section className="py-24">
-      <div className="container mx-auto px-4">
-        <FadeIn className="mx-auto mb-16 max-w-2xl text-center">
-          <h2 className="text-3xl font-bold md:text-4xl">
-            {dict.title_start}{" "}
-            <span className="text-yellow-600">{dict.title_highlight}</span>
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">{dict.subtitle}</p>
-        </FadeIn>
+    <section className="border-b border-border py-20 sm:py-24">
+      <div className="container mx-auto px-4 lg:pl-14 xl:pl-20">
+        <SectionHeading
+          eyebrow={dict.eyebrow}
+          title={dict.title_start}
+          highlight={dict.title_highlight}
+          subtitle={dict.subtitle}
+        />
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
           {dict.items.map((item, index) => (
-            <FadeIn key={index} delay={index * 0.1} className="h-full">
-              <Card className="h-full border-border">
-                <CardContent className="flex h-full flex-col gap-6 p-8">
-                  <Quote className="h-8 w-8 text-yellow-600" />
-                  <p className="flex-1 text-lg leading-relaxed">{item.quote}</p>
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">{item.role}</p>
-                  </div>
-                </CardContent>
-              </Card>
+            <FadeIn key={item.name} delay={index * 0.05} className="h-full">
+              <figure className="flex h-full flex-col bg-background p-6">
+                <blockquote className="flex-1 text-sm leading-relaxed text-pretty">
+                  {item.quote}
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-4">
+                  <span
+                    aria-hidden="true"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/[0.03] text-xs font-medium text-muted-foreground"
+                  >
+                    {item.name.charAt(0)}
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-sm font-medium">{item.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.role}
+                    </span>
+                  </span>
+                </figcaption>
+              </figure>
             </FadeIn>
           ))}
         </div>

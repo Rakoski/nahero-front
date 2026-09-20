@@ -25,6 +25,12 @@ import { StartExamButton } from "./start-exam-button";
 import { AutoStartOnReturn } from "./auto-start-on-return";
 import { OG_IMAGE } from "@/lib/og-image";
 import { resolveLocale } from "@/lib/locale";
+import { getExamContent } from "@/content/exams";
+import { ExamAbout } from "@/components/practice-exams/detail/exam-about";
+import { ExamSampleQuestions } from "@/components/practice-exams/detail/exam-sample-questions";
+import { ExamFaq } from "@/components/practice-exams/detail/exam-faq";
+import { ExamStructuredData } from "@/components/practice-exams/detail/exam-structured-data";
+import { buildFaqItems } from "./faq-items";
 
 interface Props {
   params: Promise<{ lang: string; slug: string }>;
@@ -73,6 +79,13 @@ export default async function PracticeExamDetailPage({ params }: Props) {
   const dict = dictionary.practiceExamDetail;
 
   if (!exam) notFound();
+
+  const [sampleQuestions, content] = await Promise.all([
+    practiceExamsService.getSampleQuestions(slug, lang),
+    Promise.resolve(getExamContent(slug)),
+  ]);
+
+  const faqItems = buildFaqItems(exam, dict.faq);
 
   const difficulty = exam.exam.difficultyLevel as DifficultyLevels;
   const difficultyLabel = getDifficultyLabel(
@@ -155,7 +168,30 @@ export default async function PracticeExamDetailPage({ params }: Props) {
             dict={dict.cta}
           />
         </div>
+
+        <ExamAbout
+          exam={exam}
+          content={content}
+          dict={dict.about}
+          lang={lang}
+        />
+
+        <ExamSampleQuestions
+          questions={sampleQuestions}
+          totalQuestions={exam.numberOfQuestions}
+          dict={dict.samples}
+        />
+
+        <ExamFaq items={faqItems} dict={dict.faq} />
       </article>
+
+      <ExamStructuredData
+        exam={exam}
+        sampleQuestions={sampleQuestions}
+        faqItems={faqItems}
+        difficultyLabel={difficultyLabel}
+        lang={lang}
+      />
     </div>
   );
 }

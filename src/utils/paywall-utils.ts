@@ -8,7 +8,7 @@ export function isPaymentRequiredError(error: unknown): boolean {
 
 /**
  * Redirects to /premium when the error signals payment required (HTTP 412).
- * Returns true if the error was handled — callers should skip their default
+ * Returns true if the error was handled, so callers should skip their default
  * error handling in that case to avoid a stray toast on the way out.
  */
 export function handlePaywallError(

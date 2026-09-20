@@ -1,8 +1,10 @@
 import { Target, Timer, Users } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
+import { SectionHeading } from "./section-heading";
 
 interface FeaturesProps {
   dict: {
+    eyebrow: string;
     title_start: string;
     title_highlight: string;
     items: readonly {
@@ -16,23 +18,27 @@ export function Features({ dict }: FeaturesProps) {
   const icons = [Target, Timer, Users];
 
   return (
-    <section className="py-20 bg-stone-900 dark:bg-stone-50">
-      <div className="container mx-auto px-4">
-        <FadeIn>
-          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-            {dict.title_start}{" "}
-            <span className="text-yellow-600">{dict.title_highlight}</span>
-          </h2>
-        </FadeIn>
+    <section className="border-b border-border py-20 sm:py-24">
+      <div className="container mx-auto px-4 lg:pl-14 xl:pl-20">
+        <SectionHeading
+          eyebrow={dict.eyebrow}
+          title={dict.title_start}
+          highlight={dict.title_highlight}
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="mt-12 grid grid-cols-1 divide-y divide-border rounded-xl border border-border md:grid-cols-3 md:divide-x md:divide-y-0">
           {dict.items.map((item, index) => {
             const Icon = icons[index];
             return (
-              <FadeIn key={index} delay={index * 0.1} className="h-full">
-                <div className="bg-stone-950 dark:bg-background border border-border p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow h-full flex flex-col items-center text-center md:items-start md:text-left">
-                  <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+              <FadeIn key={item.title} delay={index * 0.05} className="h-full">
+                <div className="flex h-full flex-col p-8">
+                  {Icon ? (
+                    <span className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-white/[0.04] text-foreground/80">
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                  ) : null}
+                  <h3 className="mt-5 text-base font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {item.description}
                   </p>
                 </div>

@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
-import { FadeIn } from "@/components/ui/fade-in";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Routes } from "../../routes/routes";
+import { Routes } from "@/routes/routes";
+import { QuestionDemo, type QuestionDemoDict } from "./question-demo";
 
 interface HeroProps {
   lang: "en" | "pt";
@@ -12,66 +12,53 @@ interface HeroProps {
     description: string;
     btn_primary: string;
     btn_secondary: string;
-    image_alt: string;
+    demo: QuestionDemoDict;
   };
 }
 
 export function Hero({ dict, lang }: HeroProps) {
   return (
-    <section className="relative py-32 md:py-48 overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/certifications2.jpeg"
-          alt=""
-          role="presentation"
-          fill
-          className="object-cover opacity-20"
-          priority
-        />
-      </div>
+    <section className="relative overflow-hidden border-b border-border">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_75%_60%_at_50%_0%,black,transparent)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 h-[24rem] w-[44rem] max-w-[130vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/[0.07] blur-[110px]"
+      />
 
-      <div className="absolute inset-0 bg-background/30 z-0" />
+      <div className="container relative mx-auto grid items-center gap-14 px-4 py-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)] lg:gap-16 lg:py-28">
+        <div className="max-w-xl lg:pl-10 xl:pl-16">
+          <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">
+            {dict.title_start}{" "}
+            <span className="text-brand">{dict.title_highlight}</span>
+          </h1>
 
-      <div className="container mx-auto px-4 flex flex-col-reverse md:flex-row items-center justify-between gap-12">
-        <div className="flex-1 text-center z-10">
-          <FadeIn delay={0.1}>
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-12">
-              {dict.title_start}{" "}
-              <span className="text-yellow-600">{dict.title_highlight}</span>
-            </h1>
-          </FadeIn>
+          <p className="mt-6 text-lg leading-relaxed text-pretty text-muted-foreground">
+            {dict.description}
+          </p>
 
-          <FadeIn delay={0.2}>
-            <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-              {dict.description}
-            </p>
-          </FadeIn>
-
-          <FadeIn
-            delay={0.3}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button
               asChild
               size="lg"
-              className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold"
+              className="bg-brand font-medium text-brand-foreground hover:bg-brand/90"
             >
-              <Link href={`/${lang}/${Routes.PracticeExams}`}>
+              <Link href={`/${lang}${Routes.PracticeExams}`}>
                 {dict.btn_primary}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-yellow-600 text-yellow-600 hover:bg-yellow-400"
-            >
-              <Link href={`/${lang}/${Routes.Register}`}>
+            <Button asChild size="lg" variant="outline" className="font-medium">
+              <Link href={`/${lang}${Routes.Register}`}>
                 {dict.btn_secondary}
               </Link>
             </Button>
-          </FadeIn>
+          </div>
         </div>
+
+        <QuestionDemo dict={dict.demo} />
       </div>
     </section>
   );

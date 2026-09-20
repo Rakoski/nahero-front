@@ -14,14 +14,14 @@ interface StickyMobileCtaProps {
 
 export function StickyMobileCta({ lang, dict }: StickyMobileCtaProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-white/10 bg-stone-950/95 backdrop-blur px-4 py-3 supports-backdrop-filter:bg-stone-950/80">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 px-4 py-3 backdrop-blur md:hidden">
       <Link
         href={`/${lang}${Routes.Register}`}
         aria-label={dict.aria}
-        className="flex items-center justify-center gap-2 w-full rounded-md bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 transition-colors active:scale-[0.98]"
+        className="flex w-full items-center justify-center gap-2 rounded-md bg-brand py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 active:scale-[0.98]"
       >
         {dict.text}
-        <ArrowRight className="h-5 w-5" aria-hidden="true" />
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </Link>
     </div>
   );

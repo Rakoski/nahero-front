@@ -50,7 +50,7 @@ export default async function HomePage({ params }: Props) {
   const isAuthenticated = !!session?.user;
 
   return (
-    <main className="flex flex-col min-h-screen">
+    <div className="flex flex-col">
       <Hero dict={dict.hero} lang={lang} />
 
       {!isAuthenticated && <Stats dict={dict.stats} />}
@@ -71,6 +71,6 @@ export default async function HomePage({ params }: Props) {
       {!isAuthenticated && (
         <StickyMobileCta dict={dict.stickyCta} lang={lang} />
       )}
-    </main>
+    </div>
   );
 }

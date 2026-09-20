@@ -13,7 +13,7 @@ export interface ListPracticeExamsRequest {
 }
 
 export async function listPracticeExams(
-  request: ListPracticeExamsRequest
+  request: ListPracticeExamsRequest,
 ): Promise<PracticeExamsPageableResponse> {
   try {
     const baseURL = NAHERO_API.PRACTICE_EXAMS.LIST;
@@ -41,7 +41,7 @@ export async function listPracticeExams(
     }
 
     const response = await api.get<PracticeExamsPageableResponse>(
-      baseURL + "?" + queryParams.toString()
+      baseURL + "?" + queryParams.toString(),
     );
 
     if (response.status === 200) {

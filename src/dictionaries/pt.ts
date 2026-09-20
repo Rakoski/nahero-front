@@ -6,7 +6,7 @@ export const pt = {
         "Prepare-se para as certificações AWS, Azure e Google Cloud com mais de 5.000 questões gratuitas. Simulados cronometrados, explicações detalhadas, sem pagar nada.",
     },
     practiceExams: {
-      title: "Simulados — AWS, Azure & Google Cloud",
+      title: "Simulados: AWS, Azure & Google Cloud",
       description:
         "Explore simulados gratuitos para AWS Cloud Practitioner e mais. Simulações cronometradas que refletem a prova real de certificação.",
     },
@@ -86,11 +86,31 @@ export const pt = {
     title_highlight: "suas certificações",
     description:
       "Acesse mais de 5.000 questões gratuitas para se preparar para certificações AWS, Azure e Google Cloud. Feito de aluno para aluno.",
-    btn_primary: "Começar Agora",
-    btn_secondary: "Ver Simulados",
-    image_alt: "Estudante estudando",
+    btn_primary: "Começar a praticar",
+    btn_secondary: "Criar conta grátis",
+    demo: {
+      timer_label: "Tempo restante",
+      question_label: "Questão",
+      of: "de",
+      select_one: "Escolha uma",
+      select_answer: "Selecione sua resposta",
+      question:
+        "Qual modelo de segurança parte do princípio de que nenhum usuário ou dispositivo deve ser confiável por padrão, mesmo dentro da rede corporativa?",
+      options: [
+        { text: "Zero Trust", correct: true },
+        { text: "Defesa em profundidade" },
+        { text: "Responsabilidade compartilhada" },
+        { text: "Segurança de perímetro" },
+      ],
+      explanation:
+        "O Zero Trust autentica e autoriza cada requisição, venha ela de onde vier. Nenhuma rede é confiável por padrão.",
+      correct_label: "Correto",
+      incorrect_label: "Quase lá",
+      aria_label: "Prévia interativa de uma questão de simulado",
+    },
   },
   features: {
+    eyebrow: "Recursos",
     title_start: "Por que escolher o",
     title_highlight: "NaHero?",
     items: [
@@ -120,6 +140,7 @@ export const pt = {
     ],
   },
   howItWorks: {
+    eyebrow: "Como funciona",
     title_start: "Certifique-se em",
     title_highlight: "quatro passos",
     subtitle:
@@ -148,10 +169,11 @@ export const pt = {
     ],
   },
   certifications: {
+    eyebrow: "Cobertura",
     title_start: "Certificações que",
     title_highlight: "cobrimos",
     subtitle:
-      "Focados nas certificações que impulsionam carreiras em nuvem — com novas adicionadas todo mês.",
+      "Focados nas certificações que impulsionam carreiras em nuvem, com novas adicionadas todo mês.",
     available_label: "Disponível agora",
     soon_label: "Em breve",
     items: [
@@ -178,6 +200,7 @@ export const pt = {
     ],
   },
   testimonials: {
+    eyebrow: "Estudantes",
     title_start: "Aprovado por",
     title_highlight: "estudantes",
     subtitle: "Preparação de verdade, resultados de verdade.",
@@ -203,6 +226,7 @@ export const pt = {
     ],
   },
   faq: {
+    eyebrow: "FAQ",
     title_start: "Perguntas",
     title_highlight: "frequentes",
     items: [
@@ -222,7 +246,8 @@ export const pt = {
     title: "Pronto para começar?",
     description:
       "Junte-se a outros estudantes que estão estudando para se certificar agora mesmo!",
-    btn: "Criar Conta Grátis",
+    btn: "Criar conta grátis",
+    note: "Gratuito para sempre nas certificações fundamentais.",
   },
   notFound: {
     title: "Página Não Encontrada",
@@ -527,6 +552,47 @@ export const pt = {
       starting: "Iniciando...",
       back: "Voltar para os simulados",
     },
+    about: {
+      heading: "Sobre a certificação {{certification}}",
+      exam_code: "Código da prova",
+      domains_heading: "Domínios cobrados na prova oficial",
+      official_link: "Guia oficial da prova",
+      disclaimer:
+        "O peso dos domínios vem do fornecedor e muda com o tempo. Confirme no guia oficial antes de agendar.",
+    },
+    samples: {
+      heading: "Questões de exemplo",
+      subheading:
+        "Algumas questões deste simulado, com a resposta correta e o porquê dela.",
+      correct_answer: "Resposta correta",
+      explanation: "Por quê",
+      cta: "Praticar todas as {{count}} questões",
+    },
+    faq: {
+      heading: "Perguntas frequentes",
+      free_question: "O simulado {{title}} é gratuito?",
+      free_answer_unlimited:
+        "Sim. Este simulado é gratuito e ilimitado. Você só precisa de uma conta gratuita no NaHero para começar.",
+      free_answer_limited:
+        "Você pode fazer usando as tentativas gratuitas da sua conta. Quando elas acabam, este simulado exige um plano premium, enquanto os simulados de nível fundamental seguem gratuitos e ilimitados.",
+      format_question: "Quantas questões tem e quanto tempo dura?",
+      format_answer:
+        "{{questions}} questões com limite de {{minutes}} minutos, para você praticar sob a mesma pressão de tempo da prova real.",
+      passing_question: "Qual nota eu preciso para passar?",
+      passing_answer:
+        "Você precisa de {{score}}% para ser aprovado neste simulado. A nota e a revisão questão a questão aparecem assim que você termina.",
+      account_question: "Preciso criar uma conta?",
+      account_answer:
+        "Sim, uma conta gratuita. É ela que permite salvar sua tentativa, corrigir a prova e guardar seu histórico.",
+      retake_question: "Posso refazer o simulado?",
+      retake_answer_unlimited:
+        "Quantas vezes quiser. As questões são embaralhadas a cada tentativa.",
+      retake_answer_limited:
+        "Pode. Cada tentativa consome uma das suas tentativas gratuitas, e o plano premium deixa as tentativas ilimitadas.",
+      real_questions_question: "Estas são as questões reais da prova oficial?",
+      real_questions_answer:
+        "Não. O NaHero não reproduz questões da prova oficial. São questões de prática escritas para reproduzir o formato, os temas e o nível de dificuldade dela.",
+    },
     difficulty_levels: {
       beginner: "Iniciante",
       intermediate: "Intermediário",
@@ -644,7 +710,7 @@ export const pt = {
     },
     retry: {
       heading: "Sua última tentativa não foi aprovada",
-      description: "“{{title}}” — pontuação {{score}}",
+      description: "“{{title}}”, pontuação {{score}}",
       cta: "Tentar novamente",
     },
     kpi: {
@@ -668,7 +734,7 @@ export const pt = {
       status_breakdown: {
         title: "Tentativas por status",
         description:
-          "Como suas sessões terminam — tentativas abandonadas não contam para sua pontuação.",
+          "Como suas sessões terminam. Tentativas abandonadas não contam para sua pontuação.",
         empty: "Nenhuma tentativa ainda.",
         labels: {
           completed: "Concluídas",
@@ -686,7 +752,7 @@ export const pt = {
         empty: "Conclua uma tentativa para ver as estatísticas.",
       },
       activity: {
-        title: "Atividade — últimos 30 dias",
+        title: "Atividade nos últimos 30 dias",
         description: "Dias em que você fez pelo menos uma tentativa.",
         tooltip: "{{count}} tentativa(s) em {{date}}",
       },
@@ -714,7 +780,7 @@ export const pt = {
         name: "Anual",
         price: "R$ 330",
         cadence: "por ano",
-        description: "Acesso total por um ano inteiro — cerca de R$ 27,50/mês.",
+        description: "Acesso total por um ano inteiro, cerca de R$ 27,50/mês.",
         cta: "Assinar anual",
         badge: "Mais popular",
         savings: "Economize 8%",

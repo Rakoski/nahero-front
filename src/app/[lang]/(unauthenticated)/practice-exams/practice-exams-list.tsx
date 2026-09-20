@@ -3,7 +3,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useAtom } from "jotai";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
-import { FadeIn } from "@/components/ui/fade-in";
 import { ExamCard } from "../../../../components/practice-exams/components/exam-card";
 import { ExamFilters as ExamFiltersComponent } from "../../../../components/practice-exams/components/exam-filters";
 import { SkeletonCard } from "../../../../components/practice-exams/components/skeleton-card";
@@ -15,7 +14,10 @@ import {
   categoryPracticeExamAtom,
   difficultyPracticeExamAtom,
 } from "./usePracticeExams";
-import type { PracticeExamDTO } from "@/lib/dtos";
+import type {
+  PracticeExamDTO,
+  PracticeExamsPageableResponse,
+} from "@/lib/dtos";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useLocale } from "@/providers/locale-provider";
@@ -38,7 +40,11 @@ function mapPracticeExamToExam(dto: PracticeExamDTO) {
   };
 }
 
-export default function PracticeExamsPage() {
+type PracticeExamsListProps = {
+  initialPage: PracticeExamsPageableResponse | null;
+};
+
+export function PracticeExamsList({ initialPage }: PracticeExamsListProps) {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.practiceExams;
   const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
@@ -54,7 +60,7 @@ export default function PracticeExamsPage() {
     hasNextPage,
     isFetchingNextPage,
     totalElements,
-  } = usePracticeExams();
+  } = usePracticeExams(initialPage);
 
   const practiceExamsMapped = practiceExams.map(mapPracticeExamToExam);
 
@@ -110,11 +116,9 @@ export default function PracticeExamsPage() {
         items={[{ label: dict.title }]}
         dict={dictionary.breadcrumbs}
       />
-      <FadeIn>
-        <div className="space-y-2 text-center">
-          <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>
-        </div>
-      </FadeIn>
+      <div className="space-y-2 text-center">
+        <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>
+      </div>
 
       <ExamFiltersComponent
         searchInput={searchInput}

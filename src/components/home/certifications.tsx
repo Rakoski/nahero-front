@@ -1,9 +1,10 @@
 import { FadeIn } from "@/components/ui/fade-in";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { SectionHeading } from "./section-heading";
+import { cn } from "@/lib/utils";
 
 interface CertificationsProps {
   dict: {
+    eyebrow: string;
     title_start: string;
     title_highlight: string;
     subtitle: string;
@@ -19,38 +20,43 @@ interface CertificationsProps {
 
 export function Certifications({ dict }: CertificationsProps) {
   return (
-    <section className="bg-stone-900 py-24 dark:bg-stone-50">
-      <div className="container mx-auto px-4">
-        <FadeIn className="mx-auto mb-16 max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-foreground md:text-4xl">
-            {dict.title_start}{" "}
-            <span className="text-yellow-600">{dict.title_highlight}</span>
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">{dict.subtitle}</p>
-        </FadeIn>
+    <section className="border-b border-border py-20 sm:py-24">
+      <div className="container mx-auto px-4 lg:pl-14 xl:pl-20">
+        <SectionHeading
+          eyebrow={dict.eyebrow}
+          title={dict.title_start}
+          highlight={dict.title_highlight}
+          subtitle={dict.subtitle}
+        />
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 divide-y divide-border overflow-hidden rounded-xl border border-border">
           {dict.items.map((item, index) => {
             const isAvailable = item.status === "available";
             return (
-              <FadeIn key={index} delay={index * 0.1} className="h-full">
-                <Card className="h-full border-border bg-stone-950 dark:bg-background">
-                  <CardContent className="flex h-full flex-col gap-4 p-6">
-                    <span className="text-sm font-semibold uppercase tracking-wide text-yellow-600">
-                      {item.provider}
-                    </span>
-                    <h3 className="flex-1 text-lg font-semibold">{item.name}</h3>
-                    {isAvailable ? (
-                      <Badge className="w-fit bg-green-600 text-white hover:bg-green-600">
-                        {dict.available_label}
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="w-fit">
-                        {dict.soon_label}
-                      </Badge>
+              <FadeIn key={item.name} delay={index * 0.05}>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-5">
+                  <span className="w-32 shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    {item.provider}
+                  </span>
+                  <span className="flex-1 text-sm font-medium">{item.name}</span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs",
+                      isAvailable
+                        ? "border-brand/30 bg-brand/10 text-brand"
+                        : "border-border text-muted-foreground",
                     )}
-                  </CardContent>
-                </Card>
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "h-1.5 w-1.5 rounded-full",
+                        isAvailable ? "bg-brand" : "bg-muted-foreground/50",
+                      )}
+                    />
+                    {isAvailable ? dict.available_label : dict.soon_label}
+                  </span>
+                </div>
               </FadeIn>
             );
           })}

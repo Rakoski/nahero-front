@@ -91,7 +91,7 @@ export const authOptions: NextAuthOptions = {
   pages: { signIn: "/en/login" },
   callbacks: {
     async jwt({ token, user }) {
-      // Initial sign in — seed the token from the authorized user.
+      // Initial sign in: seed the token from the authorized user.
       if (user) {
         token.id = user.id;
         token.accessToken = user.accessToken;
@@ -102,7 +102,7 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      // Access token still valid (with skew) — nothing to do.
+      // Access token still valid (with skew), nothing to do.
       if (
         typeof token.accessTokenExpires === "number" &&
         Date.now() < token.accessTokenExpires - REFRESH_SKEW_MS
@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      // Expired or about to expire — refresh proactively.
+      // Expired or about to expire, so refresh proactively.
       return refreshToken(token);
     },
     async session({ session, token }) {

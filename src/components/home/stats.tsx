@@ -11,17 +11,19 @@ interface StatsProps {
 
 export function Stats({ dict }: StatsProps) {
   return (
-    <section className="border-y border-border bg-background py-16">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+    <section className="border-b border-border">
+      <div className="container mx-auto px-4 lg:pl-14 xl:pl-20">
+        <div className="grid grid-cols-2 divide-x divide-y divide-border border-x border-border sm:divide-y-0 lg:grid-cols-4">
           {dict.items.map((item, index) => (
-            <FadeIn key={index} delay={index * 0.1} className="text-center">
-              <p className="text-4xl font-extrabold text-yellow-600 md:text-5xl">
-                {item.value}
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground md:text-base">
-                {item.label}
-              </p>
+            <FadeIn key={item.label} delay={index * 0.05}>
+              <div className="px-6 py-8">
+                <p className="text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
+                  {item.value}
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {item.label}
+                </p>
+              </div>
             </FadeIn>
           ))}
         </div>

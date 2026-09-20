@@ -169,13 +169,13 @@ export function useExams(filters: ExamFilters = {}): UseExamsReturn {
             (exam) =>
               exam.title.toLowerCase().includes(searchLower) ||
               exam.description?.toLowerCase().includes(searchLower) ||
-              exam.exam?.title.toLowerCase().includes(searchLower)
+              exam.exam?.title.toLowerCase().includes(searchLower),
           );
         }
 
         if (filters.difficulty) {
           filteredData = filteredData.filter(
-            (exam) => exam.difficulty === filters.difficulty
+            (exam) => exam.difficulty === filters.difficulty,
           );
         }
 
@@ -183,7 +183,7 @@ export function useExams(filters: ExamFilters = {}): UseExamsReturn {
           filteredData = filteredData.filter(
             (exam) =>
               exam.exam?.category?.toLowerCase() ===
-              filters.category?.toLowerCase()
+              filters.category?.toLowerCase(),
           );
         }
 
@@ -229,8 +229,8 @@ export function useExams(filters: ExamFilters = {}): UseExamsReturn {
               new Error(
                 `Data validation failed: ${err.errors
                   .map((e) => e.message)
-                  .join(", ")}`
-              )
+                  .join(", ")}`,
+              ),
             );
           } else if (err instanceof Error) {
             setError(err);

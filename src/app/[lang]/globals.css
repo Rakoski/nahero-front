@@ -4,6 +4,9 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-grid-line: var(--grid-line);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -47,6 +50,9 @@
 
 :root {
   --radius: 0.625rem;
+  --brand: oklch(0.79 0.13 76);
+  --brand-foreground: oklch(0.2 0.02 60);
+  --grid-line: oklch(1 0 0 / 4%);
   --background: oklch(0.147 0.004 49.25);
   --foreground: oklch(0.985 0.001 106.423);
   --card: oklch(0.216 0.006 56.043);
@@ -81,6 +87,9 @@
 }
 
 .dark {
+  --brand: oklch(0.79 0.13 76);
+  --brand-foreground: oklch(0.2 0.02 60);
+  --grid-line: oklch(1 0 0 / 4%);
   --background: oklch(0.147 0.004 49.25);
   --foreground: oklch(0.985 0.001 106.423);
   --card: oklch(0.216 0.006 56.043);
@@ -121,4 +130,18 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility bg-grid-sm {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
 }

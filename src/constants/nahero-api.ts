@@ -2,6 +2,8 @@ export const NAHERO_API = {
   PRACTICE_EXAMS: {
     LIST: "/practice-exams/list",
     GET_BY_SLUG: "/practice-exams/by-slug",
+    GET_SAMPLE_QUESTIONS: (slug: string) =>
+      `/practice-exams/by-slug/${encodeURIComponent(slug)}/sample-questions`,
   },
   STUDENT_PRACTICE_ATTEMPTS: {
     CREATE: "/student-practice-attempts",

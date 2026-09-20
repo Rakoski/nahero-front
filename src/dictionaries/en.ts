@@ -6,7 +6,7 @@ export const en = {
         "Prepare for AWS, Azure and Google Cloud certifications with 5,000+ free practice questions. Realistic timed simulations, detailed explanations, no paywalls.",
     },
     practiceExams: {
-      title: "Practice Exams — AWS, Azure & Google Cloud",
+      title: "Practice Exams: AWS, Azure & Google Cloud",
       description:
         "Browse free practice exams for AWS Cloud Practitioner and more. Timed simulations that mirror the real certification test.",
     },
@@ -85,11 +85,31 @@ export const en = {
     title_highlight: "your future",
     description:
       "Access more than 5,000 free questions to prepare for AWS, Azure, and Google Cloud certifications. Built by students, for students.",
-    btn_primary: "START PRACTICING",
-    btn_secondary: "Join Us",
-    image_alt: "Student studying",
+    btn_primary: "Start practicing",
+    btn_secondary: "Create free account",
+    demo: {
+      timer_label: "Time remaining",
+      question_label: "Question",
+      of: "of",
+      select_one: "Select one",
+      select_answer: "Select your answer",
+      question:
+        "Which security model assumes that no user or device should be trusted by default, even inside the corporate network?",
+      options: [
+        { text: "Zero Trust", correct: true },
+        { text: "Defense in depth" },
+        { text: "Shared responsibility" },
+        { text: "Perimeter-based security" },
+      ],
+      explanation:
+        "Zero Trust authenticates and authorizes every request regardless of where it comes from. There is no implicitly trusted network.",
+      correct_label: "Correct",
+      incorrect_label: "Not quite",
+      aria_label: "Interactive preview of a practice question",
+    },
   },
   features: {
+    eyebrow: "Features",
     title_start: "Why choose",
     title_highlight: "NaHero?",
     items: [
@@ -119,6 +139,7 @@ export const en = {
     ],
   },
   howItWorks: {
+    eyebrow: "How it works",
     title_start: "Get certified in",
     title_highlight: "four steps",
     subtitle:
@@ -147,10 +168,11 @@ export const en = {
     ],
   },
   certifications: {
+    eyebrow: "Coverage",
     title_start: "Certifications we",
     title_highlight: "cover",
     subtitle:
-      "Focused on the certifications that launch cloud careers — with more added every month.",
+      "Focused on the certifications that launch cloud careers, with more added every month.",
     available_label: "Available now",
     soon_label: "Coming soon",
     items: [
@@ -177,6 +199,7 @@ export const en = {
     ],
   },
   testimonials: {
+    eyebrow: "Students",
     title_start: "Trusted by",
     title_highlight: "students",
     subtitle: "Real preparation, real results.",
@@ -202,6 +225,7 @@ export const en = {
     ],
   },
   faq: {
+    eyebrow: "FAQ",
     title_start: "Frequently asked",
     title_highlight: "questions",
     items: [
@@ -231,7 +255,8 @@ export const en = {
     title: "Ready to get certified?",
     description:
       "Join 1,000+ students who are studying for their certifications right now.",
-    btn: "Create Free Account",
+    btn: "Create free account",
+    note: "Free forever for foundational certifications.",
   },
   notFound: {
     title: "Page Not Found",
@@ -535,6 +560,49 @@ export const en = {
       starting: "Starting...",
       back: "Back to practice exams",
     },
+    about: {
+      heading: "About the {{certification}} certification",
+      exam_code: "Exam code",
+      domains_heading: "Domains covered by the official exam",
+      official_link: "Official exam guide",
+      disclaimer:
+        "Domain weightings come from the vendor and change over time. Check the official guide before you book.",
+    },
+    samples: {
+      heading: "Sample questions",
+      subheading:
+        "A few questions from this practice exam, with the correct answer and why it is correct.",
+      correct_answer: "Correct answer",
+      explanation: "Why",
+      cta: "Practice all {{count}} questions",
+    },
+    faq: {
+      heading: "Frequently asked questions",
+      free_question: "Is the {{title}} practice exam free?",
+      free_answer_unlimited:
+        "Yes. This practice exam is free and unlimited. You only need a free NaHero account to start.",
+      free_answer_limited:
+        "You can take it with the free attempts included in your account. After those run out, this exam requires a premium plan, while foundational-level exams stay free and unlimited.",
+      format_question:
+        "How many questions does it have and how long does it take?",
+      format_answer:
+        "{{questions}} questions with a {{minutes}}-minute time limit, so you practise under the same time pressure as the real exam.",
+      passing_question: "What score do I need to pass?",
+      passing_answer:
+        "You need {{score}}% to pass this practice exam. Your score and a per-question review are shown as soon as you finish.",
+      account_question: "Do I need an account?",
+      account_answer:
+        "Yes, a free account. It is what lets us save your attempt, score it and keep your history.",
+      retake_question: "Can I retake it?",
+      retake_answer_unlimited:
+        "As many times as you like. Questions are shuffled on every attempt.",
+      retake_answer_limited:
+        "Yes. Each attempt uses one of your free attempts, and a premium plan makes them unlimited.",
+      real_questions_question:
+        "Are these the real questions from the official exam?",
+      real_questions_answer:
+        "No. NaHero does not reproduce questions from the official exam. These are practice questions written to match its format, topics and difficulty.",
+    },
     difficulty_levels: {
       beginner: "Beginner",
       intermediate: "Intermediate",
@@ -653,7 +721,7 @@ export const en = {
     },
     retry: {
       heading: "Last attempt didn’t pass",
-      description: "“{{title}}” — score {{score}}",
+      description: "“{{title}}”, score {{score}}",
       cta: "Try again",
     },
     kpi: {
@@ -677,7 +745,7 @@ export const en = {
       status_breakdown: {
         title: "Attempts by status",
         description:
-          "How your sessions are ending — abandoned attempts don’t count toward your score.",
+          "How your sessions are ending. Abandoned attempts don’t count toward your score.",
         empty: "No attempts yet.",
         labels: {
           completed: "Completed",
@@ -695,7 +763,7 @@ export const en = {
         empty: "Complete an attempt to see per-exam stats.",
       },
       activity: {
-        title: "Activity — last 30 days",
+        title: "Activity in the last 30 days",
         description: "Days you sat at least one attempt.",
         tooltip: "{{count}} attempt(s) on {{date}}",
       },
@@ -723,7 +791,7 @@ export const en = {
         name: "Yearly",
         price: "$65.99",
         cadence: "per year",
-        description: "Full access for a whole year — about $5.50/mo.",
+        description: "Full access for a whole year, about $5.50/mo.",
         cta: "Subscribe yearly",
         badge: "Most popular",
         savings: "Save 8%",

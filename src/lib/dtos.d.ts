@@ -39,6 +39,24 @@ export interface PracticeExamBySlugDTO {
 }
 
 /**
+ * Public sample question for an exam page - matches GetSampleQuestionsResponse.java
+ */
+export interface SampleQuestionAlternativeDTO {
+  id: number;
+  content: string;
+  isCorrect: boolean;
+}
+
+export interface SampleQuestionDTO {
+  id: number;
+  content: string;
+  imageUrl: string | null;
+  explanation: string;
+  questionType: string | null;
+  alternatives: SampleQuestionAlternativeDTO[];
+}
+
+/**
  * Paginated Response Structure
  * Matches Spring Boot Page<T> structure
  */

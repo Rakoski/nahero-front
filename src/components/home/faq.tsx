@@ -1,4 +1,5 @@
 import { FadeIn } from "@/components/ui/fade-in";
+import { SectionHeading } from "./section-heading";
 import {
   Accordion,
   AccordionItem,
@@ -8,6 +9,7 @@ import {
 
 interface FAQProps {
   dict: {
+    eyebrow: string;
     title_start: string;
     title_highlight: string;
     items: readonly {
@@ -19,23 +21,25 @@ interface FAQProps {
 
 export function FAQ({ dict }: FAQProps) {
   return (
-    <section id="faq" className="scroll-mt-24 py-24">
-      <div className="container mx-auto max-w-3xl px-4">
-        <FadeIn className="mb-12 text-center">
-          <h2 className="text-3xl font-bold md:text-4xl">
-            {dict.title_start}{" "}
-            <span className="text-yellow-600">{dict.title_highlight}</span>
-          </h2>
-        </FadeIn>
+    <section
+      id="faq"
+      className="scroll-mt-24 border-b border-border py-20 sm:py-24"
+    >
+      <div className="container mx-auto grid gap-12 px-4 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:pl-14 xl:pl-20">
+        <SectionHeading
+          eyebrow={dict.eyebrow}
+          title={dict.title_start}
+          highlight={dict.title_highlight}
+        />
 
         <FadeIn>
           <Accordion type="single" collapsible className="w-full">
             {dict.items.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left text-base">
+              <AccordionItem key={item.question} value={`item-${index}`}>
+                <AccordionTrigger className="text-left text-sm font-medium">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="leading-relaxed text-muted-foreground">
+                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>

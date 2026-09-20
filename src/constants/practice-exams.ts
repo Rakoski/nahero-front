@@ -1,0 +1,1 @@
+export const PRACTICE_EXAMS_PAGE_SIZE = 6;

@@ -25,7 +25,7 @@ const resolveLocale = (req: NextRequest): Locale => {
       const refererLocale = localeFromPathname(new URL(referer).pathname);
       if (refererLocale) return refererLocale;
     } catch {
-      // malformed referer — fall through to the default
+      // malformed referer, fall through to the default
     }
   }
 
@@ -100,6 +100,6 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

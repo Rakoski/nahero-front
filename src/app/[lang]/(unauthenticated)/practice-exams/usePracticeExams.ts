@@ -5,14 +5,17 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { atom, useAtom } from "jotai";
 import { practiceExamsService } from "@/services/practice-exams";
 import { QUERIES } from "../../../../constants/queries";
+import { PRACTICE_EXAMS_PAGE_SIZE } from "@/constants/practice-exams";
 import type { PracticeExamsPageableResponse } from "@/lib/dtos";
 
 export const searchPracticeExamAtom = atom("");
 export const categoryPracticeExamAtom = atom<string>("all");
 export const difficultyPracticeExamAtom = atom<number>(0);
-export const sizeAtom = atom<number>(6);
+export const sizeAtom = atom<number>(PRACTICE_EXAMS_PAGE_SIZE);
 
-export const usePracticeExams = () => {
+export const usePracticeExams = (
+  initialPage?: PracticeExamsPageableResponse | null,
+) => {
   const [search] = useAtom(searchPracticeExamAtom);
   const [category] = useAtom(categoryPracticeExamAtom);
   const [difficultyLevel] = useAtom(difficultyPracticeExamAtom);
@@ -38,6 +41,13 @@ export const usePracticeExams = () => {
     return response;
   };
 
+  // The server-rendered page only matches the untouched catalogue query.
+  const isInitialQuery =
+    !debouncedSearchTerm &&
+    category === "all" &&
+    difficultyLevel === 0 &&
+    size === PRACTICE_EXAMS_PAGE_SIZE;
+
   const {
     data,
     isLoading,
@@ -55,6 +65,11 @@ export const usePracticeExams = () => {
       size,
     ],
     initialPageParam: 0,
+    initialData:
+      initialPage && isInitialQuery
+        ? { pages: [initialPage], pageParams: [0] }
+        : undefined,
+    staleTime: 5 * 60 * 1000,
     getNextPageParam: (lastPage) => {
       if (lastPage.last) {
         return undefined;
