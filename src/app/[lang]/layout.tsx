@@ -77,16 +77,16 @@ export default async function RootLayout({ children, params }: Props) {
         {GA_ID && (
           <>
             <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              src="https://www.googletagmanager.com/gtag/js?id=AW-18463693278"
               strategy="afterInteractive"
             />
-            <Script id="google-analytics" strategy="afterInteractive">
+            <Script id="gtag-init" strategy="afterInteractive">
               {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_ID}');
-              `}
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18463693278');
+            `}
             </Script>
           </>
         )}
