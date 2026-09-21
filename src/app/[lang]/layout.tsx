@@ -74,22 +74,20 @@ export default async function RootLayout({ children, params }: Props) {
   return (
     <html lang={lang} suppressHydrationWarning>
       <body className="bg-stone-950 text-stone-50 antialiased flex flex-col min-h-screen">
-        {GA_ID && (
-          <>
-            <Script
-              src="https://www.googletagmanager.com/gtag/js?id=AW-18463693278"
-              strategy="afterInteractive"
-            />
-            <Script id="gtag-init" strategy="afterInteractive">
-              {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'AW-18463693278');
-            `}
-            </Script>
-          </>
-        )}
+        <>
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=AW-18463693278"
+            strategy="afterInteractive"
+          />
+          <Script id="gtag-init" strategy="afterInteractive">
+            {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-18463693278');
+          `}
+          </Script>
+        </>
         <LocaleProvider lang={lang} dict={dict}>
           <Providers>
             <Header />
