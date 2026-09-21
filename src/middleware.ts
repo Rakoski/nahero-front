@@ -7,6 +7,10 @@ type Locale = (typeof locales)[number];
 const defaultLocale: Locale = "en";
 const LOCALE_COOKIE = "NEXT_LOCALE";
 
+const UTM_COOKIE = "nh_utm";
+const UTM_MAX_LENGTH = 64;
+const UTM_MAX_AGE = 60 * 60 * 24 * 30;
+
 const isLocale = (value?: string | null): value is Locale =>
   !!value && locales.includes(value as Locale);
 
@@ -32,6 +36,36 @@ const resolveLocale = (req: NextRequest): Locale => {
   return defaultLocale;
 };
 
+const readUtmParam = (req: NextRequest, key: string): string | null => {
+  const value = req.nextUrl.searchParams.get(key)?.trim();
+  return value ? value.slice(0, UTM_MAX_LENGTH) : null;
+};
+
+/**
+ * First touch wins: once the cookie exists we never overwrite it, so a visitor
+ * who arrives from an ad and later returns organically still credits the ad.
+ */
+const withUtmCookie = (req: NextRequest, response: NextResponse) => {
+  if (req.cookies.get(UTM_COOKIE)) return response;
+
+  const source = readUtmParam(req, "utm_source");
+  if (!source) return response;
+
+  const utm = {
+    source,
+    medium: readUtmParam(req, "utm_medium"),
+    campaign: readUtmParam(req, "utm_campaign"),
+  };
+
+  response.cookies.set(UTM_COOKIE, JSON.stringify(utm), {
+    path: "/",
+    sameSite: "lax",
+    maxAge: UTM_MAX_AGE,
+  });
+
+  return response;
+};
+
 const PROTECTED_SEGMENTS = [
   { segment: "/student", role: "IS_STUDENT" },
   { segment: "/teacher", role: "IS_TEACHER" },
@@ -48,8 +82,9 @@ export default withAuth(
     if (!pathLocale) {
       const locale = resolveLocale(req);
       const rest = pathname === "/" ? "" : pathname;
-      return NextResponse.redirect(
-        new URL(`/${locale}${rest}${search}`, req.url),
+      return withUtmCookie(
+        req,
+        NextResponse.redirect(new URL(`/${locale}${rest}${search}`, req.url)),
       );
     }
 
@@ -61,13 +96,14 @@ export default withAuth(
       if (!token) {
         const loginUrl = new URL(`/${pathLocale}/login`, req.url);
         loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
-        return NextResponse.redirect(loginUrl);
+        return withUtmCookie(req, NextResponse.redirect(loginUrl));
       }
 
       const userRoles = (token.roles as string[] | undefined) ?? [];
       if (!userRoles.includes(protectedMatch.role)) {
-        return NextResponse.redirect(
-          new URL(`/${pathLocale}/unauthorized`, req.url),
+        return withUtmCookie(
+          req,
+          NextResponse.redirect(new URL(`/${pathLocale}/unauthorized`, req.url)),
         );
       }
     }
@@ -87,7 +123,7 @@ export default withAuth(
       });
     }
 
-    return response;
+    return withUtmCookie(req, response);
   },
   {
     callbacks: {
