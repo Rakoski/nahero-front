@@ -1,14 +1,14 @@
 export const en = {
   metadata: {
     home: {
-      title: "Free AWS, Azure & Google Cloud Practice Exams",
+      title: "Practice Exams That Match the Real Test: AWS, Azure & Google Cloud",
       description:
-        "Prepare for AWS, Azure and Google Cloud certifications with 5,000+ free practice questions. Realistic timed simulations, detailed explanations, no paywalls.",
+        "Sit the full exam before exam day: same number of questions, same time limit as the official certification, and a clock that never pauses. Free practice exams for AWS, Azure and Google Cloud.",
     },
     practiceExams: {
       title: "Practice Exams: AWS, Azure & Google Cloud",
       description:
-        "Browse free practice exams for AWS Cloud Practitioner and more. Timed simulations that mirror the real certification test.",
+        "Full practice exams in real exam conditions: same number of questions, same time limit, and no pausing the clock. AWS Cloud Practitioner and more, for free.",
     },
     login: {
       title: "Log In",
@@ -81,10 +81,10 @@ export const en = {
     aria: "Breadcrumb",
   },
   hero: {
-    title_start: "Free practice for",
-    title_highlight: "your future",
+    title_start: "Practice exams that match",
+    title_highlight: "the real test",
     description:
-      "Access more than 5,000 free questions to prepare for AWS, Azure, and Google Cloud certifications. Built by students, for students.",
+      "The full exam, with the same number of questions and the same time limit as the official certification, and a clock that never pauses. Train the way exam day will feel, for free, for AWS, Azure and Google Cloud.",
     btn_primary: "Start practicing",
     btn_secondary: "Create free account",
     demo: {
@@ -114,14 +114,14 @@ export const en = {
     title_highlight: "NaHero?",
     items: [
       {
+        title: "Real Exam Conditions",
+        description:
+          "The full exam, timed and with no pausing: the same number of questions and the same time limit as the official certification. You walk in on exam day already used to the clock.",
+      },
+      {
         title: "100% Free Questions",
         description:
           "Unlike other sites that put paywalls behind 'Premium' tests, all of our 5,000+ questions are completely open access.",
-      },
-      {
-        title: "Real Exam Simulation",
-        description:
-          "Practice with realistic time limits. Get detailed statistics on your weak areas (Storage, Compute, Security) to pass faster.",
       },
       {
         title: "Community Driven",
@@ -397,7 +397,7 @@ export const en = {
     dashboard: "Dashboard",
     history: "History",
     my_profile: "My Profile",
-    my_subscription: "My Subscription",
+    plans: "Plans",
     premium: "Go Premium",
     free_tries_badge: "{{count}} free left",
     premium_badge: "Premium",
@@ -447,6 +447,25 @@ export const en = {
       azure: "Azure",
       google: "Google Cloud",
     },
+    in_progress: {
+      badge: "In progress",
+      heading: "You have an attempt in progress",
+      description:
+        "{{title}} — {{answered}} of {{total}} questions answered so far.",
+      free_try_note:
+        "Your free attempt is only used when you finish an exam, so you can switch to another practice exam without losing it.",
+      resume: "Resume attempt",
+    },
+    switch_attempt: {
+      title: "Start another practice exam?",
+      description:
+        "You still have an attempt running on {{title}}. Starting this one discards it.",
+      free_try_note:
+        "Nothing is charged either way: your free attempt is only used when you finish an exam.",
+      resume: "Resume the other one",
+      discard_and_start: "Discard and start",
+      cancel: "Cancel",
+    },
     card: {
       start_exam: "Start Exam",
       time_limit: "Time Limit",
@@ -495,6 +514,7 @@ export const en = {
       generic: "Something went wrong loading the exam.",
     },
     time_remaining: "Time remaining:",
+    autosave_hint: "Your answers are saved automatically.",
     question_of: "of",
     select_answer: "Select your answer",
     select_answers: "Select all that apply",
@@ -529,9 +549,10 @@ export const en = {
       confirm_leave: {
         title: "Leave exam?",
         description:
-          "If you leave now, your progress on this attempt will be lost and the attempt will not be saved.",
+          "Your answers are saved as you go, so you can pick this attempt up again from the practice exams page.",
         stay: "Stay on exam",
-        leave: "Leave anyway",
+        leave_keep: "Leave and finish later",
+        leave_discard: "Discard this attempt",
       },
     },
   },
@@ -543,7 +564,13 @@ export const en = {
     },
     meta: {
       description_template:
-        "Free {{title}} practice exam. {{questions}} questions, {{minutes}} minutes, passing score {{score}}%.",
+        "Free {{title}} practice exam in real exam conditions: {{questions}} questions, {{minutes}} minutes, no pausing. Passing score {{score}}%.",
+    },
+    real_exam: {
+      title: "Same conditions as the real exam",
+      full: "{{questions}} questions, {{minutes}} minutes, no pausing.",
+      no_count: "{{minutes}} minutes, no pausing.",
+      body: "The clock runs from start to finish, just like on certification day.",
     },
     overview: {
       heading: "About this exam",
@@ -558,6 +585,7 @@ export const en = {
       start_logged_in: "Start exam",
       start_logged_out: "Log in to start",
       starting: "Starting...",
+      resume: "Resume attempt",
       back: "Back to practice exams",
     },
     about: {
@@ -770,40 +798,59 @@ export const en = {
     },
   },
   premium: {
-    title: "Go Premium",
-    subtitle: "Unlock every practice exam, at every difficulty, forever.",
+    title: "Choose your plan",
+    subtitle:
+      "Start for free and subscribe whenever you want to practice every level, without limits.",
     loading: "Loading…",
     fromPracticeAttempt:
       "You've used your free attempt on this difficulty. Subscribe to keep practicing without limits.",
     alreadyPremiumTitle: "You're already Premium",
-    alreadyPremiumBody:
-      "Your access is active until {{date}}. Manage your subscription from your profile.",
+    alreadyPremiumBody: "Your access is active until {{date}}.",
+    manageSubscription: "Manage subscription",
     goToDashboard: "Go to dashboard",
     plans: {
+      free: {
+        name: "Free",
+        currency: "$",
+        amount: "0",
+        cadence: "/mo",
+        description: "To get to know the platform and start studying.",
+        cta: "Continue for free",
+        features: [
+          "Unlimited level 1 practice exams",
+          "1 free attempt on advanced levels",
+          "Detailed explanation for every question",
+          "Attempt history and performance dashboard",
+        ],
+      },
       monthly: {
-        name: "Monthly",
-        price: "$5.99",
-        cadence: "per month",
-        description: "Full access, month to month. Cancel anytime.",
+        name: "Premium Monthly",
+        currency: "$",
+        amount: "1.99",
+        cadence: "/mo",
+        badge: "Recommended",
+        description: "Study without limits, with flexibility.",
         cta: "Subscribe monthly",
+        footnote: "Renews automatically every month. Cancel anytime.",
       },
       yearly: {
-        name: "Yearly",
-        price: "$65.99",
-        cadence: "per year",
-        description: "Full access for a whole year, about $5.50/mo.",
+        name: "Premium Yearly",
+        currency: "$",
+        amount: "17.99",
+        cadence: "/yr",
+        description: "Best value for studying all year long.",
+        highlightTitle: "Best value",
+        equivalentLabel: "Works out to",
+        equivalentPrice: "$1.50/mo",
+        yearlySavings: "save $5.89 a year",
         cta: "Subscribe yearly",
-        badge: "Most popular",
-        savings: "Save 8%",
+        footnote: "Renews automatically every year. Cancel anytime.",
       },
-    },
-    features: {
-      title: "What's included",
-      items: [
+      premiumFeatures: [
         "Unlimited attempts on every practice exam",
         "Every difficulty level unlocked",
-        "Detailed answer explanations",
-        "Progress tracking across attempts",
+        "Detailed explanation for every question",
+        "Attempt history and performance dashboard",
       ],
     },
     starting: "Starting…",

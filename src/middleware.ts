@@ -41,10 +41,6 @@ const readUtmParam = (req: NextRequest, key: string): string | null => {
   return value ? value.slice(0, UTM_MAX_LENGTH) : null;
 };
 
-/**
- * First touch wins: once the cookie exists we never overwrite it, so a visitor
- * who arrives from an ad and later returns organically still credits the ad.
- */
 const withUtmCookie = (req: NextRequest, response: NextResponse) => {
   if (req.cookies.get(UTM_COOKIE)) return response;
 
@@ -103,7 +99,9 @@ export default withAuth(
       if (!userRoles.includes(protectedMatch.role)) {
         return withUtmCookie(
           req,
-          NextResponse.redirect(new URL(`/${pathLocale}/unauthorized`, req.url)),
+          NextResponse.redirect(
+            new URL(`/${pathLocale}/unauthorized`, req.url),
+          ),
         );
       }
     }
@@ -127,8 +125,6 @@ export default withAuth(
   },
   {
     callbacks: {
-      // Auth is enforced inside the middleware above so the redirect can keep
-      // the locale the user is browsing in.
       authorized: () => true,
     },
   },

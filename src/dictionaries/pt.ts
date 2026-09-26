@@ -1,14 +1,14 @@
 export const pt = {
   metadata: {
     home: {
-      title: "Simulados Gratuitos AWS, Azure & Google Cloud",
+      title: "Simulados Iguais à Prova Real: AWS, Azure & Google Cloud",
       description:
-        "Prepare-se para as certificações AWS, Azure e Google Cloud com mais de 5.000 questões gratuitas. Simulados cronometrados, explicações detalhadas, sem pagar nada.",
+        "Faça a prova completa antes do dia: mesmo número de questões, mesmo tempo da certificação oficial e cronômetro sem pausa. Simulados gratuitos para AWS, Azure e Google Cloud.",
     },
     practiceExams: {
       title: "Simulados: AWS, Azure & Google Cloud",
       description:
-        "Explore simulados gratuitos para AWS Cloud Practitioner e mais. Simulações cronometradas que refletem a prova real de certificação.",
+        "Simulados completos no ambiente da prova real: mesmo número de questões, mesmo tempo e cronômetro sem pausa. AWS Cloud Practitioner e mais, de graça.",
     },
     login: {
       title: "Entrar",
@@ -82,10 +82,10 @@ export const pt = {
     aria: "Trilha de navegação",
   },
   hero: {
-    title_start: "Simulados gratuitos para",
-    title_highlight: "suas certificações",
+    title_start: "Simulados iguais à",
+    title_highlight: "prova real",
     description:
-      "Acesse mais de 5.000 questões gratuitas para se preparar para certificações AWS, Azure e Google Cloud. Feito de aluno para aluno.",
+      "Prova completa, com o mesmo número de questões e o mesmo tempo da certificação oficial, e um cronômetro que não pausa. Treine do jeito que vai ser no dia, de graça, para AWS, Azure e Google Cloud.",
     btn_primary: "Começar a praticar",
     btn_secondary: "Criar conta grátis",
     demo: {
@@ -115,14 +115,14 @@ export const pt = {
     title_highlight: "NaHero?",
     items: [
       {
+        title: "Ambiente Igual ao da Prova",
+        description:
+          "Prova completa, cronometrada e sem pausa: o mesmo número de questões e o mesmo tempo da certificação oficial. Você chega no dia sabendo lidar com o relógio.",
+      },
+      {
         title: "Questões 100% Gratuitas",
         description:
           "Diferente de outros sites que cobram por testes 'Premium', todo o nosso conteúdo é completamente aberto.",
-      },
-      {
-        title: "Simulação Real",
-        description:
-          "Pratique com tempo limite realista. Tenha estatísticas detalhadas de seus pontos fracos para passar mais rápido.",
       },
       {
         title: "Feito pela Comunidade",
@@ -388,7 +388,7 @@ export const pt = {
     dashboard: "Painel",
     history: "Histórico",
     my_profile: "Meu Perfil",
-    my_subscription: "Minha Assinatura",
+    plans: "Planos",
     premium: "Me inscrever",
     free_tries_badge: "{{count}} grátis",
     premium_badge: "Premium",
@@ -438,6 +438,25 @@ export const pt = {
       azure: "Azure",
       google: "Google Cloud",
     },
+    in_progress: {
+      badge: "Em andamento",
+      heading: "Você tem uma tentativa em andamento",
+      description:
+        "{{title}} — {{answered}} de {{total}} questões respondidas até agora.",
+      free_try_note:
+        "Sua tentativa gratuita só é consumida quando você conclui um simulado, então você pode trocar de simulado sem perdê-la.",
+      resume: "Retomar tentativa",
+    },
+    switch_attempt: {
+      title: "Iniciar outro simulado?",
+      description:
+        "Você ainda tem uma tentativa em andamento em {{title}}. Iniciar este simulado descarta essa tentativa.",
+      free_try_note:
+        "Você não perde nada nas duas opções: sua tentativa gratuita só é consumida ao concluir um simulado.",
+      resume: "Retomar a outra",
+      discard_and_start: "Descartar e iniciar",
+      cancel: "Cancelar",
+    },
     card: {
       start_exam: "Iniciar Simulado",
       time_limit: "Tempo Limite",
@@ -486,6 +505,7 @@ export const pt = {
       generic: "Algo deu errado ao carregar o simulado.",
     },
     time_remaining: "Tempo restante:",
+    autosave_hint: "Suas respostas são salvas automaticamente.",
     question_of: "de",
     select_answer: "Selecione sua resposta",
     select_answers: "Selecione todas que se aplicam",
@@ -521,9 +541,10 @@ export const pt = {
       confirm_leave: {
         title: "Sair do simulado?",
         description:
-          "Se você sair agora, seu progresso nesta tentativa será perdido e a tentativa não será salva.",
+          "Suas respostas são salvas automaticamente, então você pode retomar esta tentativa pela página de simulados.",
         stay: "Continuar no simulado",
-        leave: "Sair mesmo assim",
+        leave_keep: "Sair e terminar depois",
+        leave_discard: "Descartar esta tentativa",
       },
     },
   },
@@ -535,7 +556,13 @@ export const pt = {
     },
     meta: {
       description_template:
-        "Simulado gratuito de {{title}}. {{questions}} questões, {{minutes}} minutos, nota mínima de aprovação {{score}}%.",
+        "Simulado gratuito de {{title}} no ambiente da prova real: {{questions}} questões, {{minutes}} minutos, sem pausa. Nota mínima de aprovação {{score}}%.",
+    },
+    real_exam: {
+      title: "Ambiente igual ao da prova real",
+      full: "{{questions}} questões, {{minutes}} minutos, sem pausa.",
+      no_count: "{{minutes}} minutos, sem pausa.",
+      body: "O cronômetro corre do início ao fim, como no dia da certificação.",
     },
     overview: {
       heading: "Sobre este simulado",
@@ -550,6 +577,7 @@ export const pt = {
       start_logged_in: "Iniciar simulado",
       start_logged_out: "Entre para começar",
       starting: "Iniciando...",
+      resume: "Retomar tentativa",
       back: "Voltar para os simulados",
     },
     about: {
@@ -759,40 +787,59 @@ export const pt = {
     },
   },
   premium: {
-    title: "Seja Premium",
-    subtitle: "Libere todos os simulados, em todos os níveis, para sempre.",
+    title: "Escolha seu plano",
+    subtitle:
+      "Comece grátis e assine quando quiser praticar em todos os níveis, sem limites.",
     loading: "Carregando…",
     fromPracticeAttempt:
       "Você já usou sua tentativa gratuita nesta dificuldade. Assine para continuar praticando sem limites.",
     alreadyPremiumTitle: "Você já é Premium",
-    alreadyPremiumBody:
-      "Seu acesso está ativo até {{date}}. Gerencie sua assinatura pelo seu perfil.",
+    alreadyPremiumBody: "Seu acesso está ativo até {{date}}.",
+    manageSubscription: "Gerenciar assinatura",
     goToDashboard: "Ir para o dashboard",
     plans: {
+      free: {
+        name: "Gratuito",
+        currency: "R$",
+        amount: "0",
+        cadence: "/mês",
+        description: "Para conhecer a plataforma e começar a estudar.",
+        cta: "Continuar no grátis",
+        features: [
+          "Simulados do nível 1 ilimitados",
+          "1 tentativa grátis nos níveis avançados",
+          "Explicações detalhadas de cada questão",
+          "Histórico de tentativas e painel de desempenho",
+        ],
+      },
       monthly: {
-        name: "Mensal",
-        price: "R$ 29,99",
-        cadence: "por mês",
-        description: "Acesso total, mês a mês. Cancele quando quiser.",
-        cta: "Assinar mensal",
+        name: "Premium Mensal",
+        currency: "R$",
+        amount: "10",
+        cadence: "/mês",
+        badge: "Recomendado",
+        description: "Estude sem limites, com flexibilidade.",
+        cta: "Assinar plano mensal",
+        footnote: "Renovação automática mensal. Cancele quando quiser.",
       },
       yearly: {
-        name: "Anual",
-        price: "R$ 330",
-        cadence: "por ano",
-        description: "Acesso total por um ano inteiro, cerca de R$ 27,50/mês.",
-        cta: "Assinar anual",
-        badge: "Mais popular",
-        savings: "Economize 8%",
+        name: "Premium Anual",
+        currency: "R$",
+        amount: "90",
+        cadence: "/ano",
+        description: "Melhor custo-benefício para estudar o ano todo.",
+        highlightTitle: "Melhor custo-benefício",
+        equivalentLabel: "Equivale a",
+        equivalentPrice: "R$ 7,50/mês",
+        yearlySavings: "economize R$ 30 no ano",
+        cta: "Assinar plano anual",
+        footnote: "Renovação automática anual. Cancele quando quiser.",
       },
-    },
-    features: {
-      title: "O que está incluso",
-      items: [
+      premiumFeatures: [
         "Tentativas ilimitadas em todos os simulados",
         "Todos os níveis de dificuldade liberados",
-        "Explicações detalhadas das respostas",
-        "Acompanhamento do seu progresso",
+        "Explicações detalhadas de cada questão",
+        "Histórico de tentativas e painel de desempenho",
       ],
     },
     starting: "Iniciando…",

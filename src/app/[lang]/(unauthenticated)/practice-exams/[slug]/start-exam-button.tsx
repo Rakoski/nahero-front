@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SwitchAttemptDialog } from "@/components/attempt/components";
 import { Routes } from "@/routes/routes";
-import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
-import { handleError } from "@/utils/error-utils";
-import { handlePaywallError } from "@/utils/paywall-utils";
+import { useStartAttempt } from "@/hooks/useStartAttempt";
+import { useInProgressAttempt } from "@/hooks/useInProgressAttempt";
 
 interface Props {
   practiceExamId: number;
@@ -18,16 +17,41 @@ interface Props {
     start_logged_in: string;
     start_logged_out: string;
     starting: string;
+    resume: string;
+  };
+  switchDict: {
+    title: string;
+    description: string;
+    free_try_note: string;
+    resume: string;
+    discard_and_start: string;
+    cancel: string;
   };
 }
 
-export function StartExamButton({ practiceExamId, slug, lang, dict }: Props) {
+export function StartExamButton({
+  practiceExamId,
+  slug,
+  lang,
+  dict,
+  switchDict,
+}: Props) {
   const router = useRouter();
   const { status } = useSession();
-  const [isStarting, setIsStarting] = useState(false);
+  const isAuthenticated = status === "authenticated";
+  const { data: inProgress } = useInProgressAttempt(isAuthenticated);
+  const {
+    startAttempt,
+    isStarting,
+    hasConflict,
+    discardAndStart,
+    dismissConflict,
+  } = useStartAttempt(lang);
+
+  const isResumable = inProgress?.practiceExamId === practiceExamId;
 
   const handleClick = async () => {
-    if (status !== "authenticated") {
+    if (!isAuthenticated) {
       const callbackUrl = `/${lang}${Routes.PracticeExams}/${slug}?start=1`;
       router.push(
         `/${lang}${Routes.Login}?callbackUrl=${encodeURIComponent(callbackUrl)}`,
@@ -35,35 +59,46 @@ export function StartExamButton({ practiceExamId, slug, lang, dict }: Props) {
       return;
     }
 
-    try {
-      setIsStarting(true);
-      const attemptId =
-        await studentPracticeAttemptsService.createStudentPracticeAttempt(
-          practiceExamId,
-        );
-      if (attemptId) {
-        router.push(`/${lang}${Routes.Practice}/${attemptId}/attempt`);
-      }
-    } catch (error) {
-      if (!handlePaywallError(error, lang, router, "practice-attempt")) {
-        handleError(error);
-      }
-      setIsStarting(false);
-    }
+    await startAttempt(practiceExamId);
   };
 
-  const label =
-    status === "authenticated" ? dict.start_logged_in : dict.start_logged_out;
+  const label = !isAuthenticated
+    ? dict.start_logged_out
+    : isResumable
+      ? dict.resume
+      : dict.start_logged_in;
 
   return (
-    <Button
-      size="lg"
-      className="w-full sm:w-auto"
-      onClick={handleClick}
-      disabled={isStarting}
-    >
-      {isStarting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {isStarting ? dict.starting : label}
-    </Button>
+    <>
+      <Button
+        size="lg"
+        className="w-full sm:w-auto"
+        onClick={handleClick}
+        disabled={isStarting}
+      >
+        {isStarting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {!isStarting && isResumable && <Play className="mr-2 h-4 w-4" />}
+        {isStarting ? dict.starting : label}
+      </Button>
+
+      <SwitchAttemptDialog
+        open={hasConflict}
+        onOpenChange={(open) => {
+          if (!open) dismissConflict();
+        }}
+        onDiscardAndStart={discardAndStart}
+        isStarting={isStarting}
+        lang={lang}
+        inProgress={
+          inProgress
+            ? {
+                attemptId: inProgress.attemptId,
+                practiceExamTitle: inProgress.practiceExamTitle,
+              }
+            : null
+        }
+        dict={switchDict}
+      />
+    </>
   );
 }

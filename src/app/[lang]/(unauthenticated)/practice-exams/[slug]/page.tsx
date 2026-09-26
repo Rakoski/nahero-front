@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   Clock,
+  Timer,
   Target,
   BookOpen,
   Tag,
@@ -95,7 +96,11 @@ export default async function PracticeExamDetailPage({ params }: Props) {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
-      <AutoStartOnReturn practiceExamId={exam.id} lang={lang} />
+      <AutoStartOnReturn
+        practiceExamId={exam.id}
+        lang={lang}
+        switchDict={dictionary.practiceExams.switch_attempt}
+      />
       <Breadcrumbs
         lang={lang}
         items={[
@@ -125,6 +130,27 @@ export default async function PracticeExamDetailPage({ params }: Props) {
             )}
           </div>
         </header>
+
+        <section className="flex items-start gap-4 rounded-lg border border-yellow-500/40 bg-yellow-500/5 p-5">
+          <Timer className="h-8 w-8 shrink-0 text-yellow-500" />
+          <div className="space-y-1">
+            <h2 className="text-lg md:text-xl font-bold">
+              {dict.real_exam.title}
+            </h2>
+            <p className="text-base md:text-lg font-semibold text-yellow-400">
+              {(exam.numberOfQuestions !== null
+                ? dict.real_exam.full.replace(
+                    "{{questions}}",
+                    String(exam.numberOfQuestions),
+                  )
+                : dict.real_exam.no_count
+              ).replace("{{minutes}}", String(exam.timeLimit))}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {dict.real_exam.body}
+            </p>
+          </div>
+        </section>
 
         <section className="grid grid-cols-2 md:grid-cols-3 gap-6 border-y py-6">
           <Stat
@@ -166,6 +192,7 @@ export default async function PracticeExamDetailPage({ params }: Props) {
             slug={exam.slug}
             lang={lang}
             dict={dict.cta}
+            switchDict={dictionary.practiceExams.switch_attempt}
           />
         </div>
 

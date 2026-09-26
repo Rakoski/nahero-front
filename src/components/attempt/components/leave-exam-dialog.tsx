@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,19 +14,22 @@ import {
 export interface LeaveExamDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onKeepAndLeave: () => void;
+  onDiscardAndLeave: () => void;
   dict: {
     title: string;
     description: string;
     stay: string;
-    leave: string;
+    leave_keep: string;
+    leave_discard: string;
   };
 }
 
 export function LeaveExamDialog({
   open,
   onOpenChange,
-  onConfirm,
+  onKeepAndLeave,
+  onDiscardAndLeave,
   dict,
 }: LeaveExamDialogProps) {
   return (
@@ -39,20 +42,21 @@ export function LeaveExamDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex items-start gap-3 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-          <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
-          <p className="text-sm text-yellow-700 dark:text-yellow-400">
-            {dict.description}
-          </p>
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/10 border border-primary/20">
+          <Save className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+          <p className="text-sm text-primary">{dict.description}</p>
         </div>
 
-        <DialogFooter>
-          <Button onClick={() => onOpenChange(false)} variant="outline">
-            {dict.stay}
+        <DialogFooter className="sm:justify-between">
+          <Button onClick={onDiscardAndLeave} variant="ghost">
+            {dict.leave_discard}
           </Button>
-          <Button onClick={onConfirm} variant="destructive">
-            {dict.leave}
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button onClick={() => onOpenChange(false)} variant="outline">
+              {dict.stay}
+            </Button>
+            <Button onClick={onKeepAndLeave}>{dict.leave_keep}</Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

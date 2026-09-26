@@ -1,11 +1,12 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { questionsService } from "@/services/questions";
 import { alternativesService } from "@/services/alternatives";
 import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
 import { QUERIES } from "@/constants/queries";
+import { IN_PROGRESS_ATTEMPT_KEY } from "@/hooks/useInProgressAttempt";
 import type {
   PageResponse,
   ListQuestionsByStudentResponse,
@@ -13,16 +14,60 @@ import type {
   AnswerRequest,
 } from "@/lib/dtos";
 import type { FinishStudentPracticeAttemptRequestPayload } from "@/services/student-practice-attempts/finish";
+import type { AttemptStateResponse } from "@/services/student-practice-attempts/get-state";
 
 interface UseAttemptProps {
   attemptId: string | number;
   pageSize?: number;
 }
 
+const AUTO_SAVE_DEBOUNCE_MS = 400;
+
 export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState<Map<string, string[]>>(new Map());
+  const [pageOverride, setPageOverride] = useState<number | null>(null);
+  const [answerEdits, setAnswerEdits] = useState<Map<string, string[]> | null>(
+    null,
+  );
   const queryClient = useQueryClient();
+
+  const {
+    data: attemptState,
+    isLoading: isLoadingState,
+    error: stateError,
+  } = useQuery<AttemptStateResponse>({
+    queryKey: [QUERIES.STUDENT_PRACTICE_ATTEMPTS.GET_STATE, attemptId],
+    queryFn: () =>
+      studentPracticeAttemptsService.getStudentPracticeAttemptState(attemptId),
+    enabled: !!attemptId,
+    // The attempt state seeds the timer and the saved answers; refetching it would
+    // overwrite what the student is doing right now.
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  const isHydrated = !!attemptState;
+
+  // Answers picked before the student left are the starting point for this session;
+  // anything they touch afterwards lives in `answerEdits`.
+  const savedAnswers = useMemo(
+    () =>
+      new Map(
+        (attemptState?.answers ?? []).map((answer) => [
+          String(answer.questionId),
+          answer.alternativeIds.map(String),
+        ]),
+      ),
+    [attemptState],
+  );
+
+  const answers = answerEdits ?? savedAnswers;
+
+  const restoredPage = attemptState
+    ? Math.floor((attemptState.lastQuestionIndex ?? 0) / pageSize)
+    : 0;
+
+  const currentPage = pageOverride ?? restoredPage;
 
   const {
     data: questionsData,
@@ -42,7 +87,7 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
         page: currentPage,
         size: pageSize,
       }),
-    enabled: !!attemptId,
+    enabled: !!attemptId && isHydrated,
   });
 
   // Fetch alternatives for each question on the current page
@@ -74,9 +119,51 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     enabled: questionIds.length > 0,
   });
 
+  const { mutate: saveProgress } = useMutation({
+    mutationFn: studentPracticeAttemptsService.saveStudentPracticeAttemptProgress,
+  });
+
+  const pendingSaves = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+
+  useEffect(
+    () => () => {
+      pendingSaves.current.forEach(clearTimeout);
+      pendingSaves.current.clear();
+    },
+    [],
+  );
+
+  const queueAnswerSave = useCallback(
+    (questionId: string, alternativeIds: string[]) => {
+      const pending = pendingSaves.current.get(questionId);
+      if (pending) clearTimeout(pending);
+
+      pendingSaves.current.set(
+        questionId,
+        setTimeout(() => {
+          pendingSaves.current.delete(questionId);
+          saveProgress({
+            attemptId,
+            questionId: Number(questionId),
+            alternativeIds: alternativeIds.map(Number),
+          });
+        }, AUTO_SAVE_DEBOUNCE_MS),
+      );
+    },
+    [attemptId, saveProgress],
+  );
+
+  const savePosition = useCallback(
+    (questionIndex: number) => {
+      saveProgress({ attemptId, lastQuestionIndex: questionIndex });
+    },
+    [attemptId, saveProgress],
+  );
+
   const toggleAnswer = useCallback(
     (questionId: string, alternativeId: string, isSingleChoice: boolean) => {
-      setAnswers((prev) => {
+      setAnswerEdits((edits) => {
+        const prev = edits ?? savedAnswers;
         const current = prev.get(questionId) ?? [];
         const next = isSingleChoice
           ? [alternativeId]
@@ -86,10 +173,13 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
 
         const newAnswers = new Map(prev);
         newAnswers.set(questionId, next);
+
+        queueAnswerSave(questionId, next);
+
         return newAnswers;
       });
     },
-    [],
+    [queueAnswerSave, savedAnswers],
   );
 
   const answeredCount = useMemo(
@@ -97,34 +187,45 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     [answers],
   );
 
+  const answersPayload = useCallback(
+    (): AnswerRequest[] =>
+      Array.from(answers.entries()).map(([questionId, alternativeIds]) => ({
+        questionId,
+        alternativeIds,
+      })),
+    [answers],
+  );
+
+  const cancelPendingSaves = useCallback(() => {
+    pendingSaves.current.forEach(clearTimeout);
+    pendingSaves.current.clear();
+  }, []);
+
+  const invalidateAttemptQueries = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: [QUERIES.QUESTIONS.LIST_STUDENT, attemptId],
+    });
+    queryClient.invalidateQueries({ queryKey: IN_PROGRESS_ATTEMPT_KEY });
+  }, [queryClient, attemptId]);
+
   const {
     mutateAsync: finishExam,
     isPending: isFinishingExam,
     isSuccess: isExamFinished,
   } = useMutation<void, Error, void>({
     mutationFn: async () => {
-      // Convert answers Map to AnswerRequest array
-      const answersArray: AnswerRequest[] = Array.from(answers.entries()).map(
-        ([questionId, alternativeIds]) => ({
-          questionId,
-          alternativeIds,
-        }),
-      );
+      cancelPendingSaves();
 
       const payload: FinishStudentPracticeAttemptRequestPayload = {
         attemptId,
-        answers: answersArray,
+        answers: answersPayload(),
       };
 
       await studentPracticeAttemptsService.finishStudentPracticeAttempt(
         payload,
       );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERIES.QUESTIONS.LIST_STUDENT, attemptId],
-      });
-    },
+    onSuccess: invalidateAttemptQueries,
   });
 
   const { mutateAsync: abandonExam, isPending: isAbandoningExam } = useMutation<
@@ -133,10 +234,12 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     void
   >({
     mutationFn: async () => {
+      cancelPendingSaves();
       await studentPracticeAttemptsService.abandonStudentPracticeAttempt(
         attemptId,
       );
     },
+    onSuccess: invalidateAttemptQueries,
   });
 
   const { mutateAsync: timeOutExam, isPending: isTimingOutExam } = useMutation<
@@ -145,49 +248,43 @@ export const useAttempt = ({ attemptId, pageSize = 10 }: UseAttemptProps) => {
     void
   >({
     mutationFn: async () => {
-      const answersArray: AnswerRequest[] = Array.from(answers.entries()).map(
-        ([questionId, alternativeIds]) => ({
-          questionId,
-          alternativeIds,
-        }),
-      );
+      cancelPendingSaves();
 
       await studentPracticeAttemptsService.timeOutStudentPracticeAttempt({
         attemptId,
-        answers: answersArray,
+        answers: answersPayload(),
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERIES.QUESTIONS.LIST_STUDENT, attemptId],
-      });
-    },
+    onSuccess: invalidateAttemptQueries,
   });
 
   const goToNextPage = () => {
     if (questionsData && !questionsData.last) {
-      setCurrentPage((prev) => prev + 1);
+      setPageOverride(currentPage + 1);
     }
   };
 
   const goToPreviousPage = () => {
     if (currentPage > 0) {
-      setCurrentPage((prev) => prev - 1);
+      setPageOverride(currentPage - 1);
     }
   };
 
   const goToPage = (page: number) => {
     if (questionsData && page >= 0 && page < questionsData.totalPages) {
-      setCurrentPage(page);
+      setPageOverride(page);
     }
   };
 
   return {
     questions: questionsData?.content ?? [],
     questionsData,
-    isLoadingQuestions,
-    questionsError,
+    isLoadingQuestions: isLoadingQuestions || isLoadingState || !isHydrated,
+    questionsError: questionsError ?? stateError,
     refetchQuestions,
+
+    attemptState,
+    savePosition,
 
     alternatives: alternativesQueries.data ?? {},
     isLoadingAlternatives: alternativesQueries.isLoading,

@@ -15,6 +15,11 @@ export const NAHERO_API = {
     GET_RESULT: "/student-practice-attempts",
     GET_HISTORY: "/student-practice-attempts/history",
     GET_DASHBOARD_SUMMARY: "/student-practice-attempts/dashboard-summary",
+    GET_IN_PROGRESS: "/student-practice-attempts/in-progress",
+    GET_STATE: (attemptId: string | number) =>
+      `/student-practice-attempts/${attemptId}/state`,
+    SAVE_PROGRESS: (attemptId: string | number) =>
+      `/student-practice-attempts/${attemptId}/progress`,
   },
   QUESTITONS: {
     LIST_STUDENT: "/questions/list-student",

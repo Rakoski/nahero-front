@@ -10,9 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
-import Link from "next/link";
-import { LogOut, Sparkles } from "lucide-react";
-import { Routes } from "@/routes/routes";
+import { LogOut } from "lucide-react";
 import { useActiveAttempt } from "@/providers/active-attempt-provider";
 import { useRef } from "react";
 import { useLocale } from "@/providers/locale-provider";
@@ -21,7 +19,7 @@ export function UserNav() {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.header;
   const { data: session } = useSession();
-  const { abandonActiveAttempt } = useActiveAttempt();
+  const { releaseActiveAttempt } = useActiveAttempt();
   const isLoggingOutRef = useRef(false);
   const user = session?.user;
 
@@ -29,9 +27,9 @@ export function UserNav() {
     if (isLoggingOutRef.current) return;
     isLoggingOutRef.current = true;
     try {
-      await abandonActiveAttempt();
+      await releaseActiveAttempt();
     } catch {
-      // a failed abandon must not trap the user in a logged-in state
+      // a failed release must not trap the user in a logged-in state
     }
     await signOut({ callbackUrl: `/${lang}` });
   };
@@ -63,13 +61,6 @@ export function UserNav() {
             <p className="text-xs leading-none text-stone-400">{user.email}</p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-stone-800" />
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <Link href={`/${lang}${Routes.Subscription}`}>
-            <Sparkles className="mr-2 h-4 w-4" />
-            {dict.my_subscription}
-          </Link>
-        </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-stone-800" />
         <DropdownMenuItem
           className="text-red-500 focus:bg-red-900/20 focus:text-red-500 cursor-pointer"

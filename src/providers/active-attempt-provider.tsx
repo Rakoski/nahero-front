@@ -10,11 +10,15 @@ import {
   type PropsWithChildren,
 } from "react";
 
-type AbandonHandler = () => Promise<void>;
+/**
+ * Called when the app needs the running attempt to let go of its navigation guard —
+ * on logout, for instance. The attempt itself stays in progress and resumable.
+ */
+type ReleaseHandler = () => Promise<void>;
 
 type ActiveAttemptContextValue = {
-  registerActiveAttempt: (handler: AbandonHandler) => () => void;
-  abandonActiveAttempt: () => Promise<void>;
+  registerActiveAttempt: (handler: ReleaseHandler) => () => void;
+  releaseActiveAttempt: () => Promise<void>;
 };
 
 const ActiveAttemptContext = createContext<ActiveAttemptContextValue | null>(
@@ -22,16 +26,16 @@ const ActiveAttemptContext = createContext<ActiveAttemptContextValue | null>(
 );
 
 export function ActiveAttemptProvider({ children }: PropsWithChildren) {
-  const handlerRef = useRef<AbandonHandler | null>(null);
+  const handlerRef = useRef<ReleaseHandler | null>(null);
 
-  const registerActiveAttempt = useCallback((handler: AbandonHandler) => {
+  const registerActiveAttempt = useCallback((handler: ReleaseHandler) => {
     handlerRef.current = handler;
     return () => {
       if (handlerRef.current === handler) handlerRef.current = null;
     };
   }, []);
 
-  const abandonActiveAttempt = useCallback(async () => {
+  const releaseActiveAttempt = useCallback(async () => {
     const handler = handlerRef.current;
     if (!handler) return;
     handlerRef.current = null;
@@ -39,8 +43,8 @@ export function ActiveAttemptProvider({ children }: PropsWithChildren) {
   }, []);
 
   const value = useMemo(
-    () => ({ registerActiveAttempt, abandonActiveAttempt }),
-    [registerActiveAttempt, abandonActiveAttempt],
+    () => ({ registerActiveAttempt, releaseActiveAttempt }),
+    [registerActiveAttempt, releaseActiveAttempt],
   );
 
   return (
@@ -62,17 +66,17 @@ export function useActiveAttempt(): ActiveAttemptContextValue {
 
 export function useRegisterActiveAttempt(
   enabled: boolean,
-  abandon: AbandonHandler,
+  release: ReleaseHandler,
 ) {
   const { registerActiveAttempt } = useActiveAttempt();
-  const abandonRef = useRef(abandon);
+  const releaseRef = useRef(release);
 
   useEffect(() => {
-    abandonRef.current = abandon;
-  }, [abandon]);
+    releaseRef.current = release;
+  }, [release]);
 
   useEffect(() => {
     if (!enabled) return;
-    return registerActiveAttempt(() => abandonRef.current());
+    return registerActiveAttempt(() => releaseRef.current());
   }, [enabled, registerActiveAttempt]);
 }
