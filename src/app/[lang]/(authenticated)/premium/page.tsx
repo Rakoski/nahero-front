@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
+import { CheckCircle2, Construction, Loader2, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,15 +17,28 @@ import { useLocale } from "@/providers/locale-provider";
 export default function PremiumPage() {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.premium;
-  const { free, monthly, yearly, premiumFeatures } = dict.plans;
+  const { free, monthly, yearly, premiumFeatures, upcomingFeature } =
+    dict.plans;
   const searchParams = useSearchParams();
 
   const { data: subscription, isLoading: isLoadingSubscription } =
     useSubscriptionStatus();
-  const { mutate: startCheckout, isPending: isStartingCheckout, variables } =
-    useCreateCheckoutSession();
+  const {
+    mutate: startCheckout,
+    isPending: isStartingCheckout,
+    variables,
+  } = useCreateCheckoutSession();
 
-  const fromPaywall = searchParams.get("from") === "practice-attempt";
+  const paywallSource = searchParams.get("from");
+  const paywallMessages: Record<string, string> = {
+    "practice-attempt": dict.fromPracticeAttempt,
+    results: dict.fromPracticeAttempt,
+    dashboard: dict.fromDashboard,
+    history: dict.fromHistory,
+  };
+  const paywallMessage = paywallSource
+    ? (paywallMessages[paywallSource] ?? null)
+    : null;
 
   if (isLoadingSubscription) {
     return (
@@ -70,14 +83,14 @@ export default function PremiumPage() {
     );
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-6xl">
-      <header className="text-center mb-10 space-y-2">
-        <h1 className="text-4xl font-bold">{dict.title}</h1>
-        <p className="text-muted-foreground text-lg">{dict.subtitle}</p>
+    <div className="container mx-auto pt-4 pb-8 px-4 max-w-6xl">
+      <header className="text-center mb-6 space-y-1">
+        <h1 className="text-3xl md:text-4xl font-bold">{dict.title}</h1>
+        <p className="text-muted-foreground text-lg">{dict.fromDashboard}</p>
       </header>
 
       {isPremium && (
-        <Card className="mb-8 border-yellow-500/40 bg-yellow-500/5">
+        <Card className="mb-4 border-yellow-500/40 bg-yellow-500/5">
           <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
             <div className="flex items-center gap-3">
               <Sparkles className="h-6 w-6 text-yellow-500 shrink-0" />
@@ -100,21 +113,9 @@ export default function PremiumPage() {
         </Card>
       )}
 
-      {fromPaywall && !isPremium && (
-        <Card className="mb-8 border-yellow-500/40 bg-yellow-500/5">
-          <CardContent className="pt-6">
-            <p className="text-center text-sm">{dict.fromPracticeAttempt}</p>
-          </CardContent>
-        </Card>
-      )}
-
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         <PlanCard
           name={free.name}
-          currency={free.currency}
-          amount={free.amount}
-          cadence={free.cadence}
-          description={free.description}
           features={free.features}
           action={
             <Button className="w-full" size="lg" variant="outline" asChild>
@@ -125,12 +126,10 @@ export default function PremiumPage() {
 
         <PlanCard
           name={monthly.name}
-          currency={monthly.currency}
-          amount={monthly.amount}
-          cadence={monthly.cadence}
+          price={monthly}
           badge={monthly.badge}
-          description={monthly.description}
           features={premiumFeatures}
+          upcomingFeature={upcomingFeature}
           action={renderSubscribeButton("MONTHLY", monthly.cta)}
           footnote={monthly.footnote}
           emphasized
@@ -138,10 +137,7 @@ export default function PremiumPage() {
 
         <PlanCard
           name={yearly.name}
-          currency={yearly.currency}
-          amount={yearly.amount}
-          cadence={yearly.cadence}
-          description={yearly.description}
+          price={yearly}
           highlight={
             <>
               <p className="font-semibold">{yearly.highlightTitle}</p>
@@ -156,6 +152,7 @@ export default function PremiumPage() {
           }
           highlightClassName="border-yellow-500/40 bg-yellow-500/5"
           features={premiumFeatures}
+          upcomingFeature={upcomingFeature}
           action={renderSubscribeButton("YEARLY", yearly.cta)}
           footnote={yearly.footnote}
         />
@@ -166,13 +163,11 @@ export default function PremiumPage() {
 
 interface PlanCardProps {
   name: string;
-  currency: string;
-  amount: string;
-  cadence: string;
-  description: string;
+  price?: { currency: string; amount: string; cadence: string };
   highlight?: ReactNode;
   highlightClassName?: string;
   features: readonly string[];
+  upcomingFeature?: { label: string; tag: string };
   action: ReactNode;
   badge?: string;
   footnote?: string;
@@ -181,13 +176,11 @@ interface PlanCardProps {
 
 function PlanCard({
   name,
-  currency,
-  amount,
-  cadence,
-  description,
+  price,
   highlight,
   highlightClassName,
   features,
+  upcomingFeature,
   action,
   badge,
   footnote,
@@ -200,31 +193,26 @@ function PlanCard({
         emphasized && "border-yellow-500 shadow-lg shadow-yellow-500/10",
       )}
     >
-      <CardContent className="flex flex-1 flex-col gap-6 pt-6">
+      <CardContent className="flex flex-1 flex-col gap-4 pt-6">
         <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold">{name}</h2>
-            {badge && (
-              <Badge
-                variant="outline"
-                className="border-yellow-500/40 text-yellow-400"
-              >
-                {badge}
-              </Badge>
-            )}
-            <p className="text-sm text-muted-foreground">{description}</p>
-          </div>
-          <div className="text-right shrink-0 leading-none">
-            <p className="text-2xl font-bold">{currency}</p>
-            <p className="text-4xl font-bold">{amount}</p>
-            <p className="text-sm text-muted-foreground mt-1">{cadence}</p>
-          </div>
+          <h2 className="text-xl font-bold">{name}</h2>
+          {price && (
+            <div className="text-right shrink-0 leading-none">
+              <p className="text-4xl font-bold">
+                <span className="mr-1 align-top text-xl">{price.currency}</span>
+                {price.amount}
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {price.cadence}
+              </p>
+            </div>
+          )}
         </div>
 
         {highlight && (
           <div
             className={cn(
-              "rounded-lg border border-border bg-muted/40 p-4",
+              "rounded-lg border border-border bg-muted/40 p-3",
               highlightClassName,
             )}
           >
@@ -232,13 +220,24 @@ function PlanCard({
           </div>
         )}
 
-        <ul className="space-y-3 flex-1">
+        <ul className="space-y-2 flex-1">
           {features.map((feature) => (
             <li key={feature} className="flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
               <span>{feature}</span>
             </li>
           ))}
+          {upcomingFeature && (
+            <li className="flex items-start gap-3 text-muted-foreground">
+              <Construction className="h-5 w-5 shrink-0 mt-0.5" />
+              <span>
+                {upcomingFeature.label}{" "}
+                <span className="ml-1 inline-block rounded-full border border-yellow-500/40 px-2 py-0.5 text-xs font-medium text-yellow-400">
+                  {upcomingFeature.tag}
+                </span>
+              </span>
+            </li>
+          )}
         </ul>
 
         <div className="space-y-2">

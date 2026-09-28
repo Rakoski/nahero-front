@@ -15,7 +15,7 @@ import { Routes } from "@/routes/routes";
 import { getDictionary } from "@/dictionaries";
 import { practiceExamsService } from "@/services/practice-exams";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
-import { BackToPracticeExamsButton } from "@/components/practice-exams/components/back-to-practice-exams-button";
+import { BackButton } from "@/components/shared";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import {
   formatTimeLimit,
@@ -95,7 +95,7 @@ export default async function PracticeExamDetailPage({ params }: Props) {
   );
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className="container mx-auto px-4 pt-10 pb-6 max-w-7xl">
       <AutoStartOnReturn
         practiceExamId={exam.id}
         lang={lang}
@@ -112,10 +112,15 @@ export default async function PracticeExamDetailPage({ params }: Props) {
         ]}
         dict={dictionary.breadcrumbs}
       />
-      <BackToPracticeExamsButton lang={lang} label={dict.cta.back} />
-      <Badge className={cn("text-sm mb-2", getDifficultyColors(difficulty))}>
-        {difficultyLabel}
-      </Badge>
+      <div className="mt-6 mb-8 flex items-center justify-between gap-4">
+        <BackButton
+          href={`/${lang}${Routes.PracticeExams}`}
+          label={dict.cta.back}
+        />
+        <Badge className={cn("text-sm", getDifficultyColors(difficulty))}>
+          {difficultyLabel}
+        </Badge>
+      </div>
 
       <article className="space-y-6">
         <header className="text-center flex items-start gap-4">
@@ -145,9 +150,6 @@ export default async function PracticeExamDetailPage({ params }: Props) {
                   )
                 : dict.real_exam.no_count
               ).replace("{{minutes}}", String(exam.timeLimit))}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {dict.real_exam.body}
             </p>
           </div>
         </section>
@@ -186,7 +188,7 @@ export default async function PracticeExamDetailPage({ params }: Props) {
           )}
         </section>
 
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <StartExamButton
             practiceExamId={exam.id}
             slug={exam.slug}

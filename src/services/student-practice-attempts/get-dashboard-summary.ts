@@ -1,6 +1,7 @@
 import { NAHERO_API } from "@/constants/nahero-api";
 import { api } from "@/lib/api-manager";
 import { handleError } from "@/utils/error-utils";
+import { isPaymentRequiredError } from "@/utils/paywall-utils";
 
 export interface ScorePoint {
   attemptId: number;
@@ -63,7 +64,7 @@ export async function getStudentDashboardSummary(): Promise<GetDashboardSummaryR
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    if (!isPaymentRequiredError(error)) handleError(error);
     throw error;
   }
 }

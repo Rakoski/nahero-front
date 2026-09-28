@@ -108,7 +108,6 @@ export function Header() {
                 dict={{
                   premium: dict.premium,
                   premium_badge: dict.premium_badge,
-                  free_tries_badge: dict.free_tries_badge,
                 }}
               />
             </div>
@@ -173,7 +172,6 @@ export function Header() {
                       dict={{
                         premium: dict.premium,
                         premium_badge: dict.premium_badge,
-                        free_tries_badge: dict.free_tries_badge,
                       }}
                     />
                     <div className="flex flex-col items-center gap-3 mb-2">

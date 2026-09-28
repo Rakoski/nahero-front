@@ -85,7 +85,7 @@ export const pt = {
     title_start: "Simulados iguais à",
     title_highlight: "prova real",
     description:
-      "Prova completa, com o mesmo número de questões e o mesmo tempo da certificação oficial, e um cronômetro que não pausa. Treine do jeito que vai ser no dia, de graça, para AWS, Azure e Google Cloud.",
+      "Ambiente igual ao da prova: 65 questões, 90 minutos, cronômetro correndo e sem pausa, como no AWS Cloud Practitioner oficial. Treine do jeito que vai ser no dia, de graça.",
     btn_primary: "Começar a praticar",
     btn_secondary: "Criar conta grátis",
     demo: {
@@ -130,6 +130,48 @@ export const pt = {
           "Uma iniciativa open-source nascida no IFPR. Acreditamos que a educação deve ser livre, acessível e de alta qualidade.",
       },
     ],
+  },
+  productDemos: {
+    eyebrow: "Na prática",
+    title_start: "Veja o NaHero",
+    title_highlight: "funcionando",
+    subtitle:
+      "Mexa nas prévias abaixo: é assim que o painel e os planos aparecem para você.",
+    dashboard: {
+      tag: "Premium",
+      title: "Seu painel de estudos",
+      description:
+        "Sequência de dias, notas e evolução em um só lugar. Você vê se está pronto antes de marcar a prova.",
+      streak_label: "dias de sequência",
+      today_done: "Você já treinou hoje!",
+      keep_going: "Faça um simulado hoje para manter a sequência.",
+      tap_hint: "Toque em hoje para registrar um treino",
+      weekdays: ["S", "T", "Q", "Q", "S", "S", "D"],
+      average_score: "Nota média",
+      best_score: "Melhor nota",
+      pass_rate: "Taxa de aprovação",
+      score_over_time: "Evolução da nota",
+      passing_label: "Aprovação",
+      aria_label: "Prévia interativa do painel de estudos",
+    },
+    plans: {
+      title: "Grátis ou Premium",
+      description:
+        "Todos os simulados são gratuitos e ilimitados, em qualquer nível. O Premium é o que transforma a nota em um plano de estudo: a explicação de cada questão, seu histórico e seu painel.",
+      free_label: "Grátis",
+      premium_label: "Premium",
+      levels: [
+        "Simulados de todos os níveis",
+        "Explicações das respostas",
+        "Histórico de tentativas",
+        "Painel de desempenho",
+      ],
+      unlimited: "Incluído",
+      locked: "Premium",
+      free_note: "Simulados ilimitados, sempre grátis",
+      premium_note: "Tudo liberado, com explicações incluídas",
+      aria_label: "Prévia interativa dos planos",
+    },
   },
   stats: {
     items: [
@@ -390,7 +432,6 @@ export const pt = {
     my_profile: "Meu Perfil",
     plans: "Planos",
     premium: "Me inscrever",
-    free_tries_badge: "{{count}} grátis",
     premium_badge: "Premium",
     logout: "Sair",
     menu: "Menu",
@@ -562,7 +603,6 @@ export const pt = {
       title: "Ambiente igual ao da prova real",
       full: "{{questions}} questões, {{minutes}} minutos, sem pausa.",
       no_count: "{{minutes}} minutos, sem pausa.",
-      body: "O cronômetro corre do início ao fim, como no dia da certificação.",
     },
     overview: {
       heading: "Sobre este simulado",
@@ -602,7 +642,7 @@ export const pt = {
       free_answer_unlimited:
         "Sim. Este simulado é gratuito e ilimitado. Você só precisa de uma conta gratuita no NaHero para começar.",
       free_answer_limited:
-        "Você pode fazer usando as tentativas gratuitas da sua conta. Quando elas acabam, este simulado exige um plano premium, enquanto os simulados de nível fundamental seguem gratuitos e ilimitados.",
+        "Sim. Todos os simulados do NaHero são gratuitos e ilimitados, em qualquer nível. O plano premium acrescenta a explicação de cada resposta, seu histórico de tentativas e seu painel de desempenho.",
       format_question: "Quantas questões tem e quanto tempo dura?",
       format_answer:
         "{{questions}} questões com limite de {{minutes}} minutos, para você praticar sob a mesma pressão de tempo da prova real.",
@@ -616,7 +656,7 @@ export const pt = {
       retake_answer_unlimited:
         "Quantas vezes quiser. As questões são embaralhadas a cada tentativa.",
       retake_answer_limited:
-        "Pode. Cada tentativa consome uma das suas tentativas gratuitas, e o plano premium deixa as tentativas ilimitadas.",
+        "Quantas vezes quiser — as tentativas são ilimitadas e gratuitas. As questões são embaralhadas a cada tentativa.",
       real_questions_question: "Estas são as questões reais da prova oficial?",
       real_questions_answer:
         "Não. O NaHero não reproduz questões da prova oficial. São questões de prática escritas para reproduzir o formato, os temas e o nível de dificuldade dela.",
@@ -681,6 +721,10 @@ export const pt = {
       questionAlt: "Questão",
       alternativeAlt: "Alternativa",
       explanation: "Explicação:",
+      explanationLocked: "A explicação desta questão faz parte do Premium.",
+    },
+    freeSummary: {
+      correctOf: "{{correct}} de {{total}} corretas",
     },
   },
   history: {
@@ -697,6 +741,9 @@ export const pt = {
       description:
         "Você ainda não completou nenhum simulado. Comece a praticar para ver seu histórico aqui!",
       action: "Ver Simulados",
+    },
+    locked: {
+      exampleTitle: "AWS Cloud Practitioner — Simulado",
     },
     card: {
       score: "Pontuação",
@@ -741,15 +788,32 @@ export const pt = {
       description: "“{{title}}”, pontuação {{score}}",
       cta: "Tentar novamente",
     },
-    kpi: {
-      total_attempts: "Total de tentativas",
+    performance: {
+      title: "Desempenho",
+      description: "Como estão indo os simulados que você terminou.",
+      average_score: "Nota média",
+      best_score: "Melhor nota",
       pass_rate: "Taxa de aprovação",
-      average_score: "Pontuação média",
-      best_score: "Melhor pontuação",
-      total_time: "Tempo estudado",
-      streak: "Sequência atual",
-      days: "{{count}} dia(s)",
       no_data: "—",
+    },
+    effort: {
+      title: "Seu esforço",
+      description: "O tempo estudado conta só simulados concluídos.",
+      time_studied: "Tempo estudado",
+      completed_attempts: "Simulados finalizados",
+      total_attempts: "Tentativas no total",
+    },
+    streak: {
+      label_one: "dia de sequência",
+      label_other: "dias de sequência",
+      today_done: "Você já treinou hoje. Até amanhã!",
+      keep_going: "Faça um simulado hoje para manter sua sequência.",
+      start: "Faça um simulado hoje para começar uma sequência.",
+      last_7_days: "Últimos 7 dias",
+      last_30_days: "Últimos 30 dias",
+      active_days: "{{count}}/30 dias ativos",
+      best_streak: "maior sequência: {{count}}",
+      tooltip: "{{count}} tentativa(s) em {{date}}",
     },
     charts: {
       score_over_time: {
@@ -759,18 +823,6 @@ export const pt = {
         passing_label: "Nota de aprovação",
         empty: "Conclua uma tentativa para ver sua evolução.",
       },
-      status_breakdown: {
-        title: "Tentativas por status",
-        description:
-          "Como suas sessões terminam. Tentativas abandonadas não contam para sua pontuação.",
-        empty: "Nenhuma tentativa ainda.",
-        labels: {
-          completed: "Concluídas",
-          timed_out: "Tempo esgotado",
-          abandoned: "Abandonadas",
-          in_progress: "Em andamento",
-        },
-      },
       by_exam: {
         title: "Por simulado",
         description: "Seu desempenho em cada simulado.",
@@ -779,20 +831,19 @@ export const pt = {
         last: "Última",
         empty: "Conclua uma tentativa para ver as estatísticas.",
       },
-      activity: {
-        title: "Atividade nos últimos 30 dias",
-        description: "Dias em que você fez pelo menos uma tentativa.",
-        tooltip: "{{count}} tentativa(s) em {{date}}",
-      },
     },
   },
   premium: {
     title: "Escolha seu plano",
     subtitle:
-      "Comece grátis e assine quando quiser praticar em todos os níveis, sem limites.",
+      "Praticar é grátis, para sempre. Assine quando quiser saber por que cada resposta está certa.",
     loading: "Carregando…",
+    fromDashboard:
+      "Assine e pare de adivinhar no que você precisa melhorar para avançar na sua carreira.",
+    fromHistory:
+      "Seu histórico de tentativas faz parte do Premium. Assine para rever todos os simulados que você já fez.",
     fromPracticeAttempt:
-      "Você já usou sua tentativa gratuita nesta dificuldade. Assine para continuar praticando sem limites.",
+      "Corrigir o simulado é grátis. Assine para ver a explicação de cada questão que você errou.",
     alreadyPremiumTitle: "Você já é Premium",
     alreadyPremiumBody: "Seu acesso está ativo até {{date}}.",
     manageSubscription: "Gerenciar assinatura",
@@ -800,16 +851,11 @@ export const pt = {
     plans: {
       free: {
         name: "Gratuito",
-        currency: "R$",
-        amount: "0",
-        cadence: "/mês",
-        description: "Para conhecer a plataforma e começar a estudar.",
         cta: "Continuar no grátis",
         features: [
-          "Simulados do nível 1 ilimitados",
-          "1 tentativa grátis nos níveis avançados",
-          "Explicações detalhadas de cada questão",
-          "Histórico de tentativas e painel de desempenho",
+          "Simulados ilimitados em todos os níveis",
+          "Resultado completo com acertos e erros",
+          "A alternativa correta de cada questão",
         ],
       },
       monthly: {
@@ -818,7 +864,6 @@ export const pt = {
         amount: "10",
         cadence: "/mês",
         badge: "Recomendado",
-        description: "Estude sem limites, com flexibilidade.",
         cta: "Assinar plano mensal",
         footnote: "Renovação automática mensal. Cancele quando quiser.",
       },
@@ -827,7 +872,6 @@ export const pt = {
         currency: "R$",
         amount: "90",
         cadence: "/ano",
-        description: "Melhor custo-benefício para estudar o ano todo.",
         highlightTitle: "Melhor custo-benefício",
         equivalentLabel: "Equivale a",
         equivalentPrice: "R$ 7,50/mês",
@@ -836,11 +880,15 @@ export const pt = {
         footnote: "Renovação automática anual. Cancele quando quiser.",
       },
       premiumFeatures: [
-        "Tentativas ilimitadas em todos os simulados",
-        "Todos os níveis de dificuldade liberados",
-        "Explicações detalhadas de cada questão",
-        "Histórico de tentativas e painel de desempenho",
+        "Explicação detalhada de cada questão",
+        "Histórico de tentativas de todos os simulados",
+        "Painel de desempenho com notas e evolução",
+        "Percentuais de acerto e progresso ao longo do tempo",
       ],
+      upcomingFeature: {
+        label: "Feedback personalizado em texto, focado nas suas necessidades",
+        tag: "Em construção",
+      },
     },
     starting: "Iniciando…",
     success: {
@@ -893,8 +941,30 @@ export const pt = {
     upgrade: {
       title: "Você está no plano Gratuito",
       subtitle:
-        "Faça upgrade para o Premium e libere todos os simulados em todos os níveis.",
+        "Faça upgrade para o Premium e libere a explicação de cada questão, seu histórico e seu painel.",
       cta: "Ver planos",
+    },
+  },
+  shared: {
+    premiumBanner: {
+      explanations: {
+        title: "Quer ver as explicações?",
+        description:
+          "Sua nota é grátis, para sempre. O Premium mostra por que cada resposta está certa — e por que a que você marcou não estava.",
+        cta: "Assinar o Premium",
+      },
+      history: {
+        title: "Quer ver seu histórico completo?",
+        description:
+          "Todos os simulados que você já fez, com notas e evolução ao longo do tempo. O Premium guarda o registro inteiro.",
+        cta: "Assinar o Premium",
+      },
+      scoreDetail: {
+        title: "Quer a análise completa?",
+        description:
+          "Percentuais, evolução e onde você está em relação à nota de corte fazem parte do Premium.",
+        cta: "Assinar o Premium",
+      },
     },
   },
 };

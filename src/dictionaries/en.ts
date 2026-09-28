@@ -1,7 +1,8 @@
 export const en = {
   metadata: {
     home: {
-      title: "Practice Exams That Match the Real Test: AWS, Azure & Google Cloud",
+      title:
+        "Practice Exams That Match the Real Test: AWS, Azure & Google Cloud",
       description:
         "Sit the full exam before exam day: same number of questions, same time limit as the official certification, and a clock that never pauses. Free practice exams for AWS, Azure and Google Cloud.",
     },
@@ -84,7 +85,7 @@ export const en = {
     title_start: "Practice exams that match",
     title_highlight: "the real test",
     description:
-      "The full exam, with the same number of questions and the same time limit as the official certification, and a clock that never pauses. Train the way exam day will feel, for free, for AWS, Azure and Google Cloud.",
+      "Same conditions as the real exam: 65 questions, 90 minutes, the clock running and no pausing, just like the official AWS Cloud Practitioner. Train the way exam day will feel, for free.",
     btn_primary: "Start practicing",
     btn_secondary: "Create free account",
     demo: {
@@ -129,6 +130,48 @@ export const en = {
           "An open-source initiative born at IFPR. We believe education should be free, accessible, and high quality.",
       },
     ],
+  },
+  productDemos: {
+    eyebrow: "In practice",
+    title_start: "See NaHero",
+    title_highlight: "in action",
+    subtitle:
+      "Play with the previews below: this is how the dashboard and the plans look for you.",
+    dashboard: {
+      tag: "Premium",
+      title: "Your study dashboard",
+      description:
+        "Day streak, scores and progress in one place. You can tell you're ready before you book the exam.",
+      streak_label: "day streak",
+      today_done: "You've practiced today!",
+      keep_going: "Take an exam today to keep your streak.",
+      tap_hint: "Tap today to log a practice session",
+      weekdays: ["M", "T", "W", "T", "F", "S", "S"],
+      average_score: "Average score",
+      best_score: "Best score",
+      pass_rate: "Pass rate",
+      score_over_time: "Score over time",
+      passing_label: "Passing",
+      aria_label: "Interactive preview of the study dashboard",
+    },
+    plans: {
+      title: "Free or Premium",
+      description:
+        "Every practice exam is free and unlimited, on every level. Premium is what turns a score into a study plan: the explanation behind each question, your history and your dashboard.",
+      free_label: "Free",
+      premium_label: "Premium",
+      levels: [
+        "Practice exams on every level",
+        "Answer explanations",
+        "Attempt history",
+        "Performance dashboard",
+      ],
+      unlimited: "Included",
+      locked: "Premium",
+      free_note: "Unlimited practice exams, always free",
+      premium_note: "Everything unlocked, explanations included",
+      aria_label: "Interactive preview of the plans",
+    },
   },
   stats: {
     items: [
@@ -399,7 +442,6 @@ export const en = {
     my_profile: "My Profile",
     plans: "Plans",
     premium: "Go Premium",
-    free_tries_badge: "{{count}} free left",
     premium_badge: "Premium",
     logout: "Log Out",
     menu: "Menu",
@@ -570,7 +612,6 @@ export const en = {
       title: "Same conditions as the real exam",
       full: "{{questions}} questions, {{minutes}} minutes, no pausing.",
       no_count: "{{minutes}} minutes, no pausing.",
-      body: "The clock runs from start to finish, just like on certification day.",
     },
     overview: {
       heading: "About this exam",
@@ -610,7 +651,7 @@ export const en = {
       free_answer_unlimited:
         "Yes. This practice exam is free and unlimited. You only need a free NaHero account to start.",
       free_answer_limited:
-        "You can take it with the free attempts included in your account. After those run out, this exam requires a premium plan, while foundational-level exams stay free and unlimited.",
+        "Yes. Every practice exam on NaHero is free and unlimited, whatever its level. A premium plan adds the explanation behind each answer, your attempt history and your performance dashboard.",
       format_question:
         "How many questions does it have and how long does it take?",
       format_answer:
@@ -625,7 +666,7 @@ export const en = {
       retake_answer_unlimited:
         "As many times as you like. Questions are shuffled on every attempt.",
       retake_answer_limited:
-        "Yes. Each attempt uses one of your free attempts, and a premium plan makes them unlimited.",
+        "As many times as you like — attempts are unlimited and free. Questions are shuffled on every attempt.",
       real_questions_question:
         "Are these the real questions from the official exam?",
       real_questions_answer:
@@ -691,6 +732,10 @@ export const en = {
       questionAlt: "Question",
       alternativeAlt: "Alternative",
       explanation: "Explanation:",
+      explanationLocked: "The explanation for this question is part of Premium.",
+    },
+    freeSummary: {
+      correctOf: "{{correct}} of {{total}} correct",
     },
   },
   history: {
@@ -707,6 +752,9 @@ export const en = {
       description:
         "You haven't completed any practice exams yet. Start practicing to see your history here!",
       action: "Browse Practice Exams",
+    },
+    locked: {
+      exampleTitle: "AWS Cloud Practitioner — Practice Exam",
     },
     card: {
       score: "Score",
@@ -752,15 +800,32 @@ export const en = {
       description: "“{{title}}”, score {{score}}",
       cta: "Try again",
     },
-    kpi: {
-      total_attempts: "Total attempts",
-      pass_rate: "Pass rate",
+    performance: {
+      title: "Performance",
+      description: "How your finished exams are going.",
       average_score: "Average score",
       best_score: "Best score",
-      total_time: "Time studied",
-      streak: "Current streak",
-      days: "{{count}} day(s)",
+      pass_rate: "Pass rate",
       no_data: "—",
+    },
+    effort: {
+      title: "Your effort",
+      description: "Time studied only counts completed exams.",
+      time_studied: "Time studied",
+      completed_attempts: "Finished exams",
+      total_attempts: "Total attempts",
+    },
+    streak: {
+      label_one: "day streak",
+      label_other: "day streak",
+      today_done: "You've practiced today. See you tomorrow!",
+      keep_going: "Take an exam today to keep your streak alive.",
+      start: "Take an exam today to start a new streak.",
+      last_7_days: "Last 7 days",
+      last_30_days: "Last 30 days",
+      active_days: "{{count}}/30 active days",
+      best_streak: "best streak: {{count}}",
+      tooltip: "{{count}} attempt(s) on {{date}}",
     },
     charts: {
       score_over_time: {
@@ -770,18 +835,6 @@ export const en = {
         passing_label: "Passing score",
         empty: "Complete an attempt to see your score trend.",
       },
-      status_breakdown: {
-        title: "Attempts by status",
-        description:
-          "How your sessions are ending. Abandoned attempts don’t count toward your score.",
-        empty: "No attempts yet.",
-        labels: {
-          completed: "Completed",
-          timed_out: "Timed out",
-          abandoned: "Abandoned",
-          in_progress: "In progress",
-        },
-      },
       by_exam: {
         title: "By practice exam",
         description: "How you’re performing on each exam.",
@@ -790,20 +843,19 @@ export const en = {
         last: "Last",
         empty: "Complete an attempt to see per-exam stats.",
       },
-      activity: {
-        title: "Activity in the last 30 days",
-        description: "Days you sat at least one attempt.",
-        tooltip: "{{count}} attempt(s) on {{date}}",
-      },
     },
   },
   premium: {
     title: "Choose your plan",
     subtitle:
-      "Start for free and subscribe whenever you want to practice every level, without limits.",
+      "Practising is free, forever. Subscribe when you want to know why each answer is right.",
     loading: "Loading…",
+    fromDashboard:
+      "Subscribe, get feedback and stop guessing about what you should improve next for your career.",
+    fromHistory:
+      "Your attempt history is part of Premium. Subscribe to look back at every practice exam you have taken.",
     fromPracticeAttempt:
-      "You've used your free attempt on this difficulty. Subscribe to keep practicing without limits.",
+      "Scoring the exam is free. Subscribe to see the explanation behind every question you missed.",
     alreadyPremiumTitle: "You're already Premium",
     alreadyPremiumBody: "Your access is active until {{date}}.",
     manageSubscription: "Manage subscription",
@@ -811,16 +863,11 @@ export const en = {
     plans: {
       free: {
         name: "Free",
-        currency: "$",
-        amount: "0",
-        cadence: "/mo",
-        description: "To get to know the platform and start studying.",
         cta: "Continue for free",
         features: [
-          "Unlimited level 1 practice exams",
-          "1 free attempt on advanced levels",
-          "Detailed explanation for every question",
-          "Attempt history and performance dashboard",
+          "Unlimited practice exams on every level",
+          "Full results with right and wrong answers",
+          "The correct alternative on every question",
         ],
       },
       monthly: {
@@ -829,7 +876,6 @@ export const en = {
         amount: "1.99",
         cadence: "/mo",
         badge: "Recommended",
-        description: "Study without limits, with flexibility.",
         cta: "Subscribe monthly",
         footnote: "Renews automatically every month. Cancel anytime.",
       },
@@ -838,7 +884,6 @@ export const en = {
         currency: "$",
         amount: "17.99",
         cadence: "/yr",
-        description: "Best value for studying all year long.",
         highlightTitle: "Best value",
         equivalentLabel: "Works out to",
         equivalentPrice: "$1.50/mo",
@@ -847,11 +892,15 @@ export const en = {
         footnote: "Renews automatically every year. Cancel anytime.",
       },
       premiumFeatures: [
-        "Unlimited attempts on every practice exam",
-        "Every difficulty level unlocked",
         "Detailed explanation for every question",
-        "Attempt history and performance dashboard",
+        "Attempt history across every practice exam",
+        "Performance dashboard with scores and trends",
+        "Percentage scores and progress over time",
       ],
+      upcomingFeature: {
+        label: "Tailored written feedback focused on your needs",
+        tag: "Under construction",
+      },
     },
     starting: "Starting…",
     success: {
@@ -902,8 +951,30 @@ export const en = {
     upgrade: {
       title: "You're on the Free plan",
       subtitle:
-        "Upgrade to Premium to unlock every practice exam at every difficulty.",
+        "Upgrade to Premium to unlock the explanation behind every question, your history and your dashboard.",
       cta: "See plans",
+    },
+  },
+  shared: {
+    premiumBanner: {
+      explanations: {
+        title: "Want to see the explanations?",
+        description:
+          "Your score is free, forever. Premium tells you why each answer is right — and why the one you picked was not.",
+        cta: "Subscribe to Premium",
+      },
+      history: {
+        title: "Want to see your full history?",
+        description:
+          "Every practice exam you have taken, with scores and progress over time. Premium keeps the whole record.",
+        cta: "Subscribe to Premium",
+      },
+      scoreDetail: {
+        title: "Want the full breakdown?",
+        description:
+          "Percentages, trends and where you stand against the passing score are part of Premium.",
+        cta: "Subscribe to Premium",
+      },
     },
   },
 };

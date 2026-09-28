@@ -72,12 +72,12 @@ export function StartExamButton({
     <>
       <Button
         size="lg"
-        className="w-full sm:w-auto"
+        className="h-12 w-full px-10 text-base font-semibold sm:w-auto sm:min-w-64"
         onClick={handleClick}
         disabled={isStarting}
       >
-        {isStarting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {!isStarting && isResumable && <Play className="mr-2 h-4 w-4" />}
+        {isStarting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+        {!isStarting && isResumable && <Play className="mr-2 h-5 w-5" />}
         {isStarting ? dict.starting : label}
       </Button>
 

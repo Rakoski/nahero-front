@@ -14,8 +14,11 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Trophy, Target, AlertCircle } from "lucide-react";
 import { Routes } from "@/routes/routes";
 import { HistoryFilters } from "@/components/history/history-filters";
+import { PremiumBanner } from "@/components/shared";
 import { useHistory } from "./useHistory";
 import { useLocale } from "@/providers/locale-provider";
+
+const LOCKED_PREVIEW_ROWS = 6;
 
 export default function HistoryPage() {
   const { lang, dict: dictionary } = useLocale();
@@ -26,6 +29,7 @@ export default function HistoryPage() {
     history,
     isLoading,
     error,
+    isPaywalled,
     filters,
     practiceExams,
     handleClearFilters,
@@ -49,6 +53,51 @@ export default function HistoryPage() {
   const handleSeeResults = (attemptId: number) => {
     router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
   };
+
+  if (isPaywalled) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-2">{dict.title}</h1>
+          <p className="text-muted-foreground">{dict.subtitle}</p>
+        </div>
+
+        <PremiumBanner
+          dict={dictionary.shared.premiumBanner.history}
+          from="history"
+          className="mb-8"
+        />
+
+        <div
+          aria-hidden="true"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 blur-sm select-none pointer-events-none"
+        >
+          {Array.from({ length: LOCKED_PREVIEW_ROWS }).map((_, index) => (
+            <Card key={index} className="flex flex-col">
+              <CardHeader>
+                <CardTitle className="line-clamp-2">
+                  {dict.locked.exampleTitle}
+                </CardTitle>
+                <CardDescription className="flex items-center gap-2 mt-2">
+                  <Badge variant="default">&nbsp;&nbsp;&nbsp;&nbsp;</Badge>
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="flex-1 space-y-3">
+                <div className="h-4 w-full rounded bg-muted" />
+                <div className="h-4 w-4/5 rounded bg-muted" />
+                <div className="h-4 w-2/3 rounded bg-muted" />
+              </CardContent>
+
+              <CardFooter>
+                <div className="h-9 w-full rounded bg-muted" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   // Only show full-page spinner on initial load
   if (isLoading && (!history || history.length === 0)) {

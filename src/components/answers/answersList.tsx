@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import type { AnswerFilters } from "@/services/answers";
-import { CheckCircle2, XCircle, Search } from "lucide-react";
+import { CheckCircle2, XCircle, Search, Lock } from "lucide-react";
 import { ListAnsweredAnswersResponse } from "../../lib/dtos";
 
 interface AnswersListProps {
@@ -27,6 +27,7 @@ interface AnswersListProps {
     questionAlt: string;
     alternativeAlt: string;
     explanation: string;
+    explanationLocked: string;
   };
 }
 
@@ -191,6 +192,13 @@ export function AnswersList({
                     <div className="p-4 text- rounded-lg">
                       <h4 className="font-semibold mb-2">{dict.explanation}</h4>
                       <p>{answer.explanation}</p>
+                    </div>
+                  )}
+
+                  {answer.explanationLocked && (
+                    <div className="flex items-center gap-2 rounded-lg border border-dashed border-yellow-500/40 bg-yellow-500/5 p-4 text-sm text-muted-foreground">
+                      <Lock className="h-4 w-4 flex-shrink-0 text-yellow-500" />
+                      <span>{dict.explanationLocked}</span>
                     </div>
                   )}
                 </div>
