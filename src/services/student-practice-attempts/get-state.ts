@@ -1,6 +1,5 @@
 import { NAHERO_API } from "@/constants/nahero-api";
 import { api } from "@/lib/api-manager";
-import { handleError } from "@/utils/error-utils";
 
 export interface SavedAnswer {
   questionId: number;
@@ -25,14 +24,9 @@ export interface AttemptStateResponse {
 export async function getStudentPracticeAttemptState(
   attemptId: string | number,
 ): Promise<AttemptStateResponse> {
-  try {
-    const response = await api.get<AttemptStateResponse>(
-      NAHERO_API.STUDENT_PRACTICE_ATTEMPTS.GET_STATE(attemptId),
-    );
+  const response = await api.get<AttemptStateResponse>(
+    NAHERO_API.STUDENT_PRACTICE_ATTEMPTS.GET_STATE(attemptId),
+  );
 
-    return response.data;
-  } catch (error) {
-    handleError(error);
-    throw error;
-  }
+  return response.data;
 }

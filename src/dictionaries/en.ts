@@ -779,6 +779,7 @@ export const en = {
   studentDashboard: {
     title: "Your dashboard",
     welcome: "Welcome back, {{name}}",
+    load_error: "We couldn't load your dashboard. Try again in a moment.",
     loading: "Loading your dashboard…",
     empty: {
       title: "No attempts yet",
@@ -873,7 +874,7 @@ export const en = {
         cadence: "/mo",
         badge: "Recommended",
         cta: "Subscribe monthly",
-        footnote: "Renews automatically every month. Cancel anytime.",
+        footnote: "Renews monthly. Cancel anytime.",
       },
       yearly: {
         name: "Premium Yearly",
@@ -885,7 +886,7 @@ export const en = {
         equivalentPrice: "$1.50/mo",
         yearlySavings: "save $5.89 a year",
         cta: "Subscribe yearly",
-        footnote: "Renews automatically every year. Cancel anytime.",
+        footnote: "Renews yearly. Cancel anytime.",
       },
       premiumFeatures: [
         "Detailed explanation for every question",
@@ -953,6 +954,12 @@ export const en = {
   },
   shared: {
     premiumBanner: {
+      dashboard: {
+        title: "Want to see where your score is heading?",
+        description:
+          "Your streak, average and best scores, time studied and progress on each exam, all in one dashboard. It's part of Premium.",
+        cta: "Subscribe to Premium",
+      },
       explanations: {
         title: "Want to see the explanations?",
         description:

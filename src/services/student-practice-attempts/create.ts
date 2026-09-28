@@ -23,10 +23,9 @@ export async function createStudentPracticeAttempt(
 
     return null;
   } catch (error) {
-    if (isPaymentRequiredError(error) || isAttemptInProgressConflict(error)) {
-      throw error;
+    if (!isPaymentRequiredError(error) && !isAttemptInProgressConflict(error)) {
+      handleError(error);
     }
-    handleError(error);
-    return null;
+    throw error;
   }
 }

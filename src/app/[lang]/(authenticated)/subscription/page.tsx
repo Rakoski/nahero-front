@@ -26,6 +26,7 @@ import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useCancelSubscription } from "@/hooks/useCancelSubscription";
 import type { SubscriptionStatus } from "@/services/subscription/get-status";
 import { useLocale } from "@/providers/locale-provider";
+import { InlineError } from "@/components/shared";
 
 export default function SubscriptionPage() {
   const { lang, dict: dictionary } = useLocale();
@@ -33,7 +34,11 @@ export default function SubscriptionPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: subscription, isLoading } = useSubscriptionStatus();
-  const { mutate: cancelSub, isPending: isCanceling } = useCancelSubscription();
+  const {
+    mutate: cancelSub,
+    isPending: isCanceling,
+    error: cancelError,
+  } = useCancelSubscription();
 
   if (isLoading) {
     return (
@@ -199,6 +204,7 @@ export default function SubscriptionPage() {
               )}
             </DialogDescription>
           </DialogHeader>
+          <InlineError error={cancelError} />
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline" disabled={isCanceling}>

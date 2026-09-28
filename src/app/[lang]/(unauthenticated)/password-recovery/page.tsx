@@ -27,6 +27,7 @@ import { Typography } from "@/components/ui/typography";
 import Link from "next/link";
 import { usePasswordRecovery } from "./usePasswordRecovery";
 import { useLocale } from "@/providers/locale-provider";
+import { InlineError } from "@/components/shared";
 
 const createPasswordRecoverySchema = (dict: Dictionary["passwordRecovery"]) =>
   z.object({
@@ -45,7 +46,7 @@ export default function PasswordRecoveryPage() {
   const dict = dictionary.passwordRecovery;
   const [sentTo, setSentTo] = useState<string | null>(null);
 
-  const { mutate: requestRecovery, isPending } = usePasswordRecovery({
+  const { mutate: requestRecovery, isPending, error } = usePasswordRecovery({
     onSent: setSentTo,
   });
 
@@ -163,6 +164,8 @@ export default function PasswordRecoveryPage() {
                           </FormItem>
                         )}
                       />
+
+                      <InlineError error={error} />
 
                       <Button
                         type="submit"

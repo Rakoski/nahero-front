@@ -19,6 +19,7 @@ import { EMAIL_ALREADY_VERIFIED } from "@/constants/auth-errors";
 import { type Locale } from "@/lib/locale";
 import { useLocale } from "@/providers/locale-provider";
 import { useResendVerification } from "./useResendVerification";
+import { InlineError } from "@/components/shared";
 
 export type VerifyEmailDict = {
   pending_title: string;
@@ -77,6 +78,7 @@ function PendingView({
     cooldown,
     canResend,
     isPending,
+    error,
   } = useResendVerification(justSent ? 60 : 0, dict.resend_success);
 
   return (
@@ -101,6 +103,7 @@ function PendingView({
           onChange={(e) => setEmail(e.target.value)}
         />
       )}
+      <InlineError error={error} className="mt-2" />
       <Button
         onClick={() => resend(email)}
         disabled={!canResend || !email}

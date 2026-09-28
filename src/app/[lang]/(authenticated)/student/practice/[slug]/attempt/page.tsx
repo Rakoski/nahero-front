@@ -17,6 +17,7 @@ import { useRegisterActiveAttempt } from "@/providers/active-attempt-provider";
 import type { ListQuestionsByStudentResponse } from "@/lib/dtos";
 import { AxiosError } from "axios";
 import { useLocale } from "@/providers/locale-provider";
+import { InlineError } from "@/components/shared";
 
 const PAGE_SIZE = 10;
 
@@ -54,6 +55,7 @@ export default function ExamAttemptPage() {
     null,
   );
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+  const [submitError, setSubmitError] = useState<unknown>(null);
   const [tickedTimeRemaining, setTickedTimeRemaining] = useState<number | null>(
     null,
   );
@@ -250,14 +252,28 @@ export default function ExamAttemptPage() {
 
   const handleSubmitConfirm = async () => {
     setShowSubmitDialog(false);
+    setSubmitError(null);
 
-    await finishExam();
+    try {
+      await finishExam();
+    } catch (error) {
+      setSubmitError(error);
+      return;
+    }
 
     router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
   };
 
   const handleTimeUp = async () => {
-    await timeOutExam();
+    setSubmitError(null);
+
+    try {
+      await timeOutExam();
+    } catch (error) {
+      setSubmitError(error);
+      return;
+    }
+
     router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
   };
 
@@ -359,6 +375,7 @@ export default function ExamAttemptPage() {
           </p>
 
           <div className="px-4 pb-8">
+            <InlineError error={submitError} className="mb-4" />
             <NavigationButtons
               currentQuestionIndex={currentQuestionIndex}
               totalQuestions={questions.length}

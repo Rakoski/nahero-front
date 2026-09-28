@@ -3,15 +3,8 @@ import { AxiosError } from "axios";
 import { BackendErrorResponse } from "@/types/api-error";
 
 const ERROR_TITLES: Record<string, { en: string; pt: string }> = {
-  VALIDATION: { en: "Validation Error", pt: "Erro de Validação" },
-  AUTH: { en: "Authentication Failed", pt: "Falha na Autenticação" },
-  DENIED: { en: "Access Denied", pt: "Acesso Negado" },
-  NOT_FOUND: { en: "Not Found", pt: "Não Encontrado" },
-  DUPLICATE: { en: "Duplicate Entry", pt: "Registro Duplicado" },
-  RATE_LIMIT: { en: "Too Many Requests", pt: "Muitas Tentativas" },
   SERVER: { en: "Server Error", pt: "Erro no Servidor" },
   NETWORK: { en: "Network Error", pt: "Erro de Conexão" },
-  DEFAULT: { en: "Error", pt: "Erro" },
 };
 
 export function getLangFromPathname(): "pt" | "en" {
@@ -20,78 +13,68 @@ export function getLangFromPathname(): "pt" | "en" {
   return pathname.startsWith("/pt") ? "pt" : "en";
 }
 
-export function handleError(error: unknown) {
+const SERVER_ERROR_PATTERN = /status code 5\d\d|network error|fetch failed|econnrefused/i;
+
+export function isServerError(error: unknown): boolean {
+  if (error instanceof AxiosError) {
+    if (!error.response) return true;
+    return error.response.status >= 500;
+  }
+  if (error instanceof Error) return SERVER_ERROR_PATTERN.test(error.message);
+  return true;
+}
+
+export function getErrorMessage(error: unknown): string {
   const lang = getLangFromPathname();
   const isPt = lang === "pt";
 
-  let message = "";
-  let title = ERROR_TITLES.DEFAULT[lang];
-
-  console.log("Handling error:", error);
-
   if (error instanceof AxiosError && error.response) {
-    const data = error.response.data as BackendErrorResponse;
-    const status = error.response.status;
+    const data = error.response.data as BackendErrorResponse | undefined;
+    if (data?.error) return data.error;
 
-    if (data.error) message = data.error;
-
-    switch (status) {
-      case 400:
-      case 412:
-        title = ERROR_TITLES.VALIDATION[lang];
-        break;
+    switch (error.response.status) {
       case 401:
-        title = ERROR_TITLES.AUTH[lang];
-        if (!message)
-          message = isPt
-            ? "Sessão expirada. Faça login novamente."
-            : "Session expired. Please login again.";
-        break;
+        return isPt
+          ? "Sessão expirada. Faça login novamente."
+          : "Session expired. Please login again.";
       case 403:
-        title = ERROR_TITLES.DENIED[lang];
-        if (!message)
-          message = isPt ? "Sem permissão." : "You do not have permission.";
-        break;
-      case 404:
-        title = ERROR_TITLES.NOT_FOUND[lang];
-        break;
-      case 409:
-        title = ERROR_TITLES.DUPLICATE[lang];
-        break;
+        return isPt ? "Sem permissão." : "You do not have permission.";
       case 429:
-        title = ERROR_TITLES.RATE_LIMIT[lang];
-        if (!message)
-          message = isPt
-            ? "Aguarde alguns minutos e tente novamente."
-            : "Please wait a few minutes and try again.";
-        break;
+        return isPt
+          ? "Aguarde alguns minutos e tente novamente."
+          : "Please wait a few minutes and try again.";
       case 500:
-        title = ERROR_TITLES.SERVER[lang];
-        if (!message)
-          message = isPt
-            ? "Erro interno no servidor."
-            : "Internal server error.";
-        break;
+        return isPt ? "Erro interno no servidor." : "Internal server error.";
     }
-  } else if (error instanceof Error) {
-    if (error.message.includes("401")) {
-      title = ERROR_TITLES.AUTH[lang];
-      message = isPt
-        ? "Email ou senha incorretos."
-        : "Invalid email or password.";
-    } else {
-      message = isPt
-        ? "Um erro inesperado ocorreu."
-        : "Something unexpected happened.";
-    }
-  } else {
-    message = isPt
-      ? "Não foi possível conectar ao servidor."
-      : "Unable to connect to the server.";
-    title = ERROR_TITLES.NETWORK[lang];
   }
 
-  showErrorToast(title, message);
+  if (isServerError(error)) {
+    return isPt
+      ? "Não foi possível conectar ao servidor."
+      : "Unable to connect to the server.";
+  }
+
+  if (error instanceof Error && error.message.includes("401")) {
+    return isPt ? "Email ou senha incorretos." : "Invalid email or password.";
+  }
+
+  return isPt ? "Um erro inesperado ocorreu." : "Something unexpected happened.";
+}
+
+function getErrorTitle(error: unknown): string {
+  const lang = getLangFromPathname();
+  if (error instanceof AxiosError && error.response) {
+    return ERROR_TITLES.SERVER[lang];
+  }
+  return ERROR_TITLES.NETWORK[lang];
+}
+
+export function handleError(error: unknown) {
+  console.error("Handling error:", error);
+
+  if (!isServerError(error)) return;
+
+  showErrorToast(getErrorTitle(error), getErrorMessage(error));
 }
 
 function showErrorToast(title: string, message: string) {
@@ -140,8 +123,9 @@ function showErrorToast(title: string, message: string) {
       </div>
     ),
     {
+      id: `${title}:${message}`,
       duration: 5000,
-      position: "top-center",
+      position: "bottom-right",
     }
   );
 }

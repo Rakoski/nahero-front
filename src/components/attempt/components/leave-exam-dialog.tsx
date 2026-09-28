@@ -47,16 +47,24 @@ export function LeaveExamDialog({
           <p className="text-sm text-primary">{dict.description}</p>
         </div>
 
-        <DialogFooter className="sm:justify-between">
-          <Button onClick={onDiscardAndLeave} variant="ghost">
+        <DialogFooter className="flex-col gap-2 sm:flex-col sm:justify-start">
+          <Button onClick={onKeepAndLeave} className="w-full">
+            {dict.leave_keep}
+          </Button>
+          <Button
+            onClick={() => onOpenChange(false)}
+            variant="outline"
+            className="w-full"
+          >
+            {dict.stay}
+          </Button>
+          <Button
+            onClick={onDiscardAndLeave}
+            variant="ghost"
+            className="w-full text-red-500 hover:bg-red-500/10 hover:text-red-500"
+          >
             {dict.leave_discard}
           </Button>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button onClick={() => onOpenChange(false)} variant="outline">
-              {dict.stay}
-            </Button>
-            <Button onClick={onKeepAndLeave}>{dict.leave_keep}</Button>
-          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
