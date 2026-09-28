@@ -30,6 +30,7 @@ import Link from "next/link";
 import { useRegister } from "./useRegister";
 import type { Dictionary } from "@/dictionaries";
 import { useLocale } from "@/providers/locale-provider";
+import { InlineError } from "@/components/shared";
 
 const createRegisterSchema = (dict: Dictionary["register"]) =>
   z
@@ -62,7 +63,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { mutate: register, isPending } = useRegister(lang);
+  const { mutate: register, isPending, error } = useRegister(lang);
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(createRegisterSchema(dict)),
@@ -222,7 +223,8 @@ export default function RegisterPage() {
                     )}
                   />
 
-                  {/* 3. Use isPending state */}
+                  <InlineError error={error} />
+
                   <Button
                     type="submit"
                     disabled={isPending}

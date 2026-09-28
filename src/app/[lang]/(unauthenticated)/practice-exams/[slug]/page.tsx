@@ -188,7 +188,7 @@ export default async function PracticeExamDetailPage({ params }: Props) {
           )}
         </section>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center">
           <StartExamButton
             practiceExamId={exam.id}
             slug={exam.slug}

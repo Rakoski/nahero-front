@@ -13,6 +13,7 @@ import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useCreateCheckoutSession } from "@/hooks/useCreateCheckoutSession";
 import type { PlanInterval } from "@/services/payment/create-checkout-session";
 import { useLocale } from "@/providers/locale-provider";
+import { InlineError } from "@/components/shared";
 
 export default function PremiumPage() {
   const { lang, dict: dictionary } = useLocale();
@@ -27,6 +28,7 @@ export default function PremiumPage() {
     mutate: startCheckout,
     isPending: isStartingCheckout,
     variables,
+    error: checkoutError,
   } = useCreateCheckoutSession();
 
   const paywallSource = searchParams.get("from");
@@ -157,6 +159,8 @@ export default function PremiumPage() {
           footnote={yearly.footnote}
         />
       </section>
+
+      <InlineError error={checkoutError} className="mt-6" />
     </div>
   );
 }
@@ -243,7 +247,7 @@ function PlanCard({
         <div className="space-y-2">
           {action}
           {footnote && (
-            <p className="text-xs text-center text-muted-foreground">
+            <p className="truncate text-xs text-center text-muted-foreground">
               {footnote}
             </p>
           )}

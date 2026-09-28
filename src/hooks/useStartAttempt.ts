@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Routes } from "@/routes/routes";
 import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
-import { handleError } from "@/utils/error-utils";
 import { handlePaywallError } from "@/utils/paywall-utils";
 import { isAttemptInProgressConflict } from "@/utils/attempt-utils";
 import { IN_PROGRESS_ATTEMPT_KEY } from "@/hooks/useInProgressAttempt";
@@ -21,6 +20,7 @@ export function useStartAttempt(lang: "en" | "pt") {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isStarting, setIsStarting] = useState(false);
+  const [startError, setStartError] = useState<unknown>(null);
   const [conflictPracticeExamId, setConflictPracticeExamId] = useState<
     number | null
   >(null);
@@ -29,6 +29,7 @@ export function useStartAttempt(lang: "en" | "pt") {
     async (practiceExamId: number, discardInProgress = false) => {
       try {
         setIsStarting(true);
+        setStartError(null);
 
         const attemptId =
           await studentPracticeAttemptsService.createStudentPracticeAttempt(
@@ -53,7 +54,7 @@ export function useStartAttempt(lang: "en" | "pt") {
         }
 
         if (!handlePaywallError(error, lang, router, "practice-attempt")) {
-          handleError(error);
+          setStartError(error);
         }
       }
     },
@@ -73,6 +74,7 @@ export function useStartAttempt(lang: "en" | "pt") {
   return {
     startAttempt,
     isStarting,
+    startError,
     hasConflict: conflictPracticeExamId !== null,
     discardAndStart,
     dismissConflict,

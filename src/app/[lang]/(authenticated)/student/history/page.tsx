@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Trophy, Target, AlertCircle } from "lucide-react";
+import { Clock, Trophy, Target } from "lucide-react";
 import { Routes } from "@/routes/routes";
 import { HistoryFilters } from "@/components/history/history-filters";
-import { PremiumBanner } from "@/components/shared";
+import { PageError, PremiumBanner } from "@/components/shared";
 import { useHistory } from "./useHistory";
 import { useLocale } from "@/providers/locale-provider";
 
@@ -113,17 +113,7 @@ export default function HistoryPage() {
 
   if (error) {
     return (
-      <div className="container px-4 mx-auto py-8">
-        <Card className="border-destructive">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center text-center space-y-4">
-              <AlertCircle className="w-12 h-12 text-destructive" />
-              <h2 className="text-xl font-semibold">{dict.error.title}</h2>
-              <p className="text-muted-foreground">{dict.error.description}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <PageError title={dict.error.title} description={dict.error.description} />
     );
   }
 

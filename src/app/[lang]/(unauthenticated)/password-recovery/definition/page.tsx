@@ -35,6 +35,7 @@ import { Routes } from "@/routes/routes";
 import Link from "next/link";
 import { useResetPassword } from "./useResetPassword";
 import { useLocale } from "@/providers/locale-provider";
+import { InlineError } from "@/components/shared";
 
 const createResetPasswordSchema = (
   dict: Dictionary["passwordRecoveryDefinition"],
@@ -85,7 +86,7 @@ function PasswordRecoveryDefinitionContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  const { mutate: submitNewPassword, isPending } = useResetPassword({
+  const { mutate: submitNewPassword, isPending, error } = useResetPassword({
     onDone: () => setIsDone(true),
     onTokenRejected: () => setIsTokenRejected(true),
   });
@@ -303,6 +304,8 @@ function PasswordRecoveryDefinitionContent() {
                           </FormItem>
                         )}
                       />
+
+                      <InlineError error={error} />
 
                       <Button
                         type="submit"

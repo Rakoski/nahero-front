@@ -8,6 +8,7 @@ import { SwitchAttemptDialog } from "@/components/attempt/components";
 import { Routes } from "@/routes/routes";
 import { useStartAttempt } from "@/hooks/useStartAttempt";
 import { useInProgressAttempt } from "@/hooks/useInProgressAttempt";
+import { InlineError } from "@/components/shared";
 
 interface Props {
   practiceExamId: number;
@@ -43,6 +44,7 @@ export function StartExamButton({
   const {
     startAttempt,
     isStarting,
+    startError,
     hasConflict,
     discardAndStart,
     dismissConflict,
@@ -80,6 +82,7 @@ export function StartExamButton({
         {!isStarting && isResumable && <Play className="mr-2 h-5 w-5" />}
         {isStarting ? dict.starting : label}
       </Button>
+      <InlineError error={startError} className="mt-3" />
 
       <SwitchAttemptDialog
         open={hasConflict}

@@ -32,6 +32,8 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { useLogin } from "./useLogin";
 import { useLocale } from "@/providers/locale-provider";
+import { InlineError } from "@/components/shared";
+import { EMAIL_NOT_VERIFIED } from "@/constants/auth-errors";
 
 const createLoginSchema = (dict: Dictionary["login"]) =>
   z.object({
@@ -63,7 +65,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { mutate: login, isPending } = useLogin();
+  const { mutate: login, isPending, error: loginError } = useLogin();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(createLoginSchema(dict)),
@@ -190,6 +192,14 @@ export default function LoginPage() {
                       {dict.forgot_password}
                     </Link>
                   </div>
+
+                  <InlineError
+                    error={
+                      loginError?.message === EMAIL_NOT_VERIFIED
+                        ? null
+                        : loginError
+                    }
+                  />
 
                   {form.formState.errors.root && (
                     <p className="text-sm text-destructive text-center">

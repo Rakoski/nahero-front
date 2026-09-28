@@ -768,6 +768,7 @@ export const pt = {
   studentDashboard: {
     title: "Seu painel",
     welcome: "Bem-vindo de volta, {{name}}",
+    load_error: "Não conseguimos carregar seu painel. Tente de novo em instantes.",
     loading: "Carregando seu painel…",
     empty: {
       title: "Você ainda não fez nenhum simulado",
@@ -861,7 +862,7 @@ export const pt = {
         cadence: "/mês",
         badge: "Recomendado",
         cta: "Assinar plano mensal",
-        footnote: "Renovação automática mensal. Cancele quando quiser.",
+        footnote: "Renova todo mês. Cancele quando quiser.",
       },
       yearly: {
         name: "Premium Anual",
@@ -873,7 +874,7 @@ export const pt = {
         equivalentPrice: "R$ 7,50/mês",
         yearlySavings: "economize R$ 30 no ano",
         cta: "Assinar plano anual",
-        footnote: "Renovação automática anual. Cancele quando quiser.",
+        footnote: "Renova todo ano. Cancele quando quiser.",
       },
       premiumFeatures: [
         "Explicação detalhada de cada questão",
@@ -943,6 +944,12 @@ export const pt = {
   },
   shared: {
     premiumBanner: {
+      dashboard: {
+        title: "Quer ver para onde sua nota está indo?",
+        description:
+          "Sua sequência, nota média e melhor nota, tempo estudado e evolução em cada simulado, tudo em um painel. Faz parte do Premium.",
+        cta: "Assinar o Premium",
+      },
       explanations: {
         title: "Quer ver as explicações?",
         description:
