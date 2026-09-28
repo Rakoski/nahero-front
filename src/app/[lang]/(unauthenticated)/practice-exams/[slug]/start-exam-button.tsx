@@ -22,7 +22,7 @@ interface Props {
   switchDict: {
     title: string;
     description: string;
-    free_try_note: string;
+    attempts_note: string;
     resume: string;
     discard_and_start: string;
     cancel: string;

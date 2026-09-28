@@ -3,7 +3,6 @@ import type { PracticeExamBySlugDTO, SampleQuestionDTO } from "@/lib/dtos";
 import type { FaqItem } from "@/app/[lang]/(unauthenticated)/practice-exams/[slug]/faq-items";
 import { getSiteUrl } from "@/lib/site-url";
 import { Routes } from "@/routes/routes";
-import { DifficultyLevels } from "@/constants/difficulty-levels";
 
 type Props = {
   exam: PracticeExamBySlugDTO;
@@ -36,7 +35,7 @@ const quizFor = (
     ? { numberOfQuestions: exam.numberOfQuestions }
     : {}),
   timeRequired: `PT${exam.timeLimit}M`,
-  isAccessibleForFree: exam.exam.difficultyLevel <= DifficultyLevels.EASY,
+  isAccessibleForFree: true,
   provider: { "@type": "Organization", name: "NaHero", url: getSiteUrl() },
   hasPart: sampleQuestions.map((question) => {
     const correct = question.alternatives.filter((a) => a.isCorrect);

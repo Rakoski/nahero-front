@@ -494,16 +494,16 @@ export const en = {
       heading: "You have an attempt in progress",
       description:
         "{{title}} — {{answered}} of {{total}} questions answered so far.",
-      free_try_note:
-        "Your free attempt is only used when you finish an exam, so you can switch to another practice exam without losing it.",
+      attempts_note:
+        "Attempts are unlimited and free, so you can switch to another practice exam whenever you like.",
       resume: "Resume attempt",
     },
     switch_attempt: {
       title: "Start another practice exam?",
       description:
         "You still have an attempt running on {{title}}. Starting this one discards it.",
-      free_try_note:
-        "Nothing is charged either way: your free attempt is only used when you finish an exam.",
+      attempts_note:
+        "Nothing is lost either way: attempts are unlimited and free.",
       resume: "Resume the other one",
       discard_and_start: "Discard and start",
       cancel: "Cancel",
@@ -648,10 +648,8 @@ export const en = {
     faq: {
       heading: "Frequently asked questions",
       free_question: "Is the {{title}} practice exam free?",
-      free_answer_unlimited:
-        "Yes. This practice exam is free and unlimited. You only need a free NaHero account to start.",
-      free_answer_limited:
-        "Yes. Every practice exam on NaHero is free and unlimited, whatever its level. A premium plan adds the explanation behind each answer, your attempt history and your performance dashboard.",
+      free_answer:
+        "Yes. Every practice exam on NaHero is free and unlimited, whatever its level. You only need a free account to start. A premium plan adds the explanation behind each answer, your attempt history and your performance dashboard.",
       format_question:
         "How many questions does it have and how long does it take?",
       format_answer:
@@ -663,9 +661,7 @@ export const en = {
       account_answer:
         "Yes, a free account. It is what lets us save your attempt, score it and keep your history.",
       retake_question: "Can I retake it?",
-      retake_answer_unlimited:
-        "As many times as you like. Questions are shuffled on every attempt.",
-      retake_answer_limited:
+      retake_answer:
         "As many times as you like — attempts are unlimited and free. Questions are shuffled on every attempt.",
       real_questions_question:
         "Are these the real questions from the official exam?",

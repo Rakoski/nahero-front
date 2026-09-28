@@ -23,7 +23,7 @@ export interface SwitchAttemptDialogProps {
   dict: {
     title: string;
     description: string;
-    free_try_note: string;
+    attempts_note: string;
     resume: string;
     discard_and_start: string;
     cancel: string;
@@ -59,7 +59,7 @@ export function SwitchAttemptDialog({
         <div className="flex items-start gap-3 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
           <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
           <p className="text-sm text-yellow-700 dark:text-yellow-400">
-            {dict.free_try_note}
+            {dict.attempts_note}
           </p>
         </div>
 

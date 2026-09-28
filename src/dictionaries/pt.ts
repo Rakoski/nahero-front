@@ -484,16 +484,16 @@ export const pt = {
       heading: "Você tem uma tentativa em andamento",
       description:
         "{{title}} — {{answered}} de {{total}} questões respondidas até agora.",
-      free_try_note:
-        "Sua tentativa gratuita só é consumida quando você conclui um simulado, então você pode trocar de simulado sem perdê-la.",
+      attempts_note:
+        "As tentativas são ilimitadas e gratuitas, então você pode trocar de simulado quando quiser.",
       resume: "Retomar tentativa",
     },
     switch_attempt: {
       title: "Iniciar outro simulado?",
       description:
         "Você ainda tem uma tentativa em andamento em {{title}}. Iniciar este simulado descarta essa tentativa.",
-      free_try_note:
-        "Você não perde nada nas duas opções: sua tentativa gratuita só é consumida ao concluir um simulado.",
+      attempts_note:
+        "Você não perde nada nas duas opções: as tentativas são ilimitadas e gratuitas.",
       resume: "Retomar a outra",
       discard_and_start: "Descartar e iniciar",
       cancel: "Cancelar",
@@ -639,10 +639,8 @@ export const pt = {
     faq: {
       heading: "Perguntas frequentes",
       free_question: "O simulado {{title}} é gratuito?",
-      free_answer_unlimited:
-        "Sim. Este simulado é gratuito e ilimitado. Você só precisa de uma conta gratuita no NaHero para começar.",
-      free_answer_limited:
-        "Sim. Todos os simulados do NaHero são gratuitos e ilimitados, em qualquer nível. O plano premium acrescenta a explicação de cada resposta, seu histórico de tentativas e seu painel de desempenho.",
+      free_answer:
+        "Sim. Todos os simulados do NaHero são gratuitos e ilimitados, em qualquer nível. Você só precisa de uma conta gratuita para começar. O plano premium acrescenta a explicação de cada resposta, seu histórico de tentativas e seu painel de desempenho.",
       format_question: "Quantas questões tem e quanto tempo dura?",
       format_answer:
         "{{questions}} questões com limite de {{minutes}} minutos, para você praticar sob a mesma pressão de tempo da prova real.",
@@ -653,9 +651,7 @@ export const pt = {
       account_answer:
         "Sim, uma conta gratuita. É ela que permite salvar sua tentativa, corrigir a prova e guardar seu histórico.",
       retake_question: "Posso refazer o simulado?",
-      retake_answer_unlimited:
-        "Quantas vezes quiser. As questões são embaralhadas a cada tentativa.",
-      retake_answer_limited:
+      retake_answer:
         "Quantas vezes quiser — as tentativas são ilimitadas e gratuitas. As questões são embaralhadas a cada tentativa.",
       real_questions_question: "Estas são as questões reais da prova oficial?",
       real_questions_answer:

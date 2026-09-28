@@ -1,6 +1,5 @@
 import type { Dictionary } from "@/dictionaries";
 import type { PracticeExamBySlugDTO } from "@/lib/dtos";
-import { DifficultyLevels } from "@/constants/difficulty-levels";
 
 export type FaqItem = { question: string; answer: string };
 
@@ -11,22 +10,20 @@ const fill = (template: string, values: Record<string, string | number>) =>
   );
 
 /**
- * The answers have to stay true per exam: foundational exams are unlimited and
- * free, everything above that spends the account's free attempts first.
+ * Every practice exam is free and unlimited at every level, so the answers no
+ * longer branch on difficulty. Premium buys the explanations, the history and
+ * the dashboard, which is what the answers point at instead.
  */
 export function buildFaqItems(
   exam: PracticeExamBySlugDTO,
   dict: Dictionary["practiceExamDetail"]["faq"],
 ): FaqItem[] {
-  const isUnlimited = exam.exam.difficultyLevel <= DifficultyLevels.EASY;
   const questions = exam.numberOfQuestions;
 
   const items: FaqItem[] = [
     {
       question: fill(dict.free_question, { title: exam.title }),
-      answer: isUnlimited
-        ? dict.free_answer_unlimited
-        : dict.free_answer_limited,
+      answer: dict.free_answer,
     },
   ];
 
@@ -51,9 +48,7 @@ export function buildFaqItems(
     },
     {
       question: dict.retake_question,
-      answer: isUnlimited
-        ? dict.retake_answer_unlimited
-        : dict.retake_answer_limited,
+      answer: dict.retake_answer,
     },
     {
       question: dict.real_questions_question,
