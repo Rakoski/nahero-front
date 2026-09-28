@@ -15,7 +15,7 @@ export interface InProgressAttemptBannerProps {
   dict: {
     heading: string;
     description: string;
-    free_try_note: string;
+    attempts_note: string;
     resume: string;
   };
 }
@@ -47,7 +47,7 @@ export function InProgressAttemptBanner({
               .replace("{{answered}}", String(answeredCount))
               .replace("{{total}}", String(totalQuestions))}
           </p>
-          <p className="text-xs text-muted-foreground">{dict.free_try_note}</p>
+          <p className="text-xs text-muted-foreground">{dict.attempts_note}</p>
         </div>
 
         <Button asChild className="shrink-0">
