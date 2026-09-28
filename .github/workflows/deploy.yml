@@ -23,6 +23,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.VPS_PORT }}
           script_stop: true
+          command_timeout: 30m
           script: |
             set -euo pipefail
             cd ~/nahero/nahero-front
