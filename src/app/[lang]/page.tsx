@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth";
 import { Hero } from "@/components/home/hero";
 import { Stats } from "@/components/home/stats";
 import { Features } from "@/components/home/features";
+import { ProductDemos } from "@/components/home/product-demos";
 import { HowItWorks } from "@/components/home/how-it-works";
 import { Certifications } from "@/components/home/certifications";
 import { Testimonials } from "@/components/home/testimonials";
@@ -57,13 +58,16 @@ export default async function HomePage({ params }: Props) {
 
       <Features dict={dict.features} />
 
+      <ProductDemos dict={dict.productDemos} />
+
       {!isAuthenticated && (
         <>
           <HowItWorks dict={dict.howItWorks} />
           <Certifications dict={dict.certifications} />
-          <Testimonials dict={dict.testimonials} />
         </>
       )}
+
+      <Testimonials dict={dict.testimonials} />
 
       <FAQ dict={dict.faq} />
 

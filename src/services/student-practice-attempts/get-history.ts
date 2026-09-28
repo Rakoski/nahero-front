@@ -1,6 +1,7 @@
 import { NAHERO_API } from "@/constants/nahero-api";
 import { api } from "@/lib/api-manager";
 import { handleError } from "@/utils/error-utils";
+import { isPaymentRequiredError } from "@/utils/paywall-utils";
 import type { PageResponse } from "@/lib/dtos";
 
 export interface GetHistoryResponse {
@@ -52,7 +53,7 @@ export async function getStudentPracticeAttemptHistory(
 
     return [];
   } catch (error) {
-    handleError(error);
+    if (!isPaymentRequiredError(error)) handleError(error);
     throw error;
   }
 }

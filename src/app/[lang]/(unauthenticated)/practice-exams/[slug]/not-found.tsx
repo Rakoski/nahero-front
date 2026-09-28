@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { getDictionary } from "@/dictionaries";
-import { BackToPracticeExamsButton } from "@/components/practice-exams/components/back-to-practice-exams-button";
+import { BackButton } from "@/components/shared";
+import { Routes } from "@/routes/routes";
 
 export default async function PracticeExamNotFound() {
   const hdrs = await headers();
@@ -14,7 +15,11 @@ export default async function PracticeExamNotFound() {
     <div className="container mx-auto px-4 py-16 max-w-2xl text-center space-y-6">
       <h1 className="text-3xl font-bold">{dict.title}</h1>
       <p className="text-muted-foreground">{dict.description}</p>
-      <BackToPracticeExamsButton lang={lang} label={dict.back} variant="default" />
+      <BackButton
+        href={`/${lang}${Routes.PracticeExams}`}
+        label={dict.back}
+        variant="default"
+      />
     </div>
   );
 }

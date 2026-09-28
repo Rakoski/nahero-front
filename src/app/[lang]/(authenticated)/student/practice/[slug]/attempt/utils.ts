@@ -68,6 +68,18 @@ export function calculateRemainingTime(
   return Math.max(0, remaining);
 }
 
+/**
+ * The server sends how many seconds are left instead of a wall-clock deadline, so the
+ * countdown never drifts with the viewer's timezone. Everything after that is local.
+ */
+export function remainingTimeFromAnchor(
+  anchorRemainingSeconds: number,
+  anchoredAtMs: number
+): number {
+  const elapsed = Math.floor((Date.now() - anchoredAtMs) / 1000);
+  return Math.max(0, anchorRemainingSeconds - elapsed);
+}
+
 export function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;

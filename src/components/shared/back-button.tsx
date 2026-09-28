@@ -2,24 +2,29 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import type { VariantProps } from "class-variance-authority";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Routes } from "@/routes/routes";
+import { cn } from "@/lib/utils";
 
-interface Props extends VariantProps<typeof buttonVariants> {
-  lang: "en" | "pt";
+interface BackButtonProps extends VariantProps<typeof buttonVariants> {
+  href: string;
   label: string;
   className?: string;
 }
 
-export function BackToPracticeExamsButton({
-  lang,
+export function BackButton({
+  href,
   label,
-  variant = "ghost",
+  variant = "outline",
   size,
   className,
-}: Props) {
+}: BackButtonProps) {
   return (
-    <Button asChild variant={variant} size={size} className={className}>
-      <Link href={`/${lang}${Routes.PracticeExams}`}>
+    <Button
+      asChild
+      variant={variant}
+      size={size}
+      className={cn("gap-2", className)}
+    >
+      <Link href={href}>
         <ArrowLeft className="h-4 w-4" />
         {label}
       </Link>

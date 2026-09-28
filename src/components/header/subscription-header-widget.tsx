@@ -3,14 +3,12 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 
 type WidgetDict = {
   premium: string;
   premium_badge: string;
-  free_tries_badge: string;
 };
 
 interface Props {
@@ -40,25 +38,12 @@ export function SubscriptionHeaderWidget({ lang, dict }: Props) {
     );
   }
 
-  const freeTriesLeft = subscription.freeTriesLeft ?? 0;
-
   return (
     <Link
       href={`/${lang}${Routes.Premium}`}
       className="inline-flex items-center gap-2 rounded-full bg-yellow-600 px-3 py-1 text-xs font-semibold text-white hover:bg-yellow-700 transition-colors"
     >
       <span>{dict.premium}</span>
-      {freeTriesLeft > 0 && (
-        <Badge
-          variant="secondary"
-          className="h-4 px-1.5 text-[10px] leading-none"
-        >
-          {dict.free_tries_badge.replace(
-            "{{count}}",
-            freeTriesLeft.toString(),
-          )}
-        </Badge>
-      )}
     </Link>
   );
 }

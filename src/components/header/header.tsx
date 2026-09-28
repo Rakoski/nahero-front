@@ -37,6 +37,7 @@ export function Header() {
           label: dict.exams,
         },
         { href: buildPath(lang, "/student/history"), label: dict.history },
+        { href: buildPath(lang, Routes.Premium), label: dict.plans },
       ];
     }
 
@@ -107,7 +108,6 @@ export function Header() {
                 dict={{
                   premium: dict.premium,
                   premium_badge: dict.premium_badge,
-                  free_tries_badge: dict.free_tries_badge,
                 }}
               />
             </div>
@@ -172,16 +172,8 @@ export function Header() {
                       dict={{
                         premium: dict.premium,
                         premium_badge: dict.premium_badge,
-                        free_tries_badge: dict.free_tries_badge,
                       }}
                     />
-                    <Link
-                      href={buildPath(lang, Routes.Subscription)}
-                      onClick={() => setIsOpen(false)}
-                      className="text-sm font-medium text-stone-300 hover:text-yellow-500"
-                    >
-                      {dict.my_subscription}
-                    </Link>
                     <div className="flex flex-col items-center gap-3 mb-2">
                       <Avatar className="h-10 w-10 border border-stone-700">
                         <AvatarImage src={session.user?.image || ""} />

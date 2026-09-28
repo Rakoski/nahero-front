@@ -21,7 +21,9 @@ import { CheckCircle2, XCircle, Clock, Award } from "lucide-react";
 import type { AnswerFilters } from "@/services/answers";
 import { useAnswers } from "./useAnswers";
 import { AnswersList } from "../../../../../../../../components/answers/answersList";
+import { PremiumBanner } from "@/components/shared";
 import { useLocale } from "@/providers/locale-provider";
+import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 
 export default function ExamResultsPage() {
   const { lang, dict: dictionary } = useLocale();
@@ -32,6 +34,9 @@ export default function ExamResultsPage() {
   const [showAnswers, setShowAnswers] = useState(false);
   const [filters, setFilters] = useState<AnswerFilters>({});
   const answersRef = useRef<HTMLDivElement>(null);
+
+  const { data: subscription } = useSubscriptionStatus();
+  const isPremium = subscription?.isPremium ?? false;
 
   const {
     data: answersData,
@@ -153,13 +158,25 @@ export default function ExamResultsPage() {
                   </h2>
                 </>
               )}
-              <div className="flex items-center gap-2">
-                <span className="text-5xl font-bold">{percentageScore}%</span>
-              </div>
-              <Progress
-                value={percentageScore}
-                className="w-full max-w-md h-3"
-              />
+              {isPremium ? (
+                <>
+                  <div className="flex items-center gap-2">
+                    <span className="text-5xl font-bold">
+                      {percentageScore}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={percentageScore}
+                    className="w-full max-w-md h-3"
+                  />
+                </>
+              ) : (
+                <span className="text-3xl font-bold">
+                  {dict.freeSummary.correctOf
+                    .replace("{{correct}}", String(results.correctAnswers))
+                    .replace("{{total}}", String(results.numberOfQuestions))}
+                </span>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -176,9 +193,11 @@ export default function ExamResultsPage() {
               <p className="text-3xl font-bold">
                 {results.score} / {results.numberOfQuestions}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {dict.stats.passingScore}: {results.passingPercentageScore}%
-              </p>
+              {isPremium && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  {dict.stats.passingScore}: {results.passingPercentageScore}%
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -210,10 +229,12 @@ export default function ExamResultsPage() {
               <p className="text-3xl font-bold text-green-500">
                 {results.correctAnswers}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {Math.round((results.correctAnswers / results.answers) * 100)}%{" "}
-                {dict.percentages.correct}
-              </p>
+              {isPremium && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  {Math.round((results.correctAnswers / results.answers) * 100)}
+                  % {dict.percentages.correct}
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -228,10 +249,14 @@ export default function ExamResultsPage() {
               <p className="text-3xl font-bold text-red-500">
                 {results.incorrectAnswers}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {Math.round((results.incorrectAnswers / results.answers) * 100)}
-                % {dict.percentages.incorrect}
-              </p>
+              {isPremium && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  {Math.round(
+                    (results.incorrectAnswers / results.answers) * 100,
+                  )}
+                  % {dict.percentages.incorrect}
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -280,6 +305,14 @@ export default function ExamResultsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {!isPremium && (
+          <PremiumBanner
+            dict={dictionary.shared.premiumBanner.explanations}
+            from="results"
+            className="mb-6"
+          />
+        )}
 
         <div ref={answersRef} className="mt-8">
           <AnswersList

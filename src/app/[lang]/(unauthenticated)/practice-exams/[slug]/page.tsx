@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   Clock,
+  Timer,
   Target,
   BookOpen,
   Tag,
@@ -14,7 +15,7 @@ import { Routes } from "@/routes/routes";
 import { getDictionary } from "@/dictionaries";
 import { practiceExamsService } from "@/services/practice-exams";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
-import { BackToPracticeExamsButton } from "@/components/practice-exams/components/back-to-practice-exams-button";
+import { BackButton } from "@/components/shared";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import {
   formatTimeLimit,
@@ -94,8 +95,12 @@ export default async function PracticeExamDetailPage({ params }: Props) {
   );
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-7xl">
-      <AutoStartOnReturn practiceExamId={exam.id} lang={lang} />
+    <div className="container mx-auto px-4 pt-10 pb-6 max-w-7xl">
+      <AutoStartOnReturn
+        practiceExamId={exam.id}
+        lang={lang}
+        switchDict={dictionary.practiceExams.switch_attempt}
+      />
       <Breadcrumbs
         lang={lang}
         items={[
@@ -107,10 +112,15 @@ export default async function PracticeExamDetailPage({ params }: Props) {
         ]}
         dict={dictionary.breadcrumbs}
       />
-      <BackToPracticeExamsButton lang={lang} label={dict.cta.back} />
-      <Badge className={cn("text-sm mb-2", getDifficultyColors(difficulty))}>
-        {difficultyLabel}
-      </Badge>
+      <div className="mt-6 mb-8 flex items-center justify-between gap-4">
+        <BackButton
+          href={`/${lang}${Routes.PracticeExams}`}
+          label={dict.cta.back}
+        />
+        <Badge className={cn("text-sm", getDifficultyColors(difficulty))}>
+          {difficultyLabel}
+        </Badge>
+      </div>
 
       <article className="space-y-6">
         <header className="text-center flex items-start gap-4">
@@ -125,6 +135,24 @@ export default async function PracticeExamDetailPage({ params }: Props) {
             )}
           </div>
         </header>
+
+        <section className="flex items-start gap-4 rounded-lg border border-yellow-500/40 bg-yellow-500/5 p-5">
+          <Timer className="h-8 w-8 shrink-0 text-yellow-500" />
+          <div className="space-y-1">
+            <h2 className="text-lg md:text-xl font-bold">
+              {dict.real_exam.title}
+            </h2>
+            <p className="text-base md:text-lg font-semibold text-yellow-400">
+              {(exam.numberOfQuestions !== null
+                ? dict.real_exam.full.replace(
+                    "{{questions}}",
+                    String(exam.numberOfQuestions),
+                  )
+                : dict.real_exam.no_count
+              ).replace("{{minutes}}", String(exam.timeLimit))}
+            </p>
+          </div>
+        </section>
 
         <section className="grid grid-cols-2 md:grid-cols-3 gap-6 border-y py-6">
           <Stat
@@ -160,12 +188,13 @@ export default async function PracticeExamDetailPage({ params }: Props) {
           )}
         </section>
 
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <StartExamButton
             practiceExamId={exam.id}
             slug={exam.slug}
             lang={lang}
             dict={dict.cta}
+            switchDict={dictionary.practiceExams.switch_attempt}
           />
         </div>
 

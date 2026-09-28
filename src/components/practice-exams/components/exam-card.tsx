@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Target, BookOpen } from "lucide-react";
+import { Clock, Target, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,9 +24,11 @@ import {
 
 export interface ExamCardProps {
   exam: Exam;
+  /** Set when the student left an attempt running on this practice exam. */
+  inProgressAttemptId?: number;
 }
 
-export function ExamCard({ exam }: ExamCardProps) {
+export function ExamCard({ exam, inProgressAttemptId }: ExamCardProps) {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.practiceExams;
   const difficultyValue = exam.difficulty_level || exam.difficulty;
@@ -36,6 +38,7 @@ export function ExamCard({ exam }: ExamCardProps) {
   );
 
   const detailHref = `/${lang}${Routes.PracticeExams}/${exam.slug}`;
+  const resumeHref = `/${lang}${Routes.Practice}/${inProgressAttemptId}/attempt`;
 
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow">
@@ -51,14 +54,19 @@ export function ExamCard({ exam }: ExamCardProps) {
               {exam.exam?.title || "Practice Exam"}
             </CardDescription>
           </div>
-          <Badge
-            className={cn(
-              "ml-2 shrink-0",
-              getDifficultyColors(difficultyValue),
+          <div className="ml-2 flex shrink-0 flex-col items-end gap-1">
+            <Badge className={cn(getDifficultyColors(difficultyValue))}>
+              {difficultyLabel}
+            </Badge>
+            {inProgressAttemptId && (
+              <Badge
+                variant="outline"
+                className="border-primary/40 bg-primary/10 text-primary"
+              >
+                {dict.in_progress.badge}
+              </Badge>
             )}
-          >
-            {difficultyLabel}
-          </Badge>
+          </div>
         </div>
       </CardHeader>
 
@@ -99,9 +107,18 @@ export function ExamCard({ exam }: ExamCardProps) {
       </CardContent>
 
       <CardFooter className="justify-end mt-auto border-t pt-4">
-        <Button asChild className="w-full">
-          <Link href={detailHref}>{dict.card.start_exam}</Link>
-        </Button>
+        {inProgressAttemptId ? (
+          <Button asChild className="w-full">
+            <Link href={resumeHref}>
+              <Play className="mr-2 h-4 w-4" />
+              {dict.in_progress.resume}
+            </Link>
+          </Button>
+        ) : (
+          <Button asChild className="w-full">
+            <Link href={detailHref}>{dict.card.start_exam}</Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

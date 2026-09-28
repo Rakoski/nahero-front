@@ -184,6 +184,44 @@ export const EXAM_CONTENT: Record<string, ExamContent> = {
     ],
   },
 
+  "microsoft-azure-solutions-architect-az-305": {
+    code: "AZ-305",
+    cost: { currency: "USD", amount: 165 },
+    validityYears: 1,
+    officialUrl:
+      "https://learn.microsoft.com/credentials/certifications/azure-solutions-architect/",
+    domains: [
+      {
+        name: {
+          en: "Design identity, governance, and monitoring solutions",
+          pt: "Projetar soluções de identidade, governança e monitoramento",
+        },
+        weight: 28,
+      },
+      {
+        name: {
+          en: "Design data storage solutions",
+          pt: "Projetar soluções de armazenamento de dados",
+        },
+        weight: 22,
+      },
+      {
+        name: {
+          en: "Design business continuity solutions",
+          pt: "Projetar soluções de continuidade de negócios",
+        },
+        weight: 17,
+      },
+      {
+        name: {
+          en: "Design infrastructure solutions",
+          pt: "Projetar soluções de infraestrutura",
+        },
+        weight: 33,
+      },
+    ],
+  },
+
   "google-cloud-digital-leader": {
     cost: { currency: "USD", amount: 99 },
     validityYears: 3,

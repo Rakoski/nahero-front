@@ -200,6 +200,7 @@ export interface ListAnsweredAnswersResponse {
   questionPoints: number;
   questionType: string;
   explanation: string | null;
+  explanationLocked: boolean;
 
   // Alternatives list
   alternatives: AlternativeResponse[];

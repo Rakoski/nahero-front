@@ -9,6 +9,7 @@ import type {
   GetHistoryResponse,
   GetHistoryFilters,
 } from "@/services/student-practice-attempts/get-history";
+import { isPaymentRequiredError } from "@/utils/paywall-utils";
 
 export function useHistory() {
   const [filters, setFilters] = useState<GetHistoryFilters>({});
@@ -48,8 +49,11 @@ export function useHistory() {
     queryKey: [QUERIES.STUDENT_PRACTICE_ATTEMPTS.GET_HISTORY, filters],
     queryFn: () =>
       studentPracticeAttemptsService.getStudentPracticeAttemptHistory(filters),
-    retry: 1,
+    retry: (failureCount, err) =>
+      !isPaymentRequiredError(err) && failureCount < 1,
   });
+
+  const isPaywalled = isPaymentRequiredError(error);
 
   const {
     data: practiceExamsData,
@@ -94,6 +98,7 @@ export function useHistory() {
     history,
     isLoading,
     error,
+    isPaywalled,
     filters: {
       practiceExamId,
       setPracticeExamId,

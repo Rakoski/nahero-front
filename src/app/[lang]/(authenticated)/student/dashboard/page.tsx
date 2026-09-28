@@ -3,20 +3,11 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
-  Award,
-  CheckCircle2,
-  Flame,
-  ListChecks,
-  Timer,
-  TrendingUp,
-} from "lucide-react";
-import {
-  ActivityHeatmap,
   ByExamList,
-  KpiCard,
-  ResumeBanner,
+  EffortCard,
+  PerformanceCard,
   ScoreOverTimeChart,
-  StatusBreakdownChart,
+  StreakCard,
 } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,21 +20,15 @@ import {
 import { useStudentDashboardSummary } from "@/hooks/useStudentDashboardSummary";
 import { useLocale } from "@/providers/locale-provider";
 
-function formatHours(totalMinutes: number): string {
-  if (totalMinutes < 60) return `${totalMinutes}m`;
-  const hours = Math.floor(totalMinutes / 60);
-  const mins = totalMinutes % 60;
-  return mins === 0 ? `${hours}h` : `${hours}h ${mins}m`;
-}
-
 export default function StudentDashboardPage() {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.studentDashboard;
   const { data: session } = useSession();
 
-  const { data, isLoading, isError } = useStudentDashboardSummary();
+  const { data, isLoading, isError, isPaywalled } =
+    useStudentDashboardSummary();
 
-  if (isLoading) {
+  if (isLoading || isPaywalled) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
@@ -82,11 +67,6 @@ export default function StudentDashboardPage() {
     );
   }
 
-  const formatPercent = (value: number | null) =>
-    value == null ? dict.kpi.no_data : `${Math.round(value * 100)}%`;
-  const formatScorePercent = (value: number | null) =>
-    value == null ? dict.kpi.no_data : `${value}%`;
-
   return (
     <div className="container mx-auto py-8 px-4 space-y-6">
       <header className="space-y-1">
@@ -96,64 +76,38 @@ export default function StudentDashboardPage() {
         </p>
       </header>
 
-      <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        <KpiCard
-          icon={ListChecks}
-          label={dict.kpi.total_attempts}
-          value={data.totalAttempts.toString()}
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <StreakCard
+          className="lg:col-span-2"
+          streakDays={data.currentStreakDays}
+          activity={data.activityLast30Days}
+          lang={lang}
+          dict={dict.streak}
         />
-        <KpiCard
-          icon={CheckCircle2}
-          label={dict.kpi.pass_rate}
-          value={formatPercent(data.passRate)}
-        />
-        <KpiCard
-          icon={TrendingUp}
-          label={dict.kpi.average_score}
-          value={
-            data.averageScore != null
-              ? `${Math.round(data.averageScore)}%`
-              : dict.kpi.no_data
-          }
-        />
-        <KpiCard
-          icon={Award}
-          label={dict.kpi.best_score}
-          value={formatScorePercent(data.bestScore)}
-        />
-        <KpiCard
-          icon={Timer}
-          label={dict.kpi.total_time}
-          value={formatHours(data.totalStudyMinutes)}
-        />
-        <KpiCard
-          icon={Flame}
-          label={dict.kpi.streak}
-          value={dict.kpi.days.replace(
-            "{{count}}",
-            data.currentStreakDays.toString(),
-          )}
+        <PerformanceCard
+          averageScore={data.averageScore}
+          bestScore={data.bestScore}
+          passRate={data.passRate}
+          dict={dict.performance}
         />
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ScoreOverTimeChart
-          data={data.scoreOverTime}
-          dict={dict.charts.score_over_time}
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <EffortCard
+          totalAttempts={data.totalAttempts}
+          completedAttempts={data.completedAttempts}
+          totalStudyMinutes={data.totalStudyMinutes}
+          dict={dict.effort}
         />
-        <StatusBreakdownChart
-          data={data.attemptsByStatus}
-          dict={dict.charts.status_breakdown}
-        />
+        <div className="lg:col-span-2">
+          <ScoreOverTimeChart
+            data={data.scoreOverTime}
+            dict={dict.charts.score_over_time}
+          />
+        </div>
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ByExamList data={data.byPracticeExam} dict={dict.charts.by_exam} />
-        <ActivityHeatmap
-          data={data.activityLast30Days}
-          dict={dict.charts.activity}
-        />
-      </section>
+      <ByExamList data={data.byPracticeExam} dict={dict.charts.by_exam} />
     </div>
   );
 }

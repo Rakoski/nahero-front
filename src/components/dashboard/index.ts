@@ -1,12 +1,12 @@
-export { KpiCard } from "./kpi-card";
-export type { KpiCardProps } from "./kpi-card";
+export { StreakCard } from "./streak-card";
+export type { StreakCardProps } from "./streak-card";
+export { PerformanceCard } from "./performance-card";
+export type { PerformanceCardProps } from "./performance-card";
+export { EffortCard } from "./effort-card";
+export type { EffortCardProps } from "./effort-card";
 export { ScoreOverTimeChart } from "./score-over-time-chart";
 export type { ScoreOverTimeChartProps } from "./score-over-time-chart";
-export { StatusBreakdownChart } from "./status-breakdown-chart";
-export type { StatusBreakdownChartProps } from "./status-breakdown-chart";
 export { ByExamList } from "./by-exam-list";
 export type { ByExamListProps } from "./by-exam-list";
-export { ActivityHeatmap } from "./activity-heatmap";
-export type { ActivityHeatmapProps } from "./activity-heatmap";
 export { ResumeBanner } from "./resume-banner";
 export type { ResumeBannerProps } from "./resume-banner";

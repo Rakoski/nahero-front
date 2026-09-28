@@ -9,4 +9,6 @@ export type { NavigationButtonsProps } from "./navigation-buttons";
 export { SubmitDialog } from "./submit-dialog";
 export type { SubmitDialogProps } from "./submit-dialog";
 export { LeaveExamDialog } from "./leave-exam-dialog";
+export { SwitchAttemptDialog } from "./switch-attempt-dialog";
+export type { SwitchAttemptDialogProps } from "./switch-attempt-dialog";
 export type { LeaveExamDialogProps } from "./leave-exam-dialog";

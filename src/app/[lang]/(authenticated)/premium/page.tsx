@@ -1,17 +1,13 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Check, Loader2, Sparkles } from "lucide-react";
+import { CheckCircle2, Construction, Loader2, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useCreateCheckoutSession } from "@/hooks/useCreateCheckoutSession";
@@ -21,14 +17,28 @@ import { useLocale } from "@/providers/locale-provider";
 export default function PremiumPage() {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.premium;
+  const { free, monthly, yearly, premiumFeatures, upcomingFeature } =
+    dict.plans;
   const searchParams = useSearchParams();
 
   const { data: subscription, isLoading: isLoadingSubscription } =
     useSubscriptionStatus();
-  const { mutate: startCheckout, isPending: isStartingCheckout, variables } =
-    useCreateCheckoutSession();
+  const {
+    mutate: startCheckout,
+    isPending: isStartingCheckout,
+    variables,
+  } = useCreateCheckoutSession();
 
-  const fromPaywall = searchParams.get("from") === "practice-attempt";
+  const paywallSource = searchParams.get("from");
+  const paywallMessages: Record<string, string> = {
+    "practice-attempt": dict.fromPracticeAttempt,
+    results: dict.fromPracticeAttempt,
+    dashboard: dict.fromDashboard,
+    history: dict.fromHistory,
+  };
+  const paywallMessage = paywallSource
+    ? (paywallMessages[paywallSource] ?? null)
+    : null;
 
   if (isLoadingSubscription) {
     return (
@@ -41,164 +51,203 @@ export default function PremiumPage() {
     );
   }
 
-  if (subscription?.isPremium) {
-    const formattedDate = subscription.currentPeriodEnd
-      ? new Date(subscription.currentPeriodEnd).toLocaleDateString(
-          lang === "pt" ? "pt-BR" : "en-US",
-          { year: "numeric", month: "long", day: "numeric" },
-        )
-      : "—";
+  const isPremium = subscription?.isPremium ?? false;
+  const formattedPeriodEnd = subscription?.currentPeriodEnd
+    ? new Date(subscription.currentPeriodEnd).toLocaleDateString(
+        lang === "pt" ? "pt-BR" : "en-US",
+        { year: "numeric", month: "long", day: "numeric" },
+      )
+    : "—";
 
-    return (
-      <div className="container mx-auto py-12 px-4 max-w-2xl">
-        <Card>
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-2">
-              <Sparkles className="w-10 h-10 text-primary" />
+  const pendingPlan = isStartingCheckout ? variables?.plan : null;
+
+  const renderSubscribeButton = (plan: PlanInterval, label: string) =>
+    isPremium ? (
+      <Button className="w-full" size="lg" variant="outline" asChild>
+        <Link href={`/${lang}${Routes.Subscription}`}>
+          {dict.manageSubscription}
+        </Link>
+      </Button>
+    ) : (
+      <Button
+        className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold"
+        size="lg"
+        onClick={() => startCheckout({ plan })}
+        disabled={isStartingCheckout}
+      >
+        {pendingPlan === plan && (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        )}
+        {pendingPlan === plan ? dict.starting : label}
+      </Button>
+    );
+
+  return (
+    <div className="container mx-auto pt-4 pb-8 px-4 max-w-6xl">
+      <header className="text-center mb-6 space-y-1">
+        <h1 className="text-3xl md:text-4xl font-bold">{dict.title}</h1>
+        <p className="text-muted-foreground text-lg">{dict.fromDashboard}</p>
+      </header>
+
+      {isPremium && (
+        <Card className="mb-4 border-yellow-500/40 bg-yellow-500/5">
+          <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
+            <div className="flex items-center gap-3">
+              <Sparkles className="h-6 w-6 text-yellow-500 shrink-0" />
+              <div>
+                <p className="font-semibold">{dict.alreadyPremiumTitle}</p>
+                <p className="text-sm text-muted-foreground">
+                  {dict.alreadyPremiumBody.replace(
+                    "{{date}}",
+                    formattedPeriodEnd,
+                  )}
+                </p>
+              </div>
             </div>
-            <CardTitle className="text-2xl">
-              {dict.alreadyPremiumTitle}
-            </CardTitle>
-            <CardDescription>
-              {dict.alreadyPremiumBody.replace("{{date}}", formattedDate)}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center">
-            <Button asChild>
+            <Button variant="outline" asChild>
               <Link href={`/${lang}${Routes.StudentDashboard}`}>
                 {dict.goToDashboard}
               </Link>
             </Button>
           </CardContent>
         </Card>
-      </div>
-    );
-  }
-
-  const handleSubscribe = (plan: PlanInterval) => {
-    startCheckout({ plan });
-  };
-
-  const pendingPlan = isStartingCheckout ? variables?.plan : null;
-
-  return (
-    <div className="container mx-auto py-8 px-4 max-w-5xl">
-      <header className="text-center mb-8 space-y-2">
-        <h1 className="text-4xl font-bold">{dict.title}</h1>
-        <p className="text-muted-foreground text-lg">{dict.subtitle}</p>
-      </header>
-
-      {fromPaywall && (
-        <Card className="mb-8 border-primary/40 bg-primary/5">
-          <CardContent className="pt-6">
-            <p className="text-center text-sm">{dict.fromPracticeAttempt}</p>
-          </CardContent>
-        </Card>
       )}
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         <PlanCard
-          name={dict.plans.monthly.name}
-          price={dict.plans.monthly.price}
-          cadence={dict.plans.monthly.cadence}
-          description={dict.plans.monthly.description}
-          cta={dict.plans.monthly.cta}
-          starting={dict.starting}
-          onSubscribe={() => handleSubscribe("MONTHLY")}
-          isPending={pendingPlan === "MONTHLY"}
-          disabled={isStartingCheckout}
+          name={free.name}
+          features={free.features}
+          action={
+            <Button className="w-full" size="lg" variant="outline" asChild>
+              <Link href={`/${lang}${Routes.PracticeExams}`}>{free.cta}</Link>
+            </Button>
+          }
         />
+
         <PlanCard
-          name={dict.plans.yearly.name}
-          price={dict.plans.yearly.price}
-          cadence={dict.plans.yearly.cadence}
-          description={dict.plans.yearly.description}
-          cta={dict.plans.yearly.cta}
-          starting={dict.starting}
-          badge={dict.plans.yearly.badge}
-          savings={dict.plans.yearly.savings}
-          onSubscribe={() => handleSubscribe("YEARLY")}
-          isPending={pendingPlan === "YEARLY"}
-          disabled={isStartingCheckout}
-          highlighted
+          name={monthly.name}
+          price={monthly}
+          badge={monthly.badge}
+          features={premiumFeatures}
+          upcomingFeature={upcomingFeature}
+          action={renderSubscribeButton("MONTHLY", monthly.cta)}
+          footnote={monthly.footnote}
+          emphasized
+        />
+
+        <PlanCard
+          name={yearly.name}
+          price={yearly}
+          highlight={
+            <>
+              <p className="font-semibold">{yearly.highlightTitle}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {yearly.equivalentLabel}{" "}
+                <span className="font-semibold text-foreground">
+                  {yearly.equivalentPrice}
+                </span>{" "}
+                · {yearly.yearlySavings}
+              </p>
+            </>
+          }
+          highlightClassName="border-yellow-500/40 bg-yellow-500/5"
+          features={premiumFeatures}
+          upcomingFeature={upcomingFeature}
+          action={renderSubscribeButton("YEARLY", yearly.cta)}
+          footnote={yearly.footnote}
         />
       </section>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{dict.features.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            {dict.features.items.map((item) => (
-              <li key={item} className="flex items-start gap-2">
-                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
     </div>
   );
 }
 
 interface PlanCardProps {
   name: string;
-  price: string;
-  cadence: string;
-  description: string;
-  cta: string;
-  starting: string;
+  price?: { currency: string; amount: string; cadence: string };
+  highlight?: ReactNode;
+  highlightClassName?: string;
+  features: readonly string[];
+  upcomingFeature?: { label: string; tag: string };
+  action: ReactNode;
   badge?: string;
-  savings?: string;
-  onSubscribe: () => void;
-  isPending: boolean;
-  disabled: boolean;
-  highlighted?: boolean;
+  footnote?: string;
+  emphasized?: boolean;
 }
 
 function PlanCard({
   name,
   price,
-  cadence,
-  description,
-  cta,
-  starting,
+  highlight,
+  highlightClassName,
+  features,
+  upcomingFeature,
+  action,
   badge,
-  savings,
-  onSubscribe,
-  isPending,
-  disabled,
-  highlighted,
+  footnote,
+  emphasized,
 }: PlanCardProps) {
   return (
-    <Card className={highlighted ? "border-primary shadow-lg" : undefined}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-2xl">{name}</CardTitle>
-          {badge && <Badge>{badge}</Badge>}
+    <Card
+      className={cn(
+        "flex flex-col",
+        emphasized && "border-yellow-500 shadow-lg shadow-yellow-500/10",
+      )}
+    >
+      <CardContent className="flex flex-1 flex-col gap-4 pt-6">
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-xl font-bold">{name}</h2>
+          {price && (
+            <div className="text-right shrink-0 leading-none">
+              <p className="text-4xl font-bold">
+                <span className="mr-1 align-top text-xl">{price.currency}</span>
+                {price.amount}
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {price.cadence}
+              </p>
+            </div>
+          )}
         </div>
-        <div className="flex items-baseline gap-1 mt-2">
-          <span className="text-4xl font-bold">{price}</span>
-          <span className="text-muted-foreground">{cadence}</span>
-        </div>
-        {savings && (
-          <p className="text-sm text-primary font-medium mt-1">{savings}</p>
+
+        {highlight && (
+          <div
+            className={cn(
+              "rounded-lg border border-border bg-muted/40 p-3",
+              highlightClassName,
+            )}
+          >
+            {highlight}
+          </div>
         )}
-        <CardDescription className="mt-2">{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Button
-          className="w-full"
-          size="lg"
-          onClick={onSubscribe}
-          disabled={disabled}
-          variant={highlighted ? "default" : "outline"}
-        >
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isPending ? starting : cta}
-        </Button>
+
+        <ul className="space-y-2 flex-1">
+          {features.map((feature) => (
+            <li key={feature} className="flex items-start gap-3">
+              <CheckCircle2 className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+              <span>{feature}</span>
+            </li>
+          ))}
+          {upcomingFeature && (
+            <li className="flex items-start gap-3 text-muted-foreground">
+              <Construction className="h-5 w-5 shrink-0 mt-0.5" />
+              <span>
+                {upcomingFeature.label}{" "}
+                <span className="ml-1 inline-block rounded-full border border-yellow-500/40 px-2 py-0.5 text-xs font-medium text-yellow-400">
+                  {upcomingFeature.tag}
+                </span>
+              </span>
+            </li>
+          )}
+        </ul>
+
+        <div className="space-y-2">
+          {action}
+          {footnote && (
+            <p className="text-xs text-center text-muted-foreground">
+              {footnote}
+            </p>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

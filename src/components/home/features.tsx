@@ -46,6 +46,7 @@ export function Features({ dict }: FeaturesProps) {
             );
           })}
         </div>
+
       </div>
     </section>
   );

@@ -7,6 +7,7 @@ import { ExamCard } from "../../../../components/practice-exams/components/exam-
 import { ExamFilters as ExamFiltersComponent } from "../../../../components/practice-exams/components/exam-filters";
 import { SkeletonCard } from "../../../../components/practice-exams/components/skeleton-card";
 import { EmptyState } from "../../../../components/practice-exams/components/empty-state";
+import { InProgressAttemptBanner } from "../../../../components/practice-exams/components/in-progress-attempt-banner";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import {
   usePracticeExams,
@@ -21,6 +22,8 @@ import type {
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useLocale } from "@/providers/locale-provider";
+import { useSession } from "next-auth/react";
+import { useInProgressAttempt } from "@/hooks/useInProgressAttempt";
 
 function mapPracticeExamToExam(dto: PracticeExamDTO) {
   return {
@@ -50,6 +53,11 @@ export function PracticeExamsList({ initialPage }: PracticeExamsListProps) {
   const [searchInput, setSearchInput] = useAtom(searchPracticeExamAtom);
   const [category, setCategory] = useAtom(categoryPracticeExamAtom);
   const [difficulty, setDifficulty] = useAtom(difficultyPracticeExamAtom);
+
+  const { status } = useSession();
+  const { data: inProgressAttempt } = useInProgressAttempt(
+    status === "authenticated",
+  );
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -120,6 +128,17 @@ export function PracticeExamsList({ initialPage }: PracticeExamsListProps) {
         <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>
       </div>
 
+      {inProgressAttempt && (
+        <InProgressAttemptBanner
+          lang={lang}
+          attemptId={inProgressAttempt.attemptId}
+          practiceExamTitle={inProgressAttempt.practiceExamTitle}
+          answeredCount={inProgressAttempt.answeredCount}
+          totalQuestions={inProgressAttempt.totalQuestions}
+          dict={dict.in_progress}
+        />
+      )}
+
       <ExamFiltersComponent
         searchInput={searchInput}
         onSearchInputChange={setSearchInput}
@@ -154,7 +173,15 @@ export function PracticeExamsList({ initialPage }: PracticeExamsListProps) {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {practiceExamsMapped.map((practiceExam) => (
-              <ExamCard key={practiceExam.id} exam={practiceExam} />
+              <ExamCard
+                key={practiceExam.id}
+                exam={practiceExam}
+                inProgressAttemptId={
+                  inProgressAttempt?.practiceExamId === practiceExam.id
+                    ? inProgressAttempt.attemptId
+                    : undefined
+                }
+              />
             ))}
           </div>
 

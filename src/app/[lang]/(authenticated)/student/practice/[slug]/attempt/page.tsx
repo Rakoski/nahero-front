@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   QuestionCard,
@@ -9,12 +9,7 @@ import {
   SubmitDialog,
   LeaveExamDialog,
 } from "@/components/attempt/components";
-import {
-  Answer,
-  calculateRemainingTime,
-  formatTime,
-  Question,
-} from "./utils";
+import { Answer, formatTime, Question, remainingTimeFromAnchor } from "./utils";
 import { Routes } from "@/routes/routes";
 import { useAttempt } from "./useAttempt";
 import { useLeaveConfirmation } from "@/hooks/useLeaveConfirmation";
@@ -55,10 +50,13 @@ export default function ExamAttemptPage() {
   const dict = dictionary.examAttempt;
   const { slug: attemptId } = useParams<{ slug: string }>();
   const router = useRouter();
-  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questionIndexOverride, setQuestionIndex] = useState<number | null>(
+    null,
+  );
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
-  const [startedAt] = useState(new Date());
-  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [tickedTimeRemaining, setTickedTimeRemaining] = useState<number | null>(
+    null,
+  );
 
   const {
     questions: apiQuestions,
@@ -69,6 +67,8 @@ export default function ExamAttemptPage() {
     answers: attemptAnswers,
     answersCount,
     toggleAnswer,
+    attemptState,
+    savePosition,
     finishExam,
     isFinishingExam,
     isExamFinished,
@@ -85,8 +85,6 @@ export default function ExamAttemptPage() {
     attemptId,
     pageSize: PAGE_SIZE,
   });
-
-  const timeLimit = apiQuestions[0]?.timeLimit || 3600;
 
   const isDataReady = !isLoadingQuestions && !questionsError;
   const errorStatus =
@@ -115,22 +113,35 @@ export default function ExamAttemptPage() {
     [apiQuestions, attemptAnswers],
   );
 
+  const restoredQuestionIndex = attemptState
+    ? (attemptState.lastQuestionIndex ?? 0) % PAGE_SIZE
+    : 0;
+
+  const questionIndex = questionIndexOverride ?? restoredQuestionIndex;
+
   const currentQuestionIndex =
     questions.length > 0 ? Math.min(questionIndex, questions.length - 1) : 0;
 
-  useEffect(() => {
-    if (isDataReady) {
-      const initialTime = calculateRemainingTime(startedAt, timeLimit);
-      setTimeRemaining(initialTime);
-    }
-  }, [isDataReady, startedAt, timeLimit]);
+  const timerAnchor = useMemo(
+    () =>
+      attemptState
+        ? { remaining: attemptState.remainingSeconds, at: Date.now() }
+        : null,
+    [attemptState],
+  );
+
+  const timeRemaining =
+    tickedTimeRemaining ?? attemptState?.remainingSeconds ?? 0;
 
   useEffect(() => {
-    if (!isDataReady) return;
+    if (!isDataReady || !timerAnchor) return;
 
     const timer = setInterval(() => {
-      const remaining = calculateRemainingTime(startedAt, timeLimit);
-      setTimeRemaining(remaining);
+      const remaining = remainingTimeFromAnchor(
+        timerAnchor.remaining,
+        timerAnchor.at,
+      );
+      setTickedTimeRemaining(remaining);
 
       if (remaining <= 0) {
         clearInterval(timer);
@@ -139,7 +150,7 @@ export default function ExamAttemptPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isDataReady, startedAt, timeLimit]);
+  }, [isDataReady, timerAnchor]);
 
   const currentQuestion = questions[currentQuestionIndex];
   const unanswered = Math.max(0, totalElements - answersCount);
@@ -154,15 +165,36 @@ export default function ExamAttemptPage() {
   const { isLeaveDialogOpen, confirmLeave, cancelLeave, allowNext } =
     useLeaveConfirmation(guardEnabled);
 
-  const abandonOnLogout = useCallback(async () => {
+  // Logging out no longer throws the attempt away: it is auto-saved and resumable,
+  // so all we have to do is let the navigation guard go.
+  const releaseOnLogout = useCallback(async () => {
     allowNext();
-    await abandonExam();
-  }, [allowNext, abandonExam]);
+  }, [allowNext]);
 
-  useRegisterActiveAttempt(guardEnabled, abandonOnLogout);
+  useRegisterActiveAttempt(guardEnabled, releaseOnLogout);
 
   const globalQuestionNumber =
     currentPage * PAGE_SIZE + currentQuestionIndex + 1;
+
+  const lastSavedIndex = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isDataReady) return;
+
+    const index = globalQuestionNumber - 1;
+
+    if (lastSavedIndex.current === null) {
+      lastSavedIndex.current = index;
+      return;
+    }
+
+    if (lastSavedIndex.current === index) return;
+    lastSavedIndex.current = index;
+
+    const timeout = setTimeout(() => savePosition(index), 600);
+    return () => clearTimeout(timeout);
+  }, [isDataReady, globalQuestionNumber, savePosition]);
+
   const totalQuestionsAcrossPages = totalElements;
 
   const isOnLastQuestionOfExam =
@@ -229,7 +261,11 @@ export default function ExamAttemptPage() {
     router.push(`/${lang}/student/practice/${attemptId}/attempt/results`);
   };
 
-  const handleConfirmLeave = async () => {
+  const handleKeepAndLeave = () => {
+    confirmLeave();
+  };
+
+  const handleDiscardAndLeave = async () => {
     try {
       await abandonExam();
     } finally {
@@ -263,9 +299,7 @@ export default function ExamAttemptPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">
-            {dict.loading}
-          </p>
+          <p className="text-muted-foreground">{dict.loading}</p>
         </div>
       </div>
     );
@@ -320,6 +354,10 @@ export default function ExamAttemptPage() {
             />
           </div>
 
+          <p className="px-4 pb-2 text-center text-sm text-muted-foreground">
+            {dict.autosave_hint}
+          </p>
+
           <div className="px-4 pb-8">
             <NavigationButtons
               currentQuestionIndex={currentQuestionIndex}
@@ -350,7 +388,8 @@ export default function ExamAttemptPage() {
         onOpenChange={(open) => {
           if (!open) cancelLeave();
         }}
-        onConfirm={handleConfirmLeave}
+        onKeepAndLeave={handleKeepAndLeave}
+        onDiscardAndLeave={handleDiscardAndLeave}
         dict={dict.dialogs.confirm_leave}
       />
     </div>
