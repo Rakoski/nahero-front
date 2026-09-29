@@ -124,11 +124,6 @@ export const pt = {
         description:
           "Diferente de outros sites que cobram por testes 'Premium', todo o nosso conteúdo é completamente aberto.",
       },
-      {
-        title: "Feito pela Comunidade",
-        description:
-          "Uma iniciativa open-source nascida no IFPR. Acreditamos que a educação deve ser livre, acessível e de alta qualidade.",
-      },
     ],
   },
   productDemos: {
@@ -227,17 +222,17 @@ export const pt = {
       {
         provider: "AWS",
         name: "Solutions Architect Associate",
-        status: "soon",
+        status: "available",
       },
       {
         provider: "Microsoft Azure",
         name: "AZ-900 Fundamentals",
-        status: "soon",
+        status: "available",
       },
       {
         provider: "Google Cloud",
         name: "Cloud Digital Leader",
-        status: "soon",
+        status: "available",
       },
     ],
   },

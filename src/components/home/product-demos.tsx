@@ -25,8 +25,8 @@ export function ProductDemos({ dict }: ProductDemosProps) {
           subtitle={dict.subtitle}
         />
 
-        <div className="mt-12 grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-10">
-          <FadeIn className="flex flex-col gap-5">
+        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-5">
+          <FadeIn className="grid gap-5 lg:row-span-2 lg:grid-rows-subgrid">
             <div>
               <span className="inline-block rounded-full border border-brand/40 bg-brand/10 px-2.5 py-0.5 text-[11px] font-medium text-brand">
                 {dict.dashboard.tag}
@@ -41,8 +41,11 @@ export function ProductDemos({ dict }: ProductDemosProps) {
             <DashboardDemo dict={dict.dashboard} />
           </FadeIn>
 
-          <FadeIn delay={0.05} className="flex flex-col gap-5">
-            <div>
+          <FadeIn
+            delay={0.05}
+            className="grid gap-5 lg:row-span-2 lg:grid-rows-subgrid"
+          >
+            <div className="flex flex-col justify-end">
               <h3 className="text-xl font-semibold">{dict.plans.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {dict.plans.description}
