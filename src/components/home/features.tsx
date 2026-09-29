@@ -1,4 +1,4 @@
-import { Target, Timer, Users } from "lucide-react";
+import { Target, Timer } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "./section-heading";
 
@@ -15,7 +15,7 @@ interface FeaturesProps {
 }
 
 export function Features({ dict }: FeaturesProps) {
-  const icons = [Target, Timer, Users];
+  const icons = [Timer, Target];
 
   return (
     <section className="border-b border-border py-20 sm:py-24">
@@ -26,7 +26,7 @@ export function Features({ dict }: FeaturesProps) {
           highlight={dict.title_highlight}
         />
 
-        <div className="mt-12 grid grid-cols-1 divide-y divide-border rounded-xl border border-border md:grid-cols-3 md:divide-x md:divide-y-0">
+        <div className="mt-12 grid grid-cols-1 divide-y divide-border rounded-xl border border-border md:grid-cols-2 md:divide-x md:divide-y-0">
           {dict.items.map((item, index) => {
             const Icon = icons[index];
             return (

@@ -124,11 +124,6 @@ export const en = {
         description:
           "Unlike other sites that put paywalls behind 'Premium' tests, all of our 5,000+ questions are completely open access.",
       },
-      {
-        title: "Community Driven",
-        description:
-          "An open-source initiative born at IFPR. We believe education should be free, accessible, and high quality.",
-      },
     ],
   },
   productDemos: {
@@ -227,17 +222,17 @@ export const en = {
       {
         provider: "AWS",
         name: "Solutions Architect Associate",
-        status: "soon",
+        status: "available",
       },
       {
         provider: "Microsoft Azure",
         name: "AZ-900 Fundamentals",
-        status: "soon",
+        status: "available",
       },
       {
         provider: "Google Cloud",
         name: "Cloud Digital Leader",
-        status: "soon",
+        status: "available",
       },
     ],
   },

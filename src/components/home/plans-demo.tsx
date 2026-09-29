@@ -51,7 +51,7 @@ export function PlansDemo({ dict }: { dict: PlansDemoDict }) {
     <div
       role="group"
       aria-label={dict.aria_label}
-      className="relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl shadow-black/40"
+      className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-2xl shadow-black/40"
     >
       <div className="border-b border-border p-4">
         <div className="relative grid grid-cols-2 rounded-lg border border-border bg-background/60 p-1 text-sm font-medium">
@@ -80,7 +80,7 @@ export function PlansDemo({ dict }: { dict: PlansDemoDict }) {
         </div>
       </div>
 
-      <ul className="divide-y divide-border">
+      <ul className="flex flex-1 flex-col justify-center divide-y divide-border">
         {dict.levels.map((level, index) => {
           const unlocked = isPremium || index === 0;
           return (
