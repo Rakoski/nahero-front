@@ -8,6 +8,7 @@ import { getStudentDashboardSummary } from "./get-dashboard-summary";
 import { getStudentPracticeAttemptState } from "./get-state";
 import { getInProgressStudentPracticeAttempt } from "./get-in-progress";
 import { saveStudentPracticeAttemptProgress } from "./save-progress";
+import { getStudentPracticeAttemptFeedback } from "./get-feedback";
 
 export const studentPracticeAttemptsService = {
   createStudentPracticeAttempt,
@@ -20,4 +21,5 @@ export const studentPracticeAttemptsService = {
   getStudentPracticeAttemptState,
   getInProgressStudentPracticeAttempt,
   saveStudentPracticeAttemptProgress,
+  getStudentPracticeAttemptFeedback,
 };

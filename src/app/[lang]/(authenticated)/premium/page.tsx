@@ -1,8 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { CheckCircle2, Construction, Loader2, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,18 +19,37 @@ import { InlineError } from "@/components/shared";
 export default function PremiumPage() {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.premium;
-  const { free, monthly, yearly, premiumFeatures, upcomingFeature } =
-    dict.plans;
+  const { free, monthly, yearly, premiumFeatures } = dict.plans;
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { status: sessionStatus } = useSession();
+  const isAuthenticated = sessionStatus === "authenticated";
 
   const { data: subscription, isLoading: isLoadingSubscription } =
-    useSubscriptionStatus();
+    useSubscriptionStatus({ enabled: isAuthenticated });
   const {
     mutate: startCheckout,
     isPending: isStartingCheckout,
     variables,
     error: checkoutError,
   } = useCreateCheckoutSession();
+
+  const checkoutAfterLogin = searchParams.get("checkout");
+  const autoCheckoutStarted = useRef(false);
+
+  useEffect(() => {
+    if (autoCheckoutStarted.current || !subscription || subscription.isPremium) return;
+    if (checkoutAfterLogin !== "MONTHLY" && checkoutAfterLogin !== "YEARLY") return;
+
+    autoCheckoutStarted.current = true;
+
+    const remaining = new URLSearchParams(searchParams.toString());
+    remaining.delete("checkout");
+    const query = remaining.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+
+    startCheckout({ plan: checkoutAfterLogin });
+  }, [subscription, checkoutAfterLogin, searchParams, startCheckout]);
 
   const paywallSource = searchParams.get("from");
   const paywallMessages: Record<string, string> = {
@@ -42,7 +62,7 @@ export default function PremiumPage() {
     ? (paywallMessages[paywallSource] ?? null)
     : null;
 
-  if (isLoadingSubscription) {
+  if (sessionStatus === "loading" || isLoadingSubscription) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
@@ -63,6 +83,16 @@ export default function PremiumPage() {
 
   const pendingPlan = isStartingCheckout ? variables?.plan : null;
 
+  const subscribe = (plan: PlanInterval) => {
+    if (isAuthenticated) {
+      startCheckout({ plan });
+      return;
+    }
+
+    const callbackUrl = `/${lang}${Routes.Premium}?checkout=${plan}`;
+    router.push(`/${lang}${Routes.Login}?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+  };
+
   const renderSubscribeButton = (plan: PlanInterval, label: string) =>
     isPremium ? (
       <Button className="w-full" size="lg" variant="outline" asChild>
@@ -74,7 +104,7 @@ export default function PremiumPage() {
       <Button
         className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold"
         size="lg"
-        onClick={() => startCheckout({ plan })}
+        onClick={() => subscribe(plan)}
         disabled={isStartingCheckout}
       >
         {pendingPlan === plan && (
@@ -131,7 +161,6 @@ export default function PremiumPage() {
           price={monthly}
           badge={monthly.badge}
           features={premiumFeatures}
-          upcomingFeature={upcomingFeature}
           action={renderSubscribeButton("MONTHLY", monthly.cta)}
           footnote={monthly.footnote}
           emphasized
@@ -154,7 +183,6 @@ export default function PremiumPage() {
           }
           highlightClassName="border-yellow-500/40 bg-yellow-500/5"
           features={premiumFeatures}
-          upcomingFeature={upcomingFeature}
           action={renderSubscribeButton("YEARLY", yearly.cta)}
           footnote={yearly.footnote}
         />

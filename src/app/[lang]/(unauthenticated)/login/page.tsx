@@ -78,7 +78,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (session?.user) {
       const destination = callbackUrl || `/${lang}${Routes.PracticeExams}`;
-      router.push(destination);
+      router.replace(destination);
     }
   }, [session, router, callbackUrl, lang]);
 

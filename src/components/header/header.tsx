@@ -37,6 +37,7 @@ export function Header() {
           label: dict.exams,
         },
         { href: buildPath(lang, "/student/history"), label: dict.history },
+        { href: buildPath(lang, Routes.Feedback), label: dict.feedback },
         { href: buildPath(lang, Routes.Premium), label: dict.plans },
       ];
     }
@@ -53,7 +54,7 @@ export function Header() {
 
     return [
       { href: buildPath(lang, Routes.PracticeExams), label: dict.exams },
-      { href: buildPath(lang, Routes.Home), label: dict.about },
+      { href: buildPath(lang, Routes.Premium), label: dict.plans },
     ];
   };
 

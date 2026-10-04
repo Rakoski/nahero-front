@@ -2,6 +2,12 @@ import { NAHERO_API } from "@/constants/nahero-api";
 import { api } from "@/lib/api-manager";
 import { handleError } from "@/utils/error-utils";
 
+export interface DomainScore {
+  domain: string;
+  correct: number;
+  total: number;
+}
+
 export interface GetResultResponse {
   passed: boolean;
   score: number;
@@ -15,6 +21,10 @@ export interface GetResultResponse {
   passingPercentageScore: number;
   attemptStatus: string;
   numberOfQuestions: number;
+  domains: DomainScore[] | null;
+  weakestDomain: string | null;
+  practiceExamSlug: string;
+  practiceExamTitle: string;
 }
 
 export async function getStudentPracticeAttemptResult(

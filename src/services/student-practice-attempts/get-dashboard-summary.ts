@@ -39,6 +39,17 @@ export interface RecentAttempt {
   endTime: string | null;
 }
 
+export interface QuestionWindow {
+  days: number | null;
+  answered: number;
+  correct: number;
+}
+
+export interface QuestionActivity {
+  since: string | null;
+  windows: QuestionWindow[];
+}
+
 export interface GetDashboardSummaryResponse {
   totalAttempts: number;
   completedAttempts: number;
@@ -53,6 +64,7 @@ export interface GetDashboardSummaryResponse {
   activityLast30Days: DailyActivity[];
   currentInProgress: InProgressAttempt | null;
   lastFailed: RecentAttempt | null;
+  questionActivity: QuestionActivity;
 }
 
 export async function getStudentDashboardSummary(): Promise<GetDashboardSummaryResponse> {

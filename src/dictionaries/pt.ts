@@ -419,11 +419,11 @@ export const pt = {
     home: "Início",
     exams: "Simulados",
     certifications: "Certificações",
-    about: "Sobre",
     login: "Entrar",
     register: "Cadastrar",
     dashboard: "Painel",
     history: "Histórico",
+    feedback: "Feedback",
     my_profile: "Meu Perfil",
     plans: "Planos",
     premium: "Me inscrever",
@@ -659,13 +659,38 @@ export const pt = {
       expert: "Especialista",
     },
   },
+  feedbackPage: {
+    examLabel: "Simulado",
+    loading: "Carregando seu feedback...",
+    empty: "Termine um simulado para receber seu feedback.",
+    emptyCta: "Ver simulados",
+    attemptsTitle: "Suas últimas tentativas",
+    attemptScore: "{{score}}/{{total}}",
+    passed: "Aprovado",
+    failed: "Reprovado",
+    viewResults: "Ver resultado",
+    gapsTitle: "O que você precisa reforçar",
+    practiceTitle: "Pratique: {{domain}}",
+    practiceSubtitle:
+      "Questões do seu domínio mais fraco que você ainda não acertou.",
+    practiceEmpty: "Não há mais questões novas neste domínio.",
+    questionNumber: "Questão {{number}}",
+    chooseMany: "Selecione todas as corretas",
+    answer: "Responder",
+    correct: "Correto!",
+    incorrect: "Incorreto",
+    explanation: "Explicação",
+    loadError:
+      "Não conseguimos carregar seu feedback. Tente novamente em instantes.",
+  },
   examResults: {
     title: "Resultados do Simulado",
     subtitle: "Aqui estão seus resultados para este simulado",
     loading: "Carregando resultados...",
     status: {
       passed: "Parabéns! Você passou!",
-      failed: "Continue praticando! Você pode tentar novamente.",
+      failed:
+        "Continue praticando! Você pode tentar novamente. Role para baixo para ver todas as respostas corretas e incorretas.",
     },
     statusLabels: {
       completed: "Concluído",
@@ -694,6 +719,8 @@ export const pt = {
       retry: "Tentar Novamente",
       backToExams: "Voltar aos Simulados",
       viewDetails: "Ver Resultados Detalhados",
+      retake: "Refazer o simulado",
+      fullFeedback: "Ver feedback completo",
     },
     timeFormat: {
       minutes: "{{time}} minutos",
@@ -713,6 +740,24 @@ export const pt = {
       alternativeAlt: "Alternativa",
       explanation: "Explicação:",
       explanationLocked: "A explicação desta questão faz parte do Premium.",
+    },
+    domains: {
+      title: "Desempenho por domínio",
+      weakest: "Seu ponto mais fraco",
+      score: "{{correct}}/{{total}}",
+    },
+    studyPlan: {
+      title: "Plano de estudo personalizado",
+      generating: "Montando seu plano de estudo...",
+      notReady: "Seu plano de estudo ainda não ficou pronto.",
+      failed: "Não conseguimos gerar seu plano de estudo agora.",
+      retry: "Tentar novamente",
+      priorities: "Prioridades",
+      plan: "Plano de estudo",
+      weakest: "Seu ponto mais fraco: {{domain}}",
+      lockedDescription:
+        "O Premium monta um plano passo a passo a partir das questões que você errou.",
+      lockedCta: "Ver plano — assinar",
     },
     freeSummary: {
       correctOf: "{{correct}} de {{total}} corretas",
@@ -761,9 +806,8 @@ export const pt = {
     },
   },
   studentDashboard: {
-    title: "Seu painel",
-    welcome: "Bem-vindo de volta, {{name}}",
-    load_error: "Não conseguimos carregar seu painel. Tente de novo em instantes.",
+    load_error:
+      "Não conseguimos carregar seu painel. Tente de novo em instantes.",
     loading: "Carregando seu painel…",
     empty: {
       title: "Você ainda não fez nenhum simulado",
@@ -788,12 +832,15 @@ export const pt = {
       pass_rate: "Taxa de aprovação",
       no_data: "—",
     },
-    effort: {
-      title: "Seu esforço",
-      description: "O tempo estudado conta só simulados concluídos.",
-      time_studied: "Tempo estudado",
-      completed_attempts: "Simulados finalizados",
-      total_attempts: "Tentativas no total",
+    questions: {
+      title: "Suas questões",
+      period_days: "{{days}} dias",
+      period_all: "Desde o início",
+      in_last_days: "Nos últimos {{days}} dias",
+      since: "Desde {{date}}",
+      since_empty: "Nenhum simulado finalizado ainda",
+      answered: "Questões respondidas",
+      correct: "Questões certas",
     },
     streak: {
       label_one: "dia de sequência",
@@ -814,14 +861,6 @@ export const pt = {
         score_label: "Pontuação",
         passing_label: "Nota de aprovação",
         empty: "Conclua uma tentativa para ver sua evolução.",
-      },
-      by_exam: {
-        title: "Por simulado",
-        description: "Seu desempenho em cada simulado.",
-        attempts_label: "{{count}} tentativa(s)",
-        best: "Melhor",
-        last: "Última",
-        empty: "Conclua uma tentativa para ver as estatísticas.",
       },
     },
   },
@@ -847,7 +886,6 @@ export const pt = {
         features: [
           "Simulados ilimitados em todos os níveis",
           "Resultado completo com acertos e erros",
-          "A alternativa correta de cada questão",
         ],
       },
       monthly: {
@@ -873,14 +911,13 @@ export const pt = {
       },
       premiumFeatures: [
         "Explicação detalhada de cada questão",
+        "Página de feedback com suas últimas tentativas e os domínios que você precisa reforçar",
+        "Plano de estudo personalizado para você, montado a partir das questões que você errou",
+        "Questões para praticar do seu domínio mais fraco, com explicação",
+        "Percentual de acerto, desempenho por domínio e detalhes completos em cada resultado",
+        "Painel com questões respondidas, acertos, notas e evolução",
         "Histórico de tentativas de todos os simulados",
-        "Painel de desempenho com notas e evolução",
-        "Percentuais de acerto e progresso ao longo do tempo",
       ],
-      upcomingFeature: {
-        label: "Feedback personalizado em texto, focado nas suas necessidades",
-        tag: "Em construção",
-      },
     },
     starting: "Iniciando…",
     success: {
@@ -939,6 +976,12 @@ export const pt = {
   },
   shared: {
     premiumBanner: {
+      feedback: {
+        title: "Quer saber exatamente o que estudar agora?",
+        description:
+          "Suas últimas tentativas, os domínios que faltam, um plano de estudo e questões com explicação. Faz parte do Premium.",
+        cta: "Assinar o Premium",
+      },
       dashboard: {
         title: "Quer ver para onde sua nota está indo?",
         description:

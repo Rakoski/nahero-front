@@ -429,11 +429,11 @@ export const en = {
     home: "Home",
     exams: "Practice Exams",
     certifications: "Certifications",
-    about: "About",
     login: "Log In",
     register: "Register",
     dashboard: "Dashboard",
     history: "History",
+    feedback: "Feedback",
     my_profile: "My Profile",
     plans: "Plans",
     premium: "Go Premium",
@@ -670,13 +670,37 @@ export const en = {
       expert: "Expert",
     },
   },
+  feedbackPage: {
+    examLabel: "Practice exam",
+    loading: "Loading your feedback...",
+    empty: "Finish a practice exam to get your feedback.",
+    emptyCta: "Browse practice exams",
+    attemptsTitle: "Your last attempts",
+    attemptScore: "{{score}}/{{total}}",
+    passed: "Passed",
+    failed: "Failed",
+    viewResults: "See results",
+    gapsTitle: "What you lack",
+    practiceTitle: "Practice: {{domain}}",
+    practiceSubtitle:
+      "Questions from your weakest domain that you have not gotten right yet.",
+    practiceEmpty: "There are no new questions left in this domain.",
+    questionNumber: "Question {{number}}",
+    chooseMany: "Choose all that apply",
+    answer: "Answer",
+    correct: "Correct!",
+    incorrect: "Incorrect",
+    explanation: "Explanation",
+    loadError: "We couldn't load your feedback. Try again in a moment.",
+  },
   examResults: {
     title: "Exam Results",
     subtitle: "Here are your results for this practice exam",
     loading: "Loading results...",
     status: {
       passed: "Congratulations! You passed!",
-      failed: "Keep practicing! You can try again.",
+      failed:
+        "Keep practicing! You can try again. Continue scrolling to see all correct and incorrect answers.",
     },
     statusLabels: {
       completed: "Completed",
@@ -705,6 +729,8 @@ export const en = {
       retry: "Try Again",
       backToExams: "Back to Practice Exams",
       viewDetails: "View Detailed Results",
+      retake: "Retake the exam",
+      fullFeedback: "See full feedback",
     },
     timeFormat: {
       minutes: "{{time}} minutes",
@@ -723,7 +749,26 @@ export const en = {
       questionAlt: "Question",
       alternativeAlt: "Alternative",
       explanation: "Explanation:",
-      explanationLocked: "The explanation for this question is part of Premium.",
+      explanationLocked:
+        "The explanation for this question is part of Premium.",
+    },
+    domains: {
+      title: "Performance by domain",
+      weakest: "Your weakest area",
+      score: "{{correct}}/{{total}}",
+    },
+    studyPlan: {
+      title: "Personalized study plan",
+      generating: "Building your study plan...",
+      notReady: "Your study plan is not ready yet.",
+      failed: "We could not build your study plan right now.",
+      retry: "Try again",
+      priorities: "Priorities",
+      plan: "Study plan",
+      weakest: "Your weakest area: {{domain}}",
+      lockedDescription:
+        "Premium builds a step-by-step plan from the questions you missed.",
+      lockedCta: "See plan — subscribe",
     },
     freeSummary: {
       correctOf: "{{correct}} of {{total}} correct",
@@ -772,8 +817,6 @@ export const en = {
     },
   },
   studentDashboard: {
-    title: "Your dashboard",
-    welcome: "Welcome back, {{name}}",
     load_error: "We couldn't load your dashboard. Try again in a moment.",
     loading: "Loading your dashboard…",
     empty: {
@@ -800,12 +843,15 @@ export const en = {
       pass_rate: "Pass rate",
       no_data: "—",
     },
-    effort: {
-      title: "Your effort",
-      description: "Time studied only counts completed exams.",
-      time_studied: "Time studied",
-      completed_attempts: "Finished exams",
-      total_attempts: "Total attempts",
+    questions: {
+      title: "Your questions",
+      period_days: "{{days}} days",
+      period_all: "All time",
+      in_last_days: "In the last {{days}} days",
+      since: "Since {{date}}",
+      since_empty: "No finished practice exam yet",
+      answered: "Questions answered",
+      correct: "Answered correctly",
     },
     streak: {
       label_one: "day streak",
@@ -826,14 +872,6 @@ export const en = {
         score_label: "Score",
         passing_label: "Passing score",
         empty: "Complete an attempt to see your score trend.",
-      },
-      by_exam: {
-        title: "By practice exam",
-        description: "How you’re performing on each exam.",
-        attempts_label: "{{count}} attempt(s)",
-        best: "Best",
-        last: "Last",
-        empty: "Complete an attempt to see per-exam stats.",
       },
     },
   },
@@ -859,7 +897,6 @@ export const en = {
         features: [
           "Unlimited practice exams on every level",
           "Full results with right and wrong answers",
-          "The correct alternative on every question",
         ],
       },
       monthly: {
@@ -885,14 +922,13 @@ export const en = {
       },
       premiumFeatures: [
         "Detailed explanation for every question",
+        "Feedback page with your last attempts and the domains you need to reinforce",
+        "Personalized study plan built for you from the questions you missed",
+        "Practice questions from your weakest domain, with explanations",
+        "Percentage scores, performance by domain and full details on every result",
+        "Dashboard with questions answered, correct answers, scores and trends",
         "Attempt history across every practice exam",
-        "Performance dashboard with scores and trends",
-        "Percentage scores and progress over time",
       ],
-      upcomingFeature: {
-        label: "Tailored written feedback focused on your needs",
-        tag: "Under construction",
-      },
     },
     starting: "Starting…",
     success: {
@@ -949,6 +985,12 @@ export const en = {
   },
   shared: {
     premiumBanner: {
+      feedback: {
+        title: "Want to know exactly what to study next?",
+        description:
+          "Your last attempts, the domains you are missing, a study plan and practice questions with explanations. It's part of Premium.",
+        cta: "Subscribe to Premium",
+      },
       dashboard: {
         title: "Want to see where your score is heading?",
         description:
@@ -958,7 +1000,7 @@ export const en = {
       explanations: {
         title: "Want to see the explanations?",
         description:
-          "Your score is free, forever. Premium tells you why each answer is right — and why the one you picked was not.",
+          "Your score is free, forever. Premium tells you why each answer is right.",
         cta: "Subscribe to Premium",
       },
       history: {

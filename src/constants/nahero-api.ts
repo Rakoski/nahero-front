@@ -5,6 +5,11 @@ export const NAHERO_API = {
     GET_SAMPLE_QUESTIONS: (slug: string) =>
       `/practice-exams/by-slug/${encodeURIComponent(slug)}/sample-questions`,
   },
+  FEEDBACK: {
+    GET_PAGE: "/feedback",
+    ANSWER_PRACTICE_QUESTION: (questionId: string | number) =>
+      `/feedback/practice-questions/${questionId}/answer`,
+  },
   STUDENT_PRACTICE_ATTEMPTS: {
     CREATE: "/student-practice-attempts",
     FINISH: "/student-practice-attempts/finish",
@@ -20,6 +25,8 @@ export const NAHERO_API = {
       `/student-practice-attempts/${attemptId}/state`,
     SAVE_PROGRESS: (attemptId: string | number) =>
       `/student-practice-attempts/${attemptId}/progress`,
+    GET_FEEDBACK: (attemptId: string | number) =>
+      `/student-practice-attempts/${attemptId}/feedback`,
   },
   QUESTITONS: {
     LIST_STUDENT: "/questions/list-student",
