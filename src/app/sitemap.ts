@@ -4,7 +4,7 @@ import { Routes } from "@/routes/routes";
 import { listAllPracticeExams } from "@/services/practice-exams/list-all";
 
 const LOCALES = ["en", "pt"] as const;
-const PUBLIC_ROUTES = ["", "/practice-exams", "/contact", "/faq"] as const;
+const PUBLIC_ROUTES = ["", "/practice-exams", "/how-it-works", "/contact", "/faq", "/privacy"] as const;
 
 export const revalidate = 3600;
 

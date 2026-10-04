@@ -53,6 +53,10 @@ export const pt = {
       title: "Sua Assinatura",
       description: "Gerencie sua assinatura no NaHero.",
     },
+    howItWorks: {
+      title: "Como funciona",
+      description: "Como a NaHero funciona: simulados com tempo grátis, e explicações, feedback e plano de estudo no Premium.",
+    },
     privacy: {
       title: "Política de Privacidade",
       description: "Como o NaHero coleta, usa e protege seus dados.",
@@ -69,8 +73,90 @@ export const pt = {
   },
   privacy: {
     title: "Política de Privacidade",
-    placeholder:
-      "A política de privacidade completa está sendo finalizada. Se tiver dúvidas sobre como seus dados são tratados, entre em contato conosco.",
+    updated: "Última atualização: 4 de outubro de 2026",
+    intro: "Esta política explica quais dados a NaHero coleta, para quê, com quem compartilhamos e como você pode controlá-los. Ela segue a Lei Geral de Proteção de Dados (LGPD).",
+    sections: [
+      {
+        title: "Quem somos",
+        paragraphs: [
+          "A NaHero (nahero.site) é uma plataforma de simulados para certificações de nuvem e TI. Para qualquer assunto sobre seus dados, escreva para {{email}}.",
+        ],
+      },
+      {
+        title: "Dados que coletamos",
+        items: [
+          "Conta: seu nome, e-mail e senha. A senha é guardada de forma criptografada, nunca em texto puro.",
+          "Dados de perfil que você decidir informar, como telefone, biografia, foto, CPF ou endereço.",
+          "Uso da plataforma: os simulados que você faz, suas respostas, notas, datas e tempo gasto.",
+          "Assinatura: seu plano, o status e o período de cobrança. Os dados do cartão ficam com a Stripe e nunca chegam aos nossos servidores.",
+          "De onde você veio: os parâmetros de campanha (utm) do link usado para chegar ao site.",
+          "Dados técnicos e cookies, descritos abaixo.",
+        ],
+      },
+      {
+        title: "Como usamos",
+        items: [
+          "Para manter sua conta e mostrar seus resultados, painel, histórico e feedback.",
+          "Para montar seu plano de estudo personalizado.",
+          "Para enviar e-mails da conta (verificação de e-mail, recuperação de senha) e lembretes de estudo, que você pode cancelar a qualquer momento.",
+          "Para processar sua assinatura.",
+          "Para entender de onde vêm os visitantes e medir nossas campanhas.",
+          "Para manter a plataforma segura e evitar abusos.",
+        ],
+      },
+      {
+        title: "Com quem compartilhamos",
+        paragraphs: [
+          "Não vendemos seus dados. Compartilhamos apenas o que cada serviço precisa para funcionar:",
+        ],
+        items: [
+          "Stripe, para processar pagamentos.",
+          "DeepSeek, para gerar planos de estudo. Enviamos apenas as estatísticas da tentativa e o texto das questões que você errou, nunca seu nome, e-mail ou outros dados que identifiquem você.",
+          "Google (Google Ads e Google Analytics), para medir visitas e campanhas.",
+          "Nossos provedores de e-mail e de hospedagem, para enviar e-mails e manter nossos servidores.",
+        ],
+        after: "Alguns desses serviços podem tratar dados fora do Brasil, sempre para as finalidades acima.",
+      },
+      {
+        title: "Cookies",
+        items: [
+          "Sessão de login: mantém você conectado. Necessário para o site funcionar.",
+          "Idioma: lembra se você usa o site em português ou inglês.",
+          "Origem da campanha: guarda os parâmetros utm do link pelo qual você chegou por até 30 dias.",
+          "Google: mede visitas e o desempenho de anúncios.",
+        ],
+      },
+      {
+        title: "Por quanto tempo guardamos",
+        paragraphs: [
+          "Guardamos seus dados enquanto sua conta estiver ativa. Quando você exclui sua conta, apagamos ou anonimizamos os dados, exceto o que a lei nos obriga a manter, como registros de pagamento.",
+        ],
+      },
+      {
+        title: "Seus direitos",
+        paragraphs: [
+          "Pela LGPD você pode pedir a confirmação de que tratamos seus dados, acessá-los, corrigi-los, excluí-los, receber uma cópia, saber com quem os compartilhamos e revogar qualquer consentimento dado. Envie seu pedido para {{email}} e responderemos o quanto antes.",
+        ],
+      },
+      {
+        title: "Segurança",
+        paragraphs: [
+          "Usamos senhas criptografadas, conexões HTTPS e acesso restrito aos nossos sistemas. Nenhum sistema é totalmente seguro, mas trabalhamos para proteger seus dados.",
+        ],
+      },
+      {
+        title: "Crianças e adolescentes",
+        paragraphs: [
+          "A NaHero não é destinada a crianças. Se você tem menos de 18 anos, use a plataforma com a autorização de um responsável.",
+        ],
+      },
+      {
+        title: "Mudanças nesta política",
+        paragraphs: [
+          "Quando esta política mudar, atualizaremos esta página e a data no topo.",
+        ],
+      },
+    ],
     contact_link: "Fale conosco",
   },
   stickyCta: {
@@ -444,6 +530,47 @@ export const pt = {
     contact: "Contato",
     legal: "Legal",
     privacy: "Política de Privacidade",
+    copyright: "© 2026 NaHero. Todos os direitos reservados.",
+  },
+  howItWorksPage: {
+    title: "Como funciona",
+    subtitle: "Do primeiro simulado ao dia da prova, passo a passo.",
+    free_label: "Grátis",
+    premium_label: "Premium",
+    steps: [
+      {
+        title: "Escolha uma certificação",
+        description: "Escolha um dos simulados disponíveis para certificações de nuvem e TI.",
+        plan: "free",
+      },
+      {
+        title: "Faça o simulado com tempo",
+        description: "Questões no formato e na quantidade da prova real. Seu progresso fica salvo, então você pode sair e continuar de onde parou.",
+        plan: "free",
+      },
+      {
+        title: "Veja seu resultado",
+        description: "Sua nota e cada questão que você acertou ou errou, com a alternativa correta.",
+        plan: "free",
+      },
+      {
+        title: "Entenda cada resposta",
+        description: "A explicação de cada questão, seu desempenho por domínio e os detalhes completos da tentativa.",
+        plan: "premium",
+      },
+      {
+        title: "Saiba exatamente o que estudar",
+        description: "A página de feedback reúne suas últimas tentativas, os domínios que faltam, um plano de estudo com IA e questões para praticar seu domínio mais fraco.",
+        plan: "premium",
+      },
+      {
+        title: "Acompanhe sua evolução",
+        description: "Um painel com sua sequência, notas, questões respondidas e acertos, além do histórico de todas as tentativas.",
+        plan: "premium",
+      },
+    ],
+    cta_start: "Começar um simulado",
+    cta_plans: "Ver planos",
   },
   contact: {
     title: "Fale conosco",

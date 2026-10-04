@@ -7,8 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { resolveLocale } from "@/lib/locale";
 import { OG_IMAGE } from "@/lib/og-image";
-
-const SUPPORT_EMAIL = "support@nahero.site";
+import { CONTACT_EMAIL } from "@/constants/contact";
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -69,10 +68,10 @@ export default async function ContactPage({ params }: Props) {
                   {dict.contact.email_label}
                 </p>
                 <a
-                  href={`mailto:${SUPPORT_EMAIL}`}
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="text-2xl font-semibold text-yellow-600 transition-colors hover:text-yellow-500"
                 >
-                  {SUPPORT_EMAIL}
+                  {CONTACT_EMAIL}
                 </a>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {dict.contact.response_note}

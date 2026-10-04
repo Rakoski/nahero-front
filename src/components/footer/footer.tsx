@@ -12,6 +12,7 @@ type FooterDict = {
   contact: string;
   legal: string;
   privacy: string;
+  copyright: string;
 };
 
 interface FooterProps {
@@ -34,7 +35,7 @@ export function Footer({ dict, lang }: FooterProps) {
               {dict.description}
             </p>
             <p className="text-xs text-stone-500 mt-2">
-              © 2025 NaHero. All rights reserved.
+              {dict.copyright}
             </p>
           </div>
 
@@ -50,7 +51,7 @@ export function Footer({ dict, lang }: FooterProps) {
                 {dict.practice_exams}
               </Link>
               <Link
-                href={buildPath(lang, "/")}
+                href={buildPath(lang, "/how-it-works")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
                 {dict.how_it_works}

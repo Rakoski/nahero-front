@@ -53,6 +53,10 @@ export const en = {
       title: "Your Subscription",
       description: "Manage your NaHero subscription.",
     },
+    howItWorks: {
+      title: "How it works",
+      description: "How NaHero works: free timed practice exams, and Premium explanations, feedback and study plans.",
+    },
     privacy: {
       title: "Privacy Policy",
       description: "How NaHero collects, uses, and protects your data.",
@@ -69,8 +73,90 @@ export const en = {
   },
   privacy: {
     title: "Privacy Policy",
-    placeholder:
-      "The full privacy policy is being finalized. If you have questions about how your data is handled, please contact us.",
+    updated: "Last updated: October 4, 2026",
+    intro: "This policy explains what data NaHero collects, why, who we share it with and how you can control it. It follows the Brazilian General Data Protection Law (LGPD).",
+    sections: [
+      {
+        title: "Who we are",
+        paragraphs: [
+          "NaHero (nahero.site) is a practice-exam platform for cloud and IT certifications. For anything about your data, write to {{email}}.",
+        ],
+      },
+      {
+        title: "Data we collect",
+        items: [
+          "Account: your name, email and password. The password is stored encrypted, never in plain text.",
+          "Profile details you choose to add, such as phone, bio, photo, tax ID (CPF) or address.",
+          "Platform use: the practice exams you take, your answers, scores, dates and time spent.",
+          "Subscription: your plan, its status and billing period. Card details are handled by Stripe and never reach our servers.",
+          "Where you came from: the campaign parameters (utm) of the link you used to reach the site.",
+          "Technical data and cookies, described below.",
+        ],
+      },
+      {
+        title: "How we use it",
+        items: [
+          "To run your account and show your results, dashboard, history and feedback.",
+          "To build your personalized study plan.",
+          "To send account emails (email verification, password recovery) and study reminders, which you can unsubscribe from at any time.",
+          "To process your subscription.",
+          "To understand where visitors come from and measure our campaigns.",
+          "To keep the platform secure and prevent abuse.",
+        ],
+      },
+      {
+        title: "Who we share it with",
+        paragraphs: [
+          "We do not sell your data. We only share what each service needs to do its job:",
+        ],
+        items: [
+          "Stripe, to process payments.",
+          "DeepSeek, to generate study plans. We send only the attempt statistics and the text of the questions you missed, never your name, email or other identifying data.",
+          "Google (Google Ads and Google Analytics), to measure visits and campaigns.",
+          "Our email and hosting providers, to send emails and run our servers.",
+        ],
+        after: "Some of these services may process data outside Brazil, always for the purposes above.",
+      },
+      {
+        title: "Cookies",
+        items: [
+          "Login session: keeps you signed in. Required for the site to work.",
+          "Language: remembers whether you use the site in English or Portuguese.",
+          "Campaign origin: stores the utm parameters of the link you came from for up to 30 days.",
+          "Google: measures visits and ad performance.",
+        ],
+      },
+      {
+        title: "How long we keep it",
+        paragraphs: [
+          "We keep your data while your account is active. When you delete your account, we delete or anonymize it, except for what the law requires us to keep, such as payment records.",
+        ],
+      },
+      {
+        title: "Your rights",
+        paragraphs: [
+          "Under the LGPD you can ask us to confirm whether we process your data, access it, correct it, delete it, receive a copy of it, find out who we share it with and withdraw any consent you gave. Send your request to {{email}} and we will reply as soon as possible.",
+        ],
+      },
+      {
+        title: "Security",
+        paragraphs: [
+          "We use encrypted passwords, HTTPS connections and restricted access to our systems. No system is perfectly secure, but we work to protect your data.",
+        ],
+      },
+      {
+        title: "Children",
+        paragraphs: [
+          "NaHero is not intended for children. If you are under 18, use the platform with the permission of a parent or guardian.",
+        ],
+      },
+      {
+        title: "Changes to this policy",
+        paragraphs: [
+          "When this policy changes, we will update this page and the date at the top.",
+        ],
+      },
+    ],
     contact_link: "Contact us",
   },
   stickyCta: {
@@ -454,6 +540,47 @@ export const en = {
     contact: "Contact",
     legal: "Legal",
     privacy: "Privacy Policy",
+    copyright: "© 2026 NaHero. All rights reserved.",
+  },
+  howItWorksPage: {
+    title: "How it works",
+    subtitle: "From your first practice exam to exam day, step by step.",
+    free_label: "Free",
+    premium_label: "Premium",
+    steps: [
+      {
+        title: "Pick a certification",
+        description: "Choose one of the available practice exams for cloud and IT certifications.",
+        plan: "free",
+      },
+      {
+        title: "Take a timed practice exam",
+        description: "Questions in the format and number of the real exam. Your progress is saved, so you can leave and continue where you stopped.",
+        plan: "free",
+      },
+      {
+        title: "See your result",
+        description: "Your score and every question you got right or wrong, with the correct alternative.",
+        plan: "free",
+      },
+      {
+        title: "Understand every answer",
+        description: "The explanation for each question, your performance by domain and the full details of the attempt.",
+        plan: "premium",
+      },
+      {
+        title: "Know exactly what to study",
+        description: "The feedback page brings together your last attempts, the domains you are missing, an AI study plan and practice questions from your weakest domain.",
+        plan: "premium",
+      },
+      {
+        title: "Track your progress",
+        description: "A dashboard with your streak, scores, questions answered and correct answers, plus the history of every attempt.",
+        plan: "premium",
+      },
+    ],
+    cta_start: "Start a practice exam",
+    cta_plans: "See plans",
   },
   contact: {
     title: "Get in touch",
