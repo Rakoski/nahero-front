@@ -37,7 +37,7 @@ export function useLogin() {
     },
     onSuccess: () => {
       const destination = callbackUrl || `/${lang}${Routes.PracticeExams}`;
-      router.push(destination);
+      router.replace(destination);
     },
     onError: (error: Error, variables) => {
       if (error.message === EMAIL_NOT_VERIFIED) {

@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { ScorePoint } from "@/services/student-practice-attempts/get-dashboard-summary";
+import { cn } from "@/lib/utils";
 
 export interface ScoreOverTimeChartProps {
   data: ScorePoint[];
@@ -30,12 +31,14 @@ export interface ScoreOverTimeChartProps {
     passing_label: string;
     empty: string;
   };
+  className?: string;
 }
 
 export function ScoreOverTimeChart({
   data,
   passingScoreReference,
   dict,
+  className,
 }: ScoreOverTimeChartProps) {
   const chartData = data.map((p) => ({
     ...p,
@@ -43,7 +46,7 @@ export function ScoreOverTimeChart({
   }));
 
   return (
-    <Card>
+    <Card className={cn("flex flex-col", className)}>
       <CardHeader>
         <CardTitle>{dict.title}</CardTitle>
         <CardDescription>{dict.description}</CardDescription>
