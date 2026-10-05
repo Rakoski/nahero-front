@@ -847,7 +847,7 @@ export const pt = {
       backToExams: "Voltar aos Simulados",
       viewDetails: "Ver Resultados Detalhados",
       retake: "Refazer o simulado",
-      fullFeedback: "Ver feedback completo",
+      viewStudyPlan: "Ver plano de estudo",
     },
     timeFormat: {
       minutes: "{{time}} minutos",
@@ -872,6 +872,10 @@ export const pt = {
       title: "Desempenho por domínio",
       weakest: "Seu ponto mais fraco",
       score: "{{correct}}/{{total}}",
+    },
+    domainsUpsell: {
+      text: "Quer saber como melhorar nisso?",
+      cta: "Assine o Premium e veja seu feedback",
     },
     studyPlan: {
       title: "Plano de estudo personalizado",

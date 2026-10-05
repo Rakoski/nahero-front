@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -15,6 +16,7 @@ interface DomainBreakdownProps {
   weakestDomain: string | null;
   dict: DomainBreakdownDict;
   className?: string;
+  footer?: ReactNode;
 }
 
 export function DomainBreakdown({
@@ -22,6 +24,7 @@ export function DomainBreakdown({
   weakestDomain,
   dict,
   className,
+  footer,
 }: DomainBreakdownProps) {
   if (domains.length === 0) return null;
 
@@ -71,6 +74,7 @@ export function DomainBreakdown({
             );
           })}
         </ul>
+        {footer && <div className="mt-6">{footer}</div>}
       </CardContent>
     </Card>
   );

@@ -18,7 +18,14 @@ import { Routes } from "@/routes/routes";
 import { QUERIES } from "@/constants/queries";
 import type { GetResultResponse } from "@/services/student-practice-attempts/get-result";
 import { studentPracticeAttemptsService } from "@/services/student-practice-attempts";
-import { CheckCircle2, XCircle, Clock, Award, RotateCcw } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Award,
+  RotateCcw,
+  Lock,
+} from "lucide-react";
 import type { AnswerFilters } from "@/services/answers";
 import { useAnswers } from "./useAnswers";
 import { AnswersList } from "../../../../../../../../components/answers/answersList";
@@ -191,6 +198,35 @@ export default function ExamResultsPage() {
           </CardContent>
         </Card>
 
+        <DomainBreakdown
+          domains={results.domains ?? []}
+          weakestDomain={results.weakestDomain}
+          dict={{ ...dict.domains, title: dictionary.feedbackPage.gapsTitle }}
+          className="mb-6"
+          footer={
+            subscription &&
+            !isPremium && (
+              <div className="flex flex-col items-start gap-3 rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
+                  <Lock className="h-4 w-4 flex-shrink-0 text-yellow-400" />
+                  <span className="text-sm font-medium">
+                    {dict.domainsUpsell.text}
+                  </span>
+                </div>
+                <Button
+                  asChild
+                  size="sm"
+                  className="w-full flex-shrink-0 bg-yellow-600 text-white hover:bg-yellow-700 sm:w-auto"
+                >
+                  <Link href={`/${lang}${Routes.Premium}?from=results`}>
+                    {dict.domainsUpsell.cta}
+                  </Link>
+                </Button>
+              </div>
+            )
+          }
+        />
+
         {results.practiceExamSlug && (
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button asChild size="lg" className="w-full sm:w-auto">
@@ -205,7 +241,7 @@ export default function ExamResultsPage() {
               <Link
                 href={`/${lang}${Routes.Feedback}?exam=${encodeURIComponent(results.practiceExamSlug)}`}
               >
-                {dict.actions.fullFeedback}
+                {dict.actions.viewStudyPlan}
               </Link>
             </Button>
           </div>
@@ -292,59 +328,50 @@ export default function ExamResultsPage() {
         </div>
 
         {isPremium && (
-          <>
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>{dict.details}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">
-                    {dict.stats.attemptStatus}:
-                  </span>
-                  <Badge
-                    variant={isPassed ? "default" : "destructive"}
-                    className="text-base px-3 py-1"
-                  >
-                    {getStatusLabel(results.attemptStatus)}
-                  </Badge>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{dict.stats.total}:</span>
-                  <span className="font-semibold">{results.numberOfQuestions}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">
-                    {dict.stats.answered}:
-                  </span>
-                  <span className="font-semibold">{results.answers}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">
-                    {dict.stats.startTime}:
-                  </span>
-                  <span className="font-semibold">
-                    {new Date(results.startTime).toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">
-                    {dict.stats.endTime}:
-                  </span>
-                  <span className="font-semibold">
-                    {new Date(results.endTime).toLocaleString()}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <DomainBreakdown
-              domains={results.domains ?? []}
-              weakestDomain={results.weakestDomain}
-              dict={dict.domains}
-              className="mb-6"
-            />
-          </>
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>{dict.details}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">
+                  {dict.stats.attemptStatus}:
+                </span>
+                <Badge
+                  variant={isPassed ? "default" : "destructive"}
+                  className="text-base px-3 py-1"
+                >
+                  {getStatusLabel(results.attemptStatus)}
+                </Badge>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">{dict.stats.total}:</span>
+                <span className="font-semibold">{results.numberOfQuestions}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">
+                  {dict.stats.answered}:
+                </span>
+                <span className="font-semibold">{results.answers}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">
+                  {dict.stats.startTime}:
+                </span>
+                <span className="font-semibold">
+                  {new Date(results.startTime).toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">
+                  {dict.stats.endTime}:
+                </span>
+                <span className="font-semibold">
+                  {new Date(results.endTime).toLocaleString()}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         <div ref={answersRef} className="mt-8">

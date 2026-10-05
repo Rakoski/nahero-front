@@ -857,7 +857,7 @@ export const en = {
       backToExams: "Back to Practice Exams",
       viewDetails: "View Detailed Results",
       retake: "Retake the exam",
-      fullFeedback: "See full feedback",
+      viewStudyPlan: "See study plan",
     },
     timeFormat: {
       minutes: "{{time}} minutes",
@@ -883,6 +883,10 @@ export const en = {
       title: "Performance by domain",
       weakest: "Your weakest area",
       score: "{{correct}}/{{total}}",
+    },
+    domainsUpsell: {
+      text: "Want to know how to improve on these?",
+      cta: "Go Premium and see your feedback",
     },
     studyPlan: {
       title: "Personalized study plan",
