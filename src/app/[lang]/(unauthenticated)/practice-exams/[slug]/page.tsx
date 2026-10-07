@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .replace("{{score}}", String(exam.passingScore));
 
   return {
-    title: exam.title,
+    title: { absolute: dict.meta.title_template.replace("{{title}}", exam.title) },
     description,
     alternates: {
       canonical: `/${lang}${Routes.PracticeExams}/${exam.slug}`,
@@ -126,7 +126,7 @@ export default async function PracticeExamDetailPage({ params }: Props) {
         <header className="text-center flex items-start gap-4">
           <div className="flex-1 space-y-3">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              {exam.title}
+              {dict.heading_template.replace("{{title}}", exam.title)}
             </h1>
             {exam.description && (
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed">

@@ -726,7 +726,9 @@ export const en = {
       description: "This practice exam doesn't exist or has been removed.",
       back: "Back to practice exams",
     },
+    heading_template: "{{title}} Practice Exam",
     meta: {
+      title_template: "{{title}} | NaHero",
       description_template:
         "Free {{title}} practice exam in real exam conditions: {{questions}} questions, {{minutes}} minutes, no pausing. Passing score {{score}}%.",
     },

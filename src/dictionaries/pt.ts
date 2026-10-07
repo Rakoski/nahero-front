@@ -717,7 +717,9 @@ export const pt = {
       description: "Este simulado não existe ou foi removido.",
       back: "Voltar para os simulados",
     },
+    heading_template: "Simulado {{title}}",
     meta: {
+      title_template: "Simulado {{title}} grátis em português | NaHero",
       description_template:
         "Simulado gratuito de {{title}} no ambiente da prova real: {{questions}} questões, {{minutes}} minutos, sem pausa. Nota mínima de aprovação {{score}}%.",
     },

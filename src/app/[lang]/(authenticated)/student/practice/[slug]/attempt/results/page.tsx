@@ -143,7 +143,7 @@ export default function ExamResultsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="w-3/4 mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full lg:w-3/4 mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">{dict.title}</h1>
           <p className="text-muted-foreground">{dict.subtitle}</p>
@@ -216,7 +216,7 @@ export default function ExamResultsPage() {
                 <Button
                   asChild
                   size="sm"
-                  className="w-full flex-shrink-0 bg-yellow-600 text-white hover:bg-yellow-700 sm:w-auto"
+                  className="h-auto min-h-8 w-full shrink-0 whitespace-normal py-2 text-center bg-yellow-600 text-white hover:bg-yellow-700 sm:w-auto"
                 >
                   <Link href={`/${lang}${Routes.Premium}?from=results`}>
                     {dict.domainsUpsell.cta}
