@@ -1,21 +1,17 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, ChevronLeft, ChevronRight, Loader2, RotateCcw, Trophy } from "lucide-react";
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Loader2, RotateCcw, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { InlineError, PremiumBanner } from "@/components/shared";
-import { PracticeQuestionCard } from "@/components/feedback/practice-question-card";
 import { Routes } from "@/routes/routes";
 import { useLocale } from "@/providers/locale-provider";
-import { useQuestionBankQuestion } from "@/hooks/useQuestionBank";
-import { useAnswerStudyQuestion } from "@/hooks/useAnswerStudyQuestion";
 import { isPaymentRequiredError } from "@/utils/paywall-utils";
-import type { Dictionary } from "@/dictionaries";
-
-type QuestionBankDict = Dictionary["questionBank"];
+import { usePracticeSession } from "./usePracticeSession";
+import { PracticeNavigation } from "./practice-navigation";
+import { PracticeQuestion } from "./practice-question";
 
 function Spinner() {
   return (
@@ -30,48 +26,6 @@ export default function QuestionListPracticePage() {
     <Suspense fallback={<Spinner />}>
       <PracticeRunner />
     </Suspense>
-  );
-}
-
-function PracticeStep({
-  questionId,
-  listId,
-  dict,
-  onAnswered,
-}: {
-  questionId: number;
-  listId: number | null;
-  dict: QuestionBankDict;
-  onAnswered: (correct: boolean) => void;
-}) {
-  const { dict: dictionary } = useLocale();
-  const { data: question, isLoading, error } = useQuestionBankQuestion(questionId);
-  const { mutation, error: answerError } = useAnswerStudyQuestion(listId, onAnswered);
-
-  if (isLoading) return <Spinner />;
-
-  if (isPaymentRequiredError(error)) {
-    return <PremiumBanner dict={dictionary.shared.premiumBanner.questionBank} from="question-lists" />;
-  }
-
-  if (error || !question) {
-    return (
-      <div className="space-y-2 rounded-lg border p-6 text-center">
-        <InlineError error={error} />
-        {!error && <p className="text-sm text-muted-foreground">{dict.drawer.loadError}</p>}
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">
-        {question.practiceExam.title}
-        {question.domain && ` · ${question.domain.name}`}
-      </p>
-      <PracticeQuestionCard question={question} dict={dict.drawer} mutation={mutation} />
-      <InlineError error={answerError} />
-    </div>
   );
 }
 
@@ -90,16 +44,14 @@ function PracticeRunner() {
   const listParam = Number(searchParams.get("list"));
   const listId = Number.isInteger(listParam) && listParam > 0 ? listParam : null;
 
-  const [index, setIndex] = useState(0);
-  const [results, setResults] = useState<Record<number, boolean>>({});
-  const [finished, setFinished] = useState(false);
-  const [round, setRound] = useState(0);
+  const session = usePracticeSession(questionIds, listId);
+  const { index, question, selected, result, finished } = session;
 
   const backHref = `/${lang}${Routes.QuestionLists}${listId !== null ? `/${listId}` : ""}`;
   const backLabel = listId !== null ? dict.practice.back : dict.practice.backToLists;
-  const answered = Object.keys(results).length;
-  const correct = Object.values(results).filter(Boolean).length;
-  const score = dict.practice.score.replace("{{correct}}", String(correct)).replace("{{answered}}", String(answered));
+  const score = dict.practice.score
+    .replace("{{correct}}", String(session.correctCount))
+    .replace("{{answered}}", String(session.answeredCount));
 
   const backLink = (
     <Button asChild variant="ghost" size="sm" className="-ml-2">
@@ -128,15 +80,7 @@ function PracticeRunner() {
           <h1 className="text-2xl font-bold">{dict.practice.done}</h1>
           <p className="text-lg text-muted-foreground">{score}</p>
           <div className="flex flex-wrap justify-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setResults({});
-                setIndex(0);
-                setFinished(false);
-                setRound((current) => current + 1);
-              }}
-            >
+            <Button variant="outline" onClick={session.restart}>
               <RotateCcw className="mr-2 h-4 w-4" />
               {dict.practice.restart}
             </Button>
@@ -149,46 +93,103 @@ function PracticeRunner() {
     );
   }
 
-  const questionId = questionIds[index];
   const isLast = index === questionIds.length - 1;
+  const answered = result !== undefined;
+  const goNext = () => (isLast ? session.finish() : session.goTo(index + 1));
+
+  const renderQuestion = () => {
+    if (question.isLoading) return <Spinner />;
+
+    if (isPaymentRequiredError(question.error)) {
+      return <PremiumBanner dict={dictionary.shared.premiumBanner.questionBank} from="question-lists" />;
+    }
+
+    if (question.error || !question.data) {
+      return (
+        <div className="space-y-2 rounded-lg border p-6 text-center">
+          <InlineError error={question.error} />
+          {!question.error && <p className="text-sm text-muted-foreground">{dict.drawer.loadError}</p>}
+        </div>
+      );
+    }
+
+    return (
+      <PracticeQuestion
+        question={question.data}
+        number={index + 1}
+        total={questionIds.length}
+        selected={selected}
+        result={result}
+        dict={dict}
+        onToggle={session.toggle}
+      />
+    );
+  };
 
   return (
-    <div className="container mx-auto max-w-3xl space-y-6 px-4 py-8">
-      {backLink}
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h1 className="text-2xl font-bold">{dict.practice.title}</h1>
-          <span className="text-sm text-muted-foreground">{score}</span>
+    <div className="bg-background text-base md:text-xl">
+      <div className="container mx-auto">
+        <div className="px-4 pt-4">{backLink}</div>
+
+        <PracticeNavigation
+          questionIds={questionIds}
+          index={index}
+          results={session.results}
+          score={score}
+          dict={dict}
+          onSelect={session.goTo}
+        />
+
+        <div className="px-4 py-8">{renderQuestion()}</div>
+
+        <div className="px-4 pb-8">
+          <InlineError error={session.answerError} className="mb-4" />
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <div className="flex gap-2 *:flex-1 sm:*:flex-none">
+              <Button
+                variant="outline"
+                className="sm:w-32"
+                disabled={index === 0}
+                onClick={() => session.goTo(index - 1)}
+              >
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                {dict.practice.previous}
+              </Button>
+              {!answered && (
+                <Button variant="outline" className="sm:w-32" onClick={goNext}>
+                  {isLast ? dict.practice.finish : dict.practice.next}
+                  {!isLast && <ChevronRight className="ml-2 h-4 w-4" />}
+                </Button>
+              )}
+            </div>
+
+            {answered ? (
+              <Button size="lg" className="w-full sm:w-48" onClick={goNext}>
+                {isLast ? (
+                  <>
+                    <Check className="mr-2 h-4 w-4" />
+                    {dict.practice.finish}
+                  </>
+                ) : (
+                  <>
+                    {dict.practice.next}
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            ) : (
+              <Button
+                size="lg"
+                className="w-full sm:w-48"
+                disabled={selected.length === 0 || session.isAnswering || !question.data}
+                onClick={session.answer}
+              >
+                {session.isAnswering && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {dict.drawer.answer}
+              </Button>
+            )}
+          </div>
         </div>
-        <Progress value={((index + 1) / questionIds.length) * 100} />
-        <p className="text-sm text-muted-foreground">
-          {dict.practice.progress
-            .replace("{{current}}", String(index + 1))
-            .replace("{{total}}", String(questionIds.length))}
-        </p>
-      </div>
-
-      <PracticeStep
-        key={`${round}-${questionId}`}
-        questionId={questionId}
-        listId={listId}
-        dict={dict}
-        onAnswered={(isCorrect) => setResults((current) => ({ ...current, [questionId]: isCorrect }))}
-      />
-
-      <div className="flex justify-between gap-4">
-        <Button variant="outline" disabled={index === 0} onClick={() => setIndex(index - 1)}>
-          <ChevronLeft className="mr-1 h-4 w-4" />
-          {dict.practice.previous}
-        </Button>
-        {isLast ? (
-          <Button onClick={() => setFinished(true)}>{dict.practice.finish}</Button>
-        ) : (
-          <Button onClick={() => setIndex(index + 1)}>
-            {dict.practice.next}
-            <ChevronRight className="ml-1 h-4 w-4" />
-          </Button>
-        )}
       </div>
     </div>
   );

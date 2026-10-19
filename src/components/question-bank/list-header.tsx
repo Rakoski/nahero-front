@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/dialog";
 import { InlineError } from "@/components/shared";
 import { cn } from "@/lib/utils";
-import { PracticeSetupDialog, type PracticeOptions } from "@/components/question-bank/practice-setup-dialog";
 import { toastClientError } from "@/components/question-bank/question-bank-context";
 import { useCreateQuestionList, useDeleteQuestionList } from "@/hooks/useQuestionLists";
 import { useLocale } from "@/providers/locale-provider";
@@ -32,15 +31,6 @@ import type { QuestionListItem } from "@/services/question-lists/get";
 import type { Dictionary } from "@/dictionaries";
 
 const MAX_NAME_LENGTH = 120;
-
-const shuffle = <T,>(values: T[]) => {
-  const copy = [...values];
-  for (let index = copy.length - 1; index > 0; index--) {
-    const swap = Math.floor(Math.random() * (index + 1));
-    [copy[index], copy[swap]] = [copy[swap], copy[index]];
-  }
-  return copy;
-};
 
 interface ListHeaderProps {
   listId: number;
@@ -70,7 +60,8 @@ export function ListHeader({
   const { lang } = useLocale();
   const router = useRouter();
   const listsHref = `/${lang}${Routes.QuestionLists}`;
-  const [practiceOpen, setPracticeOpen] = useState(practiceOnOpen && questionCount > 0);
+  const [startingPractice, setStartingPractice] = useState(false);
+  const autoStarted = useRef(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [breakdownOpen, setBreakdownOpen] = useState(false);
   const [duplicating, setDuplicating] = useState(false);
@@ -86,15 +77,23 @@ export function ListHeader({
     return [...counts.entries()].sort((a, b) => b[1] - a[1]);
   }, [items, dict.row.noDomain]);
 
-  const startPractice = async ({ count, random, onlyUnanswered }: PracticeOptions) => {
-    const all = await loadAll();
-    const pool = onlyUnanswered ? all.filter((item) => !item.answered) : all;
-    const ordered = random ? shuffle(pool) : pool;
-    const questionIds = ordered.slice(0, count).map((item) => item.questionId);
-    if (questionIds.length === 0) return false;
-    onPractice(questionIds);
-    return true;
+  const startPractice = async () => {
+    setStartingPractice(true);
+    try {
+      const all = await loadAll();
+      if (all.length > 0) onPractice(all.map((item) => item.questionId));
+      else setStartingPractice(false);
+    } catch (error) {
+      toastClientError(error);
+      setStartingPractice(false);
+    }
   };
+
+  useEffect(() => {
+    if (!practiceOnOpen || questionCount === 0 || autoStarted.current) return;
+    autoStarted.current = true;
+    void startPractice();
+  });
 
   const duplicate = async () => {
     setDuplicating(true);
@@ -143,8 +142,8 @@ export function ListHeader({
               {dict.list.addQuestions}
             </Link>
           </Button>
-          <Button onClick={() => setPracticeOpen(true)} disabled={questionCount === 0}>
-            <Play className="mr-2 h-4 w-4" />
+          <Button onClick={startPractice} disabled={questionCount === 0 || startingPractice}>
+            {startingPractice ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4" />}
             {dict.list.practice}
           </Button>
           <DropdownMenu>
@@ -203,14 +202,6 @@ export function ListHeader({
             ))}
         </div>
       )}
-
-      <PracticeSetupDialog
-        open={practiceOpen}
-        max={questionCount}
-        dict={dict.practiceDialog}
-        onStart={startPractice}
-        onClose={() => setPracticeOpen(false)}
-      />
 
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent className="sm:max-w-md">
