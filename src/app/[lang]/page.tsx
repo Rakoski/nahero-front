@@ -58,7 +58,14 @@ export default async function HomePage({ params }: Props) {
 
       <Features dict={dict.features} />
 
-      <ProductDemos dict={dict.productDemos} />
+      <ProductDemos
+        dict={dict.productDemos}
+        priceNote={dict.productDemos.plans.price_note.replace(
+          "{{price}}",
+          dict.premium.plans.yearly.equivalentPrice,
+        )}
+        lang={lang}
+      />
 
       {!isAuthenticated && (
         <>

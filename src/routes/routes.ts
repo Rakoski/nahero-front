@@ -10,6 +10,9 @@ export const Routes = {
   Practice: "/student/practice",
   History: "/student/history",
   Feedback: "/student/feedback",
+  QuestionLists: "/student/question-lists",
+  QuestionListsNew: "/student/question-lists/new",
+  QuestionListsPractice: "/student/question-lists/practice",
   VerifyEmail: "/verify-email",
 
   StudentDashboard: "/student/dashboard",
@@ -20,4 +23,5 @@ export const Routes = {
   Subscription: "/subscription",
 
   TeacherDashboard: "/teacher/dashboard",
+  TeacherCreate: "/teacher/create",
 };

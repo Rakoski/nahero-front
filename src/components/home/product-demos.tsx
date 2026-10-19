@@ -1,7 +1,7 @@
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "./section-heading";
 import { DashboardDemo, type DashboardDemoDict } from "./dashboard-demo";
-import { PlansDemo, type PlansDemoDict } from "./plans-demo";
+import { PlansComparison, type PlansComparisonDict } from "./plans-comparison";
 
 interface ProductDemosProps {
   dict: {
@@ -10,11 +10,13 @@ interface ProductDemosProps {
     title_highlight: string;
     subtitle: string;
     dashboard: DashboardDemoDict;
-    plans: PlansDemoDict;
+    plans: PlansComparisonDict;
   };
+  priceNote: string;
+  lang: "en" | "pt";
 }
 
-export function ProductDemos({ dict }: ProductDemosProps) {
+export function ProductDemos({ dict, priceNote, lang }: ProductDemosProps) {
   return (
     <section className="border-b border-border py-20 sm:py-24">
       <div className="container mx-auto px-4 lg:pl-14 xl:pl-20">
@@ -51,7 +53,7 @@ export function ProductDemos({ dict }: ProductDemosProps) {
                 {dict.plans.description}
               </p>
             </div>
-            <PlansDemo dict={dict.plans} />
+            <PlansComparison dict={dict.plans} priceNote={priceNote} lang={lang} />
           </FadeIn>
         </div>
       </div>

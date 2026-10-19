@@ -28,6 +28,42 @@ export const NAHERO_API = {
     GET_FEEDBACK: (attemptId: string | number) =>
       `/student-practice-attempts/${attemptId}/feedback`,
   },
+  QUESTION_BANK: {
+    FILTERS: "/question-bank/filters",
+    LIST: "/question-bank",
+    GET_QUESTION: (questionId: string | number) =>
+      `/question-bank/questions/${questionId}`,
+    ANSWER_QUESTION: (questionId: string | number) =>
+      `/question-bank/questions/${questionId}/answer`,
+  },
+  QUESTION_LISTS: {
+    CREATE: "/question-lists",
+    LIST_MINE: "/question-lists",
+    GET: (listId: string | number) => `/question-lists/${listId}`,
+    DELETE: (listId: string | number) => `/question-lists/${listId}`,
+    ADD_QUESTIONS: (listId: string | number) =>
+      `/question-lists/${listId}/questions`,
+    REMOVE_QUESTION: (listId: string | number, questionId: string | number) =>
+      `/question-lists/${listId}/questions/${questionId}`,
+    ANSWER_QUESTION: (listId: string | number, questionId: string | number) =>
+      `/question-lists/${listId}/questions/${questionId}/answer`,
+  },
+  INSTRUCTOR: {
+    EXAMS: "/instructor/exams",
+    PRACTICE_EXAMS: "/instructor/practice-exams",
+    PRACTICE_EXAM: (practiceExamId: string | number) =>
+      `/instructor/practice-exams/${practiceExamId}`,
+    PRACTICE_EXAM_STATUS: (practiceExamId: string | number) =>
+      `/instructor/practice-exams/${practiceExamId}/status`,
+    DOMAINS: (practiceExamId: string | number) =>
+      `/instructor/practice-exams/${practiceExamId}/domains`,
+    DOMAIN: (practiceExamId: string | number, domainId: string | number) =>
+      `/instructor/practice-exams/${practiceExamId}/domains/${domainId}`,
+    QUESTIONS: (practiceExamId: string | number) =>
+      `/instructor/practice-exams/${practiceExamId}/questions`,
+    QUESTION: (practiceExamId: string | number, questionId: string | number) =>
+      `/instructor/practice-exams/${practiceExamId}/questions/${questionId}`,
+  },
   QUESTITONS: {
     LIST_STUDENT: "/questions/list-student",
   },

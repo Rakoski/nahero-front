@@ -9,6 +9,7 @@ import { SkeletonCard } from "../../../../components/practice-exams/components/s
 import { EmptyState } from "../../../../components/practice-exams/components/empty-state";
 import { InProgressAttemptBanner } from "../../../../components/practice-exams/components/in-progress-attempt-banner";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { PremiumPerks } from "@/components/shared";
 import {
   usePracticeExams,
   searchPracticeExamAtom,
@@ -124,8 +125,11 @@ export function PracticeExamsList({ initialPage }: PracticeExamsListProps) {
         items={[{ label: dict.title }]}
         dict={dictionary.breadcrumbs}
       />
-      <div className="space-y-2 text-center">
+      <div className="mx-auto max-w-3xl space-y-3 text-center">
         <h1 className="text-4xl font-bold tracking-tight">{dict.title}</h1>
+        <p className="text-base text-pretty text-muted-foreground sm:text-lg">
+          {dict.subtitle}
+        </p>
       </div>
 
       {inProgressAttempt && (
@@ -138,6 +142,8 @@ export function PracticeExamsList({ initialPage }: PracticeExamsListProps) {
           dict={dict.in_progress}
         />
       )}
+
+      <PremiumPerks from="practice-exams" />
 
       <ExamFiltersComponent
         searchInput={searchInput}

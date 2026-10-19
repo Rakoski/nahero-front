@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PreferredSourceButton } from "./preferred-source-button";
 
 type FooterDict = {
   description: string;
@@ -13,6 +14,7 @@ type FooterDict = {
   legal: string;
   privacy: string;
   copyright: string;
+  preferred_source: string;
 };
 
 interface FooterProps {
@@ -34,6 +36,7 @@ export function Footer({ dict, lang }: FooterProps) {
             <p className="text-sm text-stone-400 max-w-xs">
               {dict.description}
             </p>
+            <PreferredSourceButton lang={lang} label={dict.preferred_source} />
             <p className="text-xs text-stone-500 mt-2">
               {dict.copyright}
             </p>

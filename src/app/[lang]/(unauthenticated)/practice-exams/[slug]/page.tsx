@@ -15,7 +15,7 @@ import { Routes } from "@/routes/routes";
 import { getDictionary } from "@/dictionaries";
 import { practiceExamsService } from "@/services/practice-exams";
 import { DifficultyLevels } from "@/constants/difficulty-levels";
-import { BackButton } from "@/components/shared";
+import { BackButton, PremiumPerks } from "@/components/shared";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import {
   formatTimeLimit,
@@ -197,6 +197,8 @@ export default async function PracticeExamDetailPage({ params }: Props) {
             switchDict={dictionary.practiceExams.switch_attempt}
           />
         </div>
+
+        <PremiumPerks from="practice-exam-detail" />
 
         <ExamAbout
           exam={exam}

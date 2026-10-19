@@ -10,16 +10,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
-import { LogOut } from "lucide-react";
+import { ArrowLeftRight, LogOut } from "lucide-react";
 import { useActiveAttempt } from "@/providers/active-attempt-provider";
 import { useRef } from "react";
 import { useLocale } from "@/providers/locale-provider";
+import { useViewMode } from "@/providers/view-mode-provider";
 
 export function UserNav() {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.header;
   const { data: session } = useSession();
   const { releaseActiveAttempt } = useActiveAttempt();
+  const { mode, canSwitch, switchMode } = useViewMode();
   const isLoggingOutRef = useRef(false);
   const user = session?.user;
 
@@ -62,6 +64,15 @@ export function UserNav() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-stone-800" />
+        {canSwitch && (
+          <DropdownMenuItem
+            className="cursor-pointer focus:bg-stone-800 focus:text-white"
+            onClick={() => switchMode(mode === "instructor" ? "student" : "instructor")}
+          >
+            <ArrowLeftRight className="mr-2 h-4 w-4" />
+            {mode === "instructor" ? dict.viewMode.switchToStudent : dict.viewMode.switchToInstructor}
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           className="text-red-500 focus:bg-red-900/20 focus:text-red-500 cursor-pointer"
           onClick={handleLogout}

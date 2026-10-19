@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export interface SearchableSelectProps {
   options: Array<{ value: string; label: string }>;
@@ -21,6 +22,8 @@ export interface SearchableSelectProps {
   searchPlaceholder?: string;
   onSearchChange?: (search: string) => void;
   disabled?: boolean;
+  triggerClassName?: string;
+  maxOptions?: number;
 }
 
 export function SearchableSelect({
@@ -32,6 +35,8 @@ export function SearchableSelect({
   searchPlaceholder = "Search...",
   onSearchChange,
   disabled,
+  triggerClassName,
+  maxOptions,
 }: SearchableSelectProps) {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
@@ -53,17 +58,18 @@ export function SearchableSelect({
     return () => clearTimeout(timer);
   }, [searchQuery, onSearchChange]);
 
-  const handleClearValue = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onValueChange?.("");
-    setSearchQuery("");
-    setIsOpen(false);
-  };
-
-  const filteredOptions = options.filter((option) =>
+  const matchingOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+  const limitedOptions =
+    maxOptions === undefined
+      ? matchingOptions
+      : matchingOptions.slice(0, maxOptions);
+  const selectedOption = options.find((option) => option.value === value);
+  const filteredOptions =
+    selectedOption && !limitedOptions.includes(selectedOption)
+      ? [...limitedOptions, selectedOption]
+      : limitedOptions;
 
   return (
     <div className="relative w-full">
@@ -78,7 +84,9 @@ export function SearchableSelect({
         open={isOpen}
         onOpenChange={setIsOpen}
       >
-        <SelectTrigger className="w-full cursor-pointer">
+        <SelectTrigger
+          className={cn("w-full cursor-pointer ", triggerClassName)}
+        >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 

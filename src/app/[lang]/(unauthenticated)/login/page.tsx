@@ -28,6 +28,7 @@ import {
 import type { Dictionary } from "@/dictionaries";
 import { Typography } from "@/components/ui/typography";
 import { Routes } from "@/routes/routes";
+import { homeRouteFor } from "@/providers/view-mode-provider";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useLogin } from "./useLogin";
@@ -77,7 +78,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (session?.user) {
-      const destination = callbackUrl || `/${lang}${Routes.PracticeExams}`;
+      const destination = callbackUrl || `/${lang}${homeRouteFor(session.user.roles)}`;
       router.replace(destination);
     }
   }, [session, router, callbackUrl, lang]);

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LogOut, Menu } from "lucide-react";
+import { ArrowLeftRight, LogOut, Menu } from "lucide-react";
 import { UserNav } from "./user-nav";
 import { SubscriptionHeaderWidget } from "./subscription-header-widget";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import { SignOut } from "../../services/auth/sign-out";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Routes } from "../../routes/routes";
 import { useLocale } from "@/providers/locale-provider";
+import { useViewMode } from "@/providers/view-mode-provider";
 
 const buildPath = (lang: string, route: string) => {
   return `/${lang}${route}`.replace(/\/+/g, "/");
@@ -22,9 +23,23 @@ export function Header() {
   const dict = dictionary.header;
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const { mode, canSwitch, switchMode } = useViewMode();
 
   const getLinks = () => {
     const roles = session?.user?.roles || [];
+
+    if (session && mode === "instructor") {
+      return [
+        {
+          href: buildPath(lang, Routes.TeacherDashboard),
+          label: dict.dashboard,
+        },
+        {
+          href: buildPath(lang, Routes.TeacherCreate),
+          label: dict.newPracticeExam,
+        },
+      ];
+    }
 
     if (roles.includes("IS_STUDENT")) {
       return [
@@ -38,17 +53,8 @@ export function Header() {
         },
         { href: buildPath(lang, "/student/history"), label: dict.history },
         { href: buildPath(lang, Routes.Feedback), label: dict.feedback },
+        { href: buildPath(lang, Routes.QuestionLists), label: dict.questionLists },
         { href: buildPath(lang, Routes.Premium), label: dict.plans },
-      ];
-    }
-
-    if (roles.includes("IS_TEACHER")) {
-      return [
-        {
-          href: buildPath(lang, Routes.TeacherDashboard),
-          label: dict.dashboard,
-        },
-        { href: buildPath(lang, "/teacher/create"), label: "Create Exam" },
       ];
     }
 
@@ -102,7 +108,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {session && (
+          {session && mode === "student" && (
             <div className="hidden md:block">
               <SubscriptionHeaderWidget
                 lang={lang}
@@ -168,13 +174,15 @@ export function Header() {
 
                 {session ? (
                   <div className="flex flex-col gap-4 items-center">
-                    <SubscriptionHeaderWidget
-                      lang={lang}
-                      dict={{
-                        premium: dict.premium,
-                        premium_badge: dict.premium_badge,
-                      }}
-                    />
+                    {mode === "student" && (
+                      <SubscriptionHeaderWidget
+                        lang={lang}
+                        dict={{
+                          premium: dict.premium,
+                          premium_badge: dict.premium_badge,
+                        }}
+                      />
+                    )}
                     <div className="flex flex-col items-center gap-3 mb-2">
                       <Avatar className="h-10 w-10 border border-stone-700">
                         <AvatarImage src={session.user?.image || ""} />
@@ -189,6 +197,19 @@ export function Header() {
                         </span>
                       </div>
                     </div>
+                    {canSwitch && (
+                      <Button
+                        variant="outline"
+                        className="w-1/2 cursor-pointer justify-center border-stone-700 bg-transparent text-stone-200 hover:bg-stone-800 hover:text-white"
+                        onClick={() => {
+                          switchMode(mode === "instructor" ? "student" : "instructor");
+                          setIsOpen(false);
+                        }}
+                      >
+                        <ArrowLeftRight className="mr-2 h-4 w-4" />
+                        {mode === "instructor" ? dict.viewMode.switchToStudent : dict.viewMode.switchToInstructor}
+                      </Button>
+                    )}
                     <Button
                       variant="destructive"
                       className="w-1/2 justify-center"

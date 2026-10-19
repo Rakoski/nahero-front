@@ -5,13 +5,18 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ActiveAttemptProvider } from "@/providers/active-attempt-provider";
+import { ViewModeProvider } from "@/providers/view-mode-provider";
+import { CaptchaDialog } from "@/components/captcha/captcha-dialog";
 import { queryClient } from "@/lib/query-client";
 
 export function Providers({ children }: PropsWithChildren) {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <ActiveAttemptProvider>{children}</ActiveAttemptProvider>
+        <ViewModeProvider>
+          <ActiveAttemptProvider>{children}</ActiveAttemptProvider>
+        </ViewModeProvider>
+        <CaptchaDialog />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </AuthProvider>

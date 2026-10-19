@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Routes } from "@/routes/routes";
+import { homeRouteFor } from "@/providers/view-mode-provider";
 import { handleError } from "../../../../utils/error-utils";
 import { EMAIL_NOT_VERIFIED } from "@/constants/auth-errors";
 
@@ -35,8 +36,8 @@ export function useLogin() {
 
       return newSession;
     },
-    onSuccess: () => {
-      const destination = callbackUrl || `/${lang}${Routes.PracticeExams}`;
+    onSuccess: (newSession) => {
+      const destination = callbackUrl || `/${lang}${homeRouteFor(newSession?.user?.roles)}`;
       router.replace(destination);
     },
     onError: (error: Error, variables) => {

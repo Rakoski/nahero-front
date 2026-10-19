@@ -7,6 +7,16 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAnswerPracticeQuestion } from "@/hooks/useAnswerPracticeQuestion";
 import type { PracticeQuestion } from "@/services/feedback/get-page";
+import type {
+  AnswerPracticeQuestionRequest,
+  AnswerPracticeQuestionResponse,
+} from "@/services/feedback/answer-practice-question";
+
+type AnswerMutation = {
+  mutate: (request: AnswerPracticeQuestionRequest) => void;
+  data: AnswerPracticeQuestionResponse | undefined;
+  isPending: boolean;
+};
 
 export type PracticeQuestionDict = {
   questionNumber: string;
@@ -19,13 +29,15 @@ export type PracticeQuestionDict = {
 
 interface PracticeQuestionCardProps {
   question: PracticeQuestion;
-  number: number;
+  number?: number;
   dict: PracticeQuestionDict;
+  mutation?: AnswerMutation;
 }
 
-export function PracticeQuestionCard({ question, number, dict }: PracticeQuestionCardProps) {
+export function PracticeQuestionCard({ question, number, dict, mutation }: PracticeQuestionCardProps) {
   const [selected, setSelected] = useState<number[]>([]);
-  const { mutate, data: result, isPending } = useAnswerPracticeQuestion();
+  const feedbackMutation = useAnswerPracticeQuestion();
+  const { mutate, data: result, isPending } = mutation ?? feedbackMutation;
   const isMultiple = question.type === "MULTIPLE_CHOICE";
   const answered = result !== undefined;
 
@@ -46,9 +58,11 @@ export function PracticeQuestionCard({ question, number, dict }: PracticeQuestio
   return (
     <Card>
       <CardHeader className="space-y-2">
-        <CardTitle className="text-base text-muted-foreground">
-          {dict.questionNumber.replace("{{number}}", String(number))}
-        </CardTitle>
+        {number !== undefined && (
+          <CardTitle className="text-base text-muted-foreground">
+            {dict.questionNumber.replace("{{number}}", String(number))}
+          </CardTitle>
+        )}
         <p className="leading-relaxed">{question.content}</p>
         {question.imageUrl && (
           <img src={question.imageUrl} alt="" className="mt-2 max-w-full rounded-lg sm:max-w-md" />
@@ -72,7 +86,7 @@ export function PracticeQuestionCard({ question, number, dict }: PracticeQuestio
                 onClick={() => toggle(alternative.alternativeId)}
                 className={cn(
                   "flex w-full items-start gap-2 rounded-lg border p-3 text-left text-sm transition-colors",
-                  !answered && "hover:bg-muted",
+                  !answered && "cursor-pointer hover:bg-muted",
                   !answered && isSelected && "border-primary bg-primary/10",
                   answered && isCorrect && "border-green-500 bg-green-500/10",
                   isWrongPick && "border-red-500 bg-red-500/10",

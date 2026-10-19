@@ -97,6 +97,15 @@ export default withAuth(
 
       const userRoles = (token.roles as string[] | undefined) ?? [];
       if (!userRoles.includes(protectedMatch.role)) {
+        if (protectedMatch.role === "IS_STUDENT" && userRoles.includes("IS_TEACHER")) {
+          return withUtmCookie(
+            req,
+            NextResponse.redirect(
+              new URL(`/${pathLocale}/teacher/dashboard`, req.url),
+            ),
+          );
+        }
+
         return withUtmCookie(
           req,
           NextResponse.redirect(
