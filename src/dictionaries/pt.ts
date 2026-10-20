@@ -1144,6 +1144,7 @@ export const pt = {
       answered: "Respondidas",
       open: "Abrir",
       practice: "Praticar",
+      previewNames: ["Revisão de segurança", "Redes e VPC", "Erros do último simulado", "Armazenamento e bancos", "Custos e cobrança", "Revisão final"],
     },
     picker: {
       back: "Minhas listas",

@@ -1153,6 +1153,7 @@ export const en = {
       answered: "Answered",
       open: "Open",
       practice: "Practice",
+      previewNames: ["Security review", "Networking and VPC", "Mistakes from my last exam", "Storage and databases", "Billing and pricing", "Final review"],
     },
     picker: {
       back: "My lists",
