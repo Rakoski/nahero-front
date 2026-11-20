@@ -26,10 +26,10 @@ export const en = {
       description:
         "Create a free NaHero account to save your progress, track scores across attempts, and prepare for your cloud certification exam.",
     },
-    contact: {
-      title: "Contact",
+    community: {
+      title: "Community and Contact",
       description:
-        "Have a question, found a bug, or want to contribute? Get in touch with the NaHero team.",
+        "Join the NaHero community on Discord or reach the team and the creator by email.",
     },
     faq: {
       title: "FAQ",
@@ -381,13 +381,6 @@ export const en = {
       },
     ],
   },
-  cta: {
-    title: "Ready to get certified?",
-    description:
-      "Join 1,000+ students who are studying for their certifications right now.",
-    btn: "Create free account",
-    note: "Unlimited practice exams, free forever. No credit card.",
-  },
   notFound: {
     title: "Page Not Found",
     code: "404",
@@ -449,7 +442,11 @@ export const en = {
       password_min: "Password must be at least 6 characters",
       confirm_password_required: "Please confirm your password",
       passwords_must_match: "Passwords do not match",
+      privacy_required:
+        "You need to accept the Privacy Policy to create your account.",
     },
+    accept_privacy_prefix: "I have read and agree to the",
+    accept_privacy_link: "Privacy Policy",
     errors: {
       registration_failed: "Registration failed. Please try again.",
       unexpected_error: "An unexpected error occurred. Please try again.",
@@ -529,6 +526,7 @@ export const en = {
     questionLists: "Question Lists",
     my_profile: "My Profile",
     plans: "Plans",
+    community: "Community",
     premium: "Go Premium",
     premium_badge: "Premium",
     logout: "Log Out",
@@ -550,6 +548,7 @@ export const en = {
     faq: "FAQ",
     support: "Support",
     contact: "Contact",
+    community: "Discord community",
     legal: "Legal",
     privacy: "Privacy Policy",
     copyright: "© 2026 NaHero. All rights reserved.",
@@ -595,12 +594,18 @@ export const en = {
     cta_start: "Start a practice exam",
     cta_plans: "See plans",
   },
-  contact: {
-    title: "Get in touch",
-    subtitle:
-      "Have a question, found a bug, or want to contribute? We'd love to hear from you.",
-    email_label: "Email us at",
-    response_note: "We usually reply within a couple of days.",
+  community: {
+    tagline: "Free practice exams for cloud and IT certifications.",
+    discord: {
+      label: "Join the Discord",
+      description: "Ask questions, find study partners, and keep up with what's new.",
+    },
+    email: {
+      label: "Email us",
+    },
+    creator: {
+      label: "Talk to or send feedback to the creator",
+    },
   },
   practiceExams: {
     title: "Practice Exams",
@@ -874,6 +879,12 @@ export const en = {
       retake: "Retake the exam",
       viewStudyPlan: "See study plan",
     },
+    community: {
+      title: "Get your questions answered by people studying for the same exam",
+      description:
+        "Join the NaHero community on Discord to discuss questions, swap tips, and study together.",
+      cta: "Join the Discord",
+    },
     timeFormat: {
       minutes: "{{time}} minutes",
       hours: "{{hours}}h {{minutes}}m",
@@ -898,10 +909,6 @@ export const en = {
       title: "Performance by domain",
       weakest: "Your weakest area",
       score: "{{correct}}/{{total}}",
-    },
-    domainsUpsell: {
-      text: "Want to know how to improve on these?",
-      cta: "Go Premium and see your feedback",
     },
     studyPlan: {
       title: "Personalized study plan",
@@ -1036,6 +1043,20 @@ export const en = {
     alreadyPremiumBody: "Your access is active until {{date}}.",
     manageSubscription: "Manage subscription",
     goToDashboard: "Go to dashboard",
+    card: {
+      title: "NaHero Premium",
+      annualLabel: "Yearly plan",
+      savingsBadge: "Save 25%",
+      annualBilled: "billed $17.99/yr",
+      examAnchor: "Less than 20% of the exam fee (US$100)",
+      lossAversion:
+        "You missed {{count}} questions in {{domain}}. The study plan shows exactly what to review.",
+      lossAversionOne:
+        "You missed 1 question in {{domain}}. The study plan shows exactly what to review.",
+      annualCta: "Subscribe yearly",
+      guarantee: "7 days, full refund",
+      monthlyCta: "or $1.99/mo",
+    },
     plans: {
       free: {
         name: "Free",
@@ -1045,26 +1066,8 @@ export const en = {
           "Full results with right and wrong answers",
         ],
       },
-      monthly: {
-        name: "Premium Monthly",
-        currency: "$",
-        amount: "1.99",
-        cadence: "/mo",
-        badge: "Recommended",
-        cta: "Subscribe monthly",
-        footnote: "Renews monthly. Cancel anytime.",
-      },
       yearly: {
-        name: "Premium Yearly",
-        currency: "$",
-        amount: "17.99",
-        cadence: "/yr",
-        highlightTitle: "Best value",
-        equivalentLabel: "Works out to",
         equivalentPrice: "$1.50/mo",
-        yearlySavings: "save $5.89 a year",
-        cta: "Subscribe yearly",
-        footnote: "Renews yearly. Cancel anytime.",
       },
       premiumFeatures: [
         "Detailed explanation for every question",
@@ -1525,12 +1528,6 @@ export const en = {
         title: "Want to see where your score is heading?",
         description:
           "Your streak, average and best scores, time studied and progress on each exam, all in one dashboard. It's part of Premium.",
-        cta: "Subscribe to Premium",
-      },
-      explanations: {
-        title: "Want to see the explanations?",
-        description:
-          "Your score is free, forever. Premium tells you why each answer is right.",
         cta: "Subscribe to Premium",
       },
       history: {

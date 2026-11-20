@@ -24,14 +24,16 @@ import {
   Clock,
   Award,
   RotateCcw,
-  Lock,
+  MessagesSquare,
 } from "lucide-react";
+import { DISCORD_URL } from "@/constants/contact";
 import type { AnswerFilters } from "@/services/answers";
 import { useAnswers } from "./useAnswers";
 import { AnswersList } from "../../../../../../../../components/answers/answersList";
-import { PremiumBanner } from "@/components/shared";
+import { PremiumPricingCard } from "@/components/shared";
 import { useLocale } from "@/providers/locale-provider";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
+import { usePremiumCheckout } from "@/hooks/usePremiumCheckout";
 import { DomainBreakdown } from "@/components/results/domain-breakdown";
 
 export default function ExamResultsPage() {
@@ -46,6 +48,10 @@ export default function ExamResultsPage() {
 
   const { data: subscription } = useSubscriptionStatus();
   const isPremium = subscription?.isPremium ?? false;
+  const checkout = usePremiumCheckout({
+    placement: "RESULTS",
+    attemptId: Number.isNaN(attemptId) ? undefined : attemptId,
+  });
 
   const {
     data: answersData,
@@ -55,7 +61,6 @@ export default function ExamResultsPage() {
     isLoading: isLoadingAnswers,
   } = useAnswers(attemptId, filters, 10);
 
-  // Fetch results from API
   const {
     data: results,
     isLoading: isLoadingResults,
@@ -110,9 +115,7 @@ export default function ExamResultsPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">
-            {dict.loading}
-          </p>
+          <p className="text-muted-foreground">{dict.loading}</p>
         </div>
       </div>
     );
@@ -139,6 +142,22 @@ export default function ExamResultsPage() {
     return dict.statusLabels[statusKey] || status;
   };
 
+  const weakestDomainScore = results.domains?.find(
+    (domain) => domain.domain === results.weakestDomain,
+  );
+  const missedInWeakest = weakestDomainScore
+    ? weakestDomainScore.total - weakestDomainScore.correct
+    : 0;
+  const lossAversion =
+    weakestDomainScore && missedInWeakest > 0
+      ? (missedInWeakest === 1
+          ? dictionary.premium.card.lossAversionOne
+          : dictionary.premium.card.lossAversion
+        )
+          .replace("{{count}}", String(missedInWeakest))
+          .replace("{{domain}}", weakestDomainScore.domain)
+      : null;
+
   const allAnswers = answersData?.pages.flatMap((page) => page.content) || [];
 
   return (
@@ -148,14 +167,6 @@ export default function ExamResultsPage() {
           <h1 className="text-4xl font-bold mb-2">{dict.title}</h1>
           <p className="text-muted-foreground">{dict.subtitle}</p>
         </div>
-
-        {subscription && !subscription.isPremium && (
-          <PremiumBanner
-            dict={dictionary.shared.premiumBanner.explanations}
-            from="results"
-            className="mb-6"
-          />
-        )}
 
         <Card className="mb-6">
           <CardContent className="pt-6">
@@ -203,29 +214,15 @@ export default function ExamResultsPage() {
           weakestDomain={results.weakestDomain}
           dict={{ ...dict.domains, title: dictionary.feedbackPage.gapsTitle }}
           className="mb-6"
-          footer={
-            subscription &&
-            !isPremium && (
-              <div className="flex flex-col items-start gap-3 rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-3">
-                  <Lock className="h-4 w-4 flex-shrink-0 text-yellow-400" />
-                  <span className="text-sm font-medium">
-                    {dict.domainsUpsell.text}
-                  </span>
-                </div>
-                <Button
-                  asChild
-                  size="sm"
-                  className="h-auto min-h-8 w-full shrink-0 whitespace-normal py-2 text-center bg-yellow-600 text-white hover:bg-yellow-700 sm:w-auto"
-                >
-                  <Link href={`/${lang}${Routes.Premium}?from=results`}>
-                    {dict.domainsUpsell.cta}
-                  </Link>
-                </Button>
-              </div>
-            )
-          }
         />
+
+        {subscription && !isPremium && (
+          <PremiumPricingCard
+            checkout={checkout}
+            lossAversion={lossAversion}
+            className="mb-6"
+          />
+        )}
 
         {results.practiceExamSlug && (
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -237,7 +234,12 @@ export default function ExamResultsPage() {
                 {dict.actions.retake}
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto"
+            >
               <Link
                 href={`/${lang}${Routes.Feedback}?exam=${encodeURIComponent(results.practiceExamSlug)}`}
               >
@@ -246,6 +248,23 @@ export default function ExamResultsPage() {
             </Button>
           </div>
         )}
+
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+              <MessagesSquare className="h-10 w-10 shrink-0 text-primary" />
+              <div className="flex-1 space-y-1">
+                <CardTitle className="text-lg">{dict.community.title}</CardTitle>
+                <CardDescription>{dict.community.description}</CardDescription>
+              </div>
+              <Button asChild variant="outline" className="w-full sm:w-auto">
+                <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
+                  {dict.community.cta}
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
           <Card>
@@ -345,8 +364,12 @@ export default function ExamResultsPage() {
                 </Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">{dict.stats.total}:</span>
-                <span className="font-semibold">{results.numberOfQuestions}</span>
+                <span className="text-muted-foreground">
+                  {dict.stats.total}:
+                </span>
+                <span className="font-semibold">
+                  {results.numberOfQuestions}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">

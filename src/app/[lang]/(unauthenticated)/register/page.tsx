@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -47,6 +48,9 @@ const createRegisterSchema = (dict: Dictionary["register"]) =>
       confirmPassword: z
         .string()
         .min(1, dict.validation.confirm_password_required),
+      acceptPrivacy: z
+        .boolean()
+        .refine((accepted) => accepted, dict.validation.privacy_required),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: dict.validation.passwords_must_match,
@@ -72,6 +76,7 @@ export default function RegisterPage() {
       email: "",
       password: "",
       confirmPassword: "",
+      acceptPrivacy: false,
     },
   });
 
@@ -218,6 +223,42 @@ export default function RegisterPage() {
                             </Button>
                           </div>
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="acceptPrivacy"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-start gap-3">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={(checked) =>
+                                field.onChange(checked === true)
+                              }
+                              onBlur={field.onBlur}
+                              ref={field.ref}
+                              className="mt-0.5"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal leading-snug text-muted-foreground">
+                            <span>
+                              {dict.accept_privacy_prefix}{" "}
+                              <Link
+                                href={`/${lang}${Routes.Privacy}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-semibold text-yellow-600 underline-offset-4 hover:text-yellow-500 hover:underline"
+                              >
+                                {dict.accept_privacy_link}
+                              </Link>
+                            </span>
+                          </FormLabel>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}

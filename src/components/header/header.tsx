@@ -55,12 +55,14 @@ export function Header() {
         { href: buildPath(lang, Routes.Feedback), label: dict.feedback },
         { href: buildPath(lang, Routes.QuestionLists), label: dict.questionLists },
         { href: buildPath(lang, Routes.Premium), label: dict.plans },
+        { href: buildPath(lang, Routes.Community), label: dict.community },
       ];
     }
 
     return [
       { href: buildPath(lang, Routes.PracticeExams), label: dict.exams },
       { href: buildPath(lang, Routes.Premium), label: dict.plans },
+      { href: buildPath(lang, Routes.Community), label: dict.community },
     ];
   };
 

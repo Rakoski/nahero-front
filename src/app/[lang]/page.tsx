@@ -11,7 +11,6 @@ import { HowItWorks } from "@/components/home/how-it-works";
 import { Certifications } from "@/components/home/certifications";
 import { Testimonials } from "@/components/home/testimonials";
 import { FAQ } from "@/components/home/faq";
-import { CTA } from "@/components/home/cta";
 import { StickyMobileCta } from "@/components/home/sticky-mobile-cta";
 import { resolveLocale } from "@/lib/locale";
 import { OG_IMAGE } from "@/lib/og-image";
@@ -78,7 +77,6 @@ export default async function HomePage({ params }: Props) {
 
       <FAQ dict={dict.faq} />
 
-      {!isAuthenticated && <CTA dict={dict.cta} lang={lang} />}
       {!isAuthenticated && (
         <StickyMobileCta dict={dict.stickyCta} lang={lang} />
       )}

@@ -3,7 +3,7 @@ export const NAHERO_API = {
     LIST: "/practice-exams/list",
     GET_BY_SLUG: "/practice-exams/by-slug",
     GET_SAMPLE_QUESTIONS: (slug: string) =>
-      `/practice-exams/by-slug/${encodeURIComponent(slug)}/sample-questions`,
+      `/practice-exams/by-slug/${encodeURIComponent(decodeURIComponent(slug))}/sample-questions`,
   },
   FEEDBACK: {
     GET_PAGE: "/feedback",
@@ -83,6 +83,7 @@ export const NAHERO_API = {
   },
   PAYMENT: {
     CREATE_CHECKOUT_SUBSCRIPTION: "/payment/checkout/subscription",
+    TRACK_FUNNEL_EVENT: "/payment/funnel-events",
   },
   SUBSCRIPTION: {
     GET: "/subscription",

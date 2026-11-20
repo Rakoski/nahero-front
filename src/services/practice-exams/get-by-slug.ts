@@ -10,7 +10,7 @@ export async function getPracticeExamBySlug(
   if (!baseURL) return null;
 
   const response = await fetch(
-    `${baseURL}${NAHERO_API.PRACTICE_EXAMS.GET_BY_SLUG}/${encodeURIComponent(slug)}`,
+    `${baseURL}${NAHERO_API.PRACTICE_EXAMS.GET_BY_SLUG}/${encodeURIComponent(decodeURIComponent(slug))}`,
     { next: { revalidate: 60 } },
   );
 

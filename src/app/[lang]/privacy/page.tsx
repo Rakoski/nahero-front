@@ -88,7 +88,7 @@ export default async function PrivacyPage({ params }: Props) {
 
         <p className="mt-12 text-sm text-muted-foreground">
           <Link
-            href={`/${lang}/contact`}
+            href={`/${lang}/community`}
             className="text-yellow-600 underline hover:text-yellow-500"
           >
             {dict.privacy.contact_link}

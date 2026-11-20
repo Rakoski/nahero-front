@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Routes } from "@/routes/routes";
@@ -36,8 +36,7 @@ export function PremiumPerks({ from, className }: PremiumPerksProps) {
     >
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <Sparkles className="h-4 w-4 text-yellow-400" aria-hidden="true" />
+          <h2 className="text-lg font-semibold">
             {dict.title}
           </h2>
           <p className="text-sm text-muted-foreground">{dict.free_note}</p>

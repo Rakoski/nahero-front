@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DISCORD_URL } from "@/constants/contact";
 import { PreferredSourceButton } from "./preferred-source-button";
 
 type FooterDict = {
@@ -11,6 +12,7 @@ type FooterDict = {
   faq: string;
   support: string;
   contact: string;
+  community: string;
   legal: string;
   privacy: string;
   copyright: string;
@@ -74,11 +76,19 @@ export function Footer({ dict, lang }: FooterProps) {
                 {dict.faq}
               </Link>
               <Link
-                href={buildPath(lang, "/contact")}
+                href={buildPath(lang, "/community")}
                 className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
               >
                 {dict.contact}
               </Link>
+              <a
+                href={DISCORD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-stone-400 hover:text-yellow-500 transition-colors"
+              >
+                {dict.community}
+              </a>
             </nav>
           </div>
 

@@ -14,6 +14,9 @@ export const Routes = {
   QuestionListsNew: "/student/question-lists/new",
   QuestionListsPractice: "/student/question-lists/practice",
   VerifyEmail: "/verify-email",
+  Community: "/community",
+  Privacy: "/privacy",
+  HowItWorks: "/how-it-works",
 
   StudentDashboard: "/student/dashboard",
 

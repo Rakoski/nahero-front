@@ -1,38 +1,35 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { CheckCircle2, Construction, Loader2, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { Routes } from "@/routes/routes";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
-import { useCreateCheckoutSession } from "@/hooks/useCreateCheckoutSession";
-import type { PlanInterval } from "@/services/payment/create-checkout-session";
+import { usePremiumCheckout } from "@/hooks/usePremiumCheckout";
 import { useLocale } from "@/providers/locale-provider";
-import { InlineError } from "@/components/shared";
+import { PremiumPricingCard } from "@/components/shared";
 
 export default function PremiumPage() {
   const { lang, dict: dictionary } = useLocale();
   const dict = dictionary.premium;
-  const { free, monthly, yearly, premiumFeatures } = dict.plans;
+  const { free, premiumFeatures } = dict.plans;
   const searchParams = useSearchParams();
-  const router = useRouter();
   const { status: sessionStatus } = useSession();
   const isAuthenticated = sessionStatus === "authenticated";
 
   const { data: subscription, isLoading: isLoadingSubscription } =
     useSubscriptionStatus({ enabled: isAuthenticated });
-  const {
-    mutate: startCheckout,
-    isPending: isStartingCheckout,
-    variables,
-    error: checkoutError,
-  } = useCreateCheckoutSession();
+
+  const attemptParam = Number(searchParams.get("attempt"));
+  const checkout = usePremiumCheckout({
+    placement: "PLANS_PAGE",
+    attemptId: Number.isInteger(attemptParam) && attemptParam > 0 ? attemptParam : undefined,
+  });
+  const { subscribe } = checkout;
 
   const checkoutAfterLogin = searchParams.get("checkout");
   const autoCheckoutStarted = useRef(false);
@@ -48,8 +45,8 @@ export default function PremiumPage() {
     const query = remaining.toString();
     window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
 
-    startCheckout({ plan: checkoutAfterLogin });
-  }, [subscription, checkoutAfterLogin, searchParams, startCheckout]);
+    subscribe(checkoutAfterLogin);
+  }, [subscription, checkoutAfterLogin, searchParams, subscribe]);
 
   const paywallSource = searchParams.get("from");
   const paywallMessages: Record<string, string> = {
@@ -80,39 +77,6 @@ export default function PremiumPage() {
         { year: "numeric", month: "long", day: "numeric" },
       )
     : "—";
-
-  const pendingPlan = isStartingCheckout ? variables?.plan : null;
-
-  const subscribe = (plan: PlanInterval) => {
-    if (isAuthenticated) {
-      startCheckout({ plan });
-      return;
-    }
-
-    const callbackUrl = `/${lang}${Routes.Premium}?checkout=${plan}`;
-    router.push(`/${lang}${Routes.Login}?callbackUrl=${encodeURIComponent(callbackUrl)}`);
-  };
-
-  const renderSubscribeButton = (plan: PlanInterval, label: string) =>
-    isPremium ? (
-      <Button className="w-full" size="lg" variant="outline" asChild>
-        <Link href={`/${lang}${Routes.Subscription}`}>
-          {dict.manageSubscription}
-        </Link>
-      </Button>
-    ) : (
-      <Button
-        className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold"
-        size="lg"
-        onClick={() => subscribe(plan)}
-        disabled={isStartingCheckout}
-      >
-        {pendingPlan === plan && (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        )}
-        {pendingPlan === plan ? dict.starting : label}
-      </Button>
-    );
 
   return (
     <div className="container mx-auto pt-4 pb-8 px-4 max-w-6xl">
@@ -145,142 +109,30 @@ export default function PremiumPage() {
         </Card>
       )}
 
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-        <PlanCard
-          name={free.name}
-          features={free.features}
-          action={
+      <section className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-5">
+        <PremiumPricingCard
+          checkout={checkout}
+          features={premiumFeatures}
+          className="lg:col-span-3"
+        />
+
+        <Card className="flex flex-col lg:col-span-2">
+          <CardContent className="flex flex-1 flex-col gap-4 pt-6">
+            <h2 className="text-xl font-bold">{free.name}</h2>
+            <ul className="flex-1 space-y-2">
+              {free.features.map((feature) => (
+                <li key={feature} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
             <Button className="w-full" size="lg" variant="outline" asChild>
               <Link href={`/${lang}${Routes.PracticeExams}`}>{free.cta}</Link>
             </Button>
-          }
-        />
-
-        <PlanCard
-          name={monthly.name}
-          price={monthly}
-          badge={monthly.badge}
-          features={premiumFeatures}
-          action={renderSubscribeButton("MONTHLY", monthly.cta)}
-          footnote={monthly.footnote}
-          emphasized
-        />
-
-        <PlanCard
-          name={yearly.name}
-          price={yearly}
-          highlight={
-            <>
-              <p className="font-semibold">{yearly.highlightTitle}</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {yearly.equivalentLabel}{" "}
-                <span className="font-semibold text-foreground">
-                  {yearly.equivalentPrice}
-                </span>{" "}
-                · {yearly.yearlySavings}
-              </p>
-            </>
-          }
-          highlightClassName="border-yellow-500/40 bg-yellow-500/5"
-          features={premiumFeatures}
-          action={renderSubscribeButton("YEARLY", yearly.cta)}
-          footnote={yearly.footnote}
-        />
+          </CardContent>
+        </Card>
       </section>
-
-      <InlineError error={checkoutError} className="mt-6" />
     </div>
-  );
-}
-
-interface PlanCardProps {
-  name: string;
-  price?: { currency: string; amount: string; cadence: string };
-  highlight?: ReactNode;
-  highlightClassName?: string;
-  features: readonly string[];
-  upcomingFeature?: { label: string; tag: string };
-  action: ReactNode;
-  badge?: string;
-  footnote?: string;
-  emphasized?: boolean;
-}
-
-function PlanCard({
-  name,
-  price,
-  highlight,
-  highlightClassName,
-  features,
-  upcomingFeature,
-  action,
-  badge,
-  footnote,
-  emphasized,
-}: PlanCardProps) {
-  return (
-    <Card
-      className={cn(
-        "flex flex-col",
-        emphasized && "border-yellow-500 shadow-lg shadow-yellow-500/10",
-      )}
-    >
-      <CardContent className="flex flex-1 flex-col gap-4 pt-6">
-        <div className="flex items-start justify-between gap-4">
-          <h2 className="text-xl font-bold">{name}</h2>
-          {price && (
-            <div className="text-right shrink-0 leading-none">
-              <p className="text-4xl font-bold">
-                <span className="mr-1 align-top text-xl">{price.currency}</span>
-                {price.amount}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {price.cadence}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {highlight && (
-          <div
-            className={cn(
-              "rounded-lg border border-border bg-muted/40 p-3",
-              highlightClassName,
-            )}
-          >
-            {highlight}
-          </div>
-        )}
-
-        <ul className="space-y-2 flex-1">
-          {features.map((feature) => (
-            <li key={feature} className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
-              <span>{feature}</span>
-            </li>
-          ))}
-          {upcomingFeature && (
-            <li className="flex items-start gap-3 text-muted-foreground">
-              <Construction className="h-5 w-5 shrink-0 mt-0.5" />
-              <span>
-                {upcomingFeature.label}{" "}
-                <span className="ml-1 inline-block rounded-full border border-yellow-500/40 px-2 py-0.5 text-xs font-medium text-yellow-400">
-                  {upcomingFeature.tag}
-                </span>
-              </span>
-            </li>
-          )}
-        </ul>
-
-        <div className="space-y-2">
-          {action}
-          {footnote && (
-            <p className="truncate text-xs text-center text-muted-foreground">
-              {footnote}
-            </p>
-          )}
-        </div>
-      </CardContent>
-    </Card>
   );
 }

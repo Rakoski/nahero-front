@@ -25,10 +25,10 @@ export const pt = {
       description:
         "Crie uma conta gratuita no NaHero para salvar seu progresso, acompanhar sua pontuação e se preparar para sua certificação em nuvem.",
     },
-    contact: {
-      title: "Contato",
+    community: {
+      title: "Comunidade e Contato",
       description:
-        "Tem uma dúvida, encontrou um bug ou quer contribuir? Fale com o time do NaHero.",
+        "Entre na comunidade do NaHero no Discord ou fale com o time e com o criador por e-mail.",
     },
     faq: {
       title: "Perguntas Frequentes",
@@ -371,13 +371,6 @@ export const pt = {
       },
     ],
   },
-  cta: {
-    title: "Pronto para começar?",
-    description:
-      "Junte-se a outros estudantes que estão estudando para se certificar agora mesmo!",
-    btn: "Criar conta grátis",
-    note: "Simulados grátis e ilimitados, para sempre. Sem cartão de crédito.",
-  },
   notFound: {
     title: "Página Não Encontrada",
     code: "404",
@@ -439,7 +432,11 @@ export const pt = {
       password_min: "A senha deve ter pelo menos 6 caracteres",
       confirm_password_required: "Confirme sua senha",
       passwords_must_match: "As senhas não coincidem",
+      privacy_required:
+        "Você precisa aceitar a Política de Privacidade para criar sua conta.",
     },
+    accept_privacy_prefix: "Li e concordo com a",
+    accept_privacy_link: "Política de Privacidade",
     errors: {
       registration_failed: "Falha ao cadastrar. Tente novamente.",
       unexpected_error: "Ocorreu um erro inesperado. Tente novamente.",
@@ -519,6 +516,7 @@ export const pt = {
     questionLists: "Listas de Questões",
     my_profile: "Meu Perfil",
     plans: "Planos",
+    community: "Comunidade",
     premium: "Me inscrever",
     premium_badge: "Premium",
     logout: "Sair",
@@ -540,6 +538,7 @@ export const pt = {
     faq: "FAQ",
     support: "Suporte",
     contact: "Contato",
+    community: "Comunidade no Discord",
     legal: "Legal",
     privacy: "Política de Privacidade",
     copyright: "© 2026 NaHero. Todos os direitos reservados.",
@@ -585,12 +584,18 @@ export const pt = {
     cta_start: "Começar um simulado",
     cta_plans: "Ver planos",
   },
-  contact: {
-    title: "Fale conosco",
-    subtitle:
-      "Tem uma dúvida, encontrou um bug ou quer contribuir? Adoraríamos ouvir você.",
-    email_label: "Envie um e-mail para",
-    response_note: "Normalmente respondemos em alguns dias.",
+  community: {
+    tagline: "Simulados grátis para certificações de nuvem e TI.",
+    discord: {
+      label: "Entrar no Discord",
+      description: "Tire dúvidas, ache parceiros de estudo e acompanhe as novidades.",
+    },
+    email: {
+      label: "Fale com a gente por e-mail",
+    },
+    creator: {
+      label: "Fale ou dê feedbacks para o criador",
+    },
   },
   practiceExams: {
     title: "Simulados",
@@ -864,6 +869,12 @@ export const pt = {
       retake: "Refazer o simulado",
       viewStudyPlan: "Ver plano de estudo",
     },
+    community: {
+      title: "Tire suas dúvidas com quem está estudando a mesma prova",
+      description:
+        "Entre na comunidade da NaHero no Discord para discutir questões, trocar dicas e estudar junto.",
+      cta: "Entrar no Discord",
+    },
     timeFormat: {
       minutes: "{{time}} minutos",
       hours: "{{hours}}h {{minutes}}m",
@@ -887,10 +898,6 @@ export const pt = {
       title: "Desempenho por domínio",
       weakest: "Seu ponto mais fraco",
       score: "{{correct}}/{{total}}",
-    },
-    domainsUpsell: {
-      text: "Quer saber como melhorar nisso?",
-      cta: "Assine o Premium e veja seu feedback",
     },
     studyPlan: {
       title: "Plano de estudo personalizado",
@@ -1025,6 +1032,20 @@ export const pt = {
     alreadyPremiumBody: "Seu acesso está ativo até {{date}}.",
     manageSubscription: "Gerenciar assinatura",
     goToDashboard: "Ir para o dashboard",
+    card: {
+      title: "NaHero Premium",
+      annualLabel: "Plano anual",
+      savingsBadge: "Economize 25%",
+      annualBilled: "cobrado R$ 90/ano",
+      examAnchor: "Menos de 20% do valor da prova (US$ 100)",
+      lossAversion:
+        "Você errou {{count}} questões em {{domain}}. O plano de estudo mostra exatamente o que revisar.",
+      lossAversionOne:
+        "Você errou 1 questão em {{domain}}. O plano de estudo mostra exatamente o que revisar.",
+      annualCta: "Assinar plano anual",
+      guarantee: "7 dias, devolução integral",
+      monthlyCta: "ou R$ 10/mês",
+    },
     plans: {
       free: {
         name: "Gratuito",
@@ -1034,26 +1055,8 @@ export const pt = {
           "Resultado completo com acertos e erros",
         ],
       },
-      monthly: {
-        name: "Premium Mensal",
-        currency: "R$",
-        amount: "10",
-        cadence: "/mês",
-        badge: "Recomendado",
-        cta: "Assinar plano mensal",
-        footnote: "Renova todo mês. Cancele quando quiser.",
-      },
       yearly: {
-        name: "Premium Anual",
-        currency: "R$",
-        amount: "90",
-        cadence: "/ano",
-        highlightTitle: "Melhor custo-benefício",
-        equivalentLabel: "Equivale a",
         equivalentPrice: "R$ 7,50/mês",
-        yearlySavings: "economize R$ 30 no ano",
-        cta: "Assinar plano anual",
-        footnote: "Renova todo ano. Cancele quando quiser.",
       },
       premiumFeatures: [
         "Explicação detalhada de cada questão",
@@ -1516,12 +1519,6 @@ export const pt = {
         title: "Quer ver para onde sua nota está indo?",
         description:
           "Sua sequência, nota média e melhor nota, tempo estudado e evolução em cada simulado, tudo em um painel. Faz parte do Premium.",
-        cta: "Assinar o Premium",
-      },
-      explanations: {
-        title: "Quer ver as explicações?",
-        description:
-          "Sua nota é grátis, para sempre. O Premium mostra por que cada resposta está certa — e por que a que você marcou não estava.",
         cta: "Assinar o Premium",
       },
       history: {

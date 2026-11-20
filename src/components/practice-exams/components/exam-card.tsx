@@ -54,14 +54,14 @@ export function ExamCard({ exam, inProgressAttemptId }: ExamCardProps) {
               {exam.exam?.title || "Practice Exam"}
             </CardDescription>
           </div>
-          <div className="ml-2 flex shrink-0 flex-col items-end gap-1">
-            <Badge className={cn(getDifficultyColors(difficultyValue))}>
+          <div className="ml-2 flex shrink-0 flex-col items-stretch gap-1">
+            <Badge className={cn("w-full", getDifficultyColors(difficultyValue))}>
               {difficultyLabel}
             </Badge>
             {inProgressAttemptId && (
               <Badge
                 variant="outline"
-                className="border-primary/40 bg-primary/10 text-primary"
+                className="w-full border-primary/40 bg-primary/10 text-primary"
               >
                 {dict.in_progress.badge}
               </Badge>

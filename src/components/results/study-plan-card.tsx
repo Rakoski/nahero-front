@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Loader2, Lock, Sparkles, Target } from "lucide-react";
+import { Loader2, Lock, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,10 +40,7 @@ export function StudyPlanCard({ attemptId, dict, className }: StudyPlanCardProps
   return (
     <Card className={className}>
       <CardHeader>
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-primary" />
-          <CardTitle className="text-2xl">{dict.title}</CardTitle>
-        </div>
+        <CardTitle className="text-2xl">{dict.title}</CardTitle>
       </CardHeader>
       <CardContent>
         {data?.locked ? (
@@ -69,7 +66,7 @@ export function StudyPlanCard({ attemptId, dict, className }: StudyPlanCardProps
                   asChild
                   className="w-full bg-yellow-600 text-white hover:bg-yellow-700 sm:w-auto"
                 >
-                  <Link href={`/${lang}${Routes.Premium}?from=study-plan`}>
+                  <Link href={`/${lang}${Routes.Premium}?from=study-plan&attempt=${attemptId}`}>
                     {dict.lockedCta}
                   </Link>
                 </Button>
