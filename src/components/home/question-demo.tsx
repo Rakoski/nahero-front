@@ -86,11 +86,6 @@ export function QuestionDemo({ dict }: { dict: QuestionDemoDict }) {
   return (
     <div className="relative">
       <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -inset-x-8 -inset-y-10 rounded-[2rem] bg-brand/8 blur-3xl"
-      />
-
-      <div
         role="group"
         aria-label={dict.aria_label}
         className="relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl shadow-black/40"

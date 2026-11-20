@@ -19,15 +19,6 @@ interface HeroProps {
 export function Hero({ dict, lang }: HeroProps) {
   return (
     <section className="relative overflow-hidden border-b border-border">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_75%_60%_at_50%_0%,black,transparent)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 h-[24rem] w-[44rem] max-w-[130vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/[0.07] blur-[110px]"
-      />
-
       <div className="container relative mx-auto grid items-center gap-14 px-4 py-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)] lg:gap-16 lg:py-28">
         <div className="max-w-xl lg:pl-10 xl:pl-16">
           <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">
