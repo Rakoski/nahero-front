@@ -72,11 +72,15 @@ export function PremiumPricingCard({
         </div>
 
         <div className="space-y-2">
-          <p className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-4xl font-bold">
-              {dictionary.premium.plans.yearly.equivalentPrice}
-            </span>
-            <span className="text-muted-foreground">· {dict.annualBilled}</span>
+          <p className="flex items-baseline gap-1">
+            <span className="text-4xl font-bold">{dict.annualPrice}</span>
+            <span className="text-lg text-muted-foreground">{dict.annualCadence}</span>
+          </p>
+          <p className="text-sm font-medium text-yellow-500">
+            {dict.annualEquivalent.replace(
+              "{{price}}",
+              dictionary.premium.plans.yearly.equivalentPrice,
+            )}
           </p>
           {lossAversion && (
             <p className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm font-medium">

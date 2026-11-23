@@ -1047,7 +1047,9 @@ export const en = {
       title: "NaHero Premium",
       annualLabel: "Yearly plan",
       savingsBadge: "Save 25%",
-      annualBilled: "billed $17.99/yr",
+      annualPrice: "$17.99",
+      annualCadence: "/yr",
+      annualEquivalent: "Works out to {{price}} · save $5.89 a year",
       examAnchor: "Less than 20% of the exam fee (US$100)",
       lossAversion:
         "You missed {{count}} questions in {{domain}}. The study plan shows exactly what to review.",

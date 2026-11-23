@@ -1036,7 +1036,9 @@ export const pt = {
       title: "NaHero Premium",
       annualLabel: "Plano anual",
       savingsBadge: "Economize 25%",
-      annualBilled: "cobrado R$ 90/ano",
+      annualPrice: "R$ 90",
+      annualCadence: "/ano",
+      annualEquivalent: "Equivale a {{price}} · economize R$ 30 no ano",
       examAnchor: "Menos de 20% do valor da prova (US$ 100)",
       lossAversion:
         "Você errou {{count}} questões em {{domain}}. O plano de estudo mostra exatamente o que revisar.",
