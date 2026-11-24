@@ -1058,6 +1058,11 @@ export const en = {
       annualCta: "Subscribe yearly",
       guarantee: "7 days, full refund",
       monthlyCta: "or $1.99/mo",
+      monthlyLabel: "Monthly plan",
+      monthlyPrice: "$1.99",
+      monthlyCadence: "/mo",
+      monthlyRenewal: "Renews every month. Cancel anytime.",
+      monthlySubscribeCta: "Subscribe monthly",
     },
     plans: {
       free: {

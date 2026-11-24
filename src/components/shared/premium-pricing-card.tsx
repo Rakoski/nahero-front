@@ -16,8 +16,11 @@ import type { PremiumCheckout } from "@/hooks/usePremiumCheckout";
 import type { PlanInterval } from "@/services/payment/create-checkout-session";
 import { InlineError } from "./inline-error";
 
+type PricingCardVariant = "combined" | "yearly" | "monthly";
+
 interface PremiumPricingCardProps {
   checkout: PremiumCheckout;
+  variant?: PricingCardVariant;
   lossAversion?: string | null;
   features?: readonly string[];
   className?: string;
@@ -25,6 +28,7 @@ interface PremiumPricingCardProps {
 
 export function PremiumPricingCard({
   checkout,
+  variant = "combined",
   lossAversion,
   features,
   className,
@@ -38,15 +42,17 @@ export function PremiumPricingCard({
   const { data: subscription } = useSubscriptionStatus({ enabled: isAuthenticated });
   const isPremium = subscription?.isPremium ?? false;
   const canTrack = isAuthenticated && subscription !== undefined && !isPremium;
+  const isMonthly = variant === "monthly";
+  const tracksView = canTrack && !isMonthly;
 
   const { mutate: track } = useTrackFunnelEvent();
   const viewTracked = useRef(false);
 
   useEffect(() => {
-    if (!canTrack || viewTracked.current) return;
+    if (!tracksView || viewTracked.current) return;
     viewTracked.current = true;
     track({ eventType: "PREMIUM_CARD_VIEW", placement, attemptId });
-  }, [canTrack, track, placement, attemptId]);
+  }, [tracksView, track, placement, attemptId]);
 
   const choose = (plan: PlanInterval) => {
     if (canTrack) track({ eventType: "PREMIUM_CARD_CLICK", placement, plan, attemptId });
@@ -56,7 +62,8 @@ export function PremiumPricingCard({
   return (
     <Card
       className={cn(
-        "flex flex-col border-yellow-500 shadow-lg shadow-yellow-500/10",
+        "flex flex-col",
+        !isMonthly && "border-yellow-500 shadow-lg shadow-yellow-500/10",
         className,
       )}
     >
@@ -64,30 +71,46 @@ export function PremiumPricingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="text-xl font-bold">{dict.title}</h2>
-            <p className="text-sm text-muted-foreground">{dict.annualLabel}</p>
+            <p className="text-sm text-muted-foreground">
+              {isMonthly ? dict.monthlyLabel : dict.annualLabel}
+            </p>
           </div>
-          <Badge className="bg-yellow-500 px-3 py-1 text-sm font-semibold text-stone-950">
-            {dict.savingsBadge}
-          </Badge>
+          {!isMonthly && (
+            <Badge className="bg-yellow-500 px-3 py-1 text-sm font-semibold text-stone-950">
+              {dict.savingsBadge}
+            </Badge>
+          )}
         </div>
 
         <div className="space-y-2">
           <p className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold">{dict.annualPrice}</span>
-            <span className="text-lg text-muted-foreground">{dict.annualCadence}</span>
+            <span className="text-4xl font-bold">
+              {isMonthly ? dict.monthlyPrice : dict.annualPrice}
+            </span>
+            <span className="text-lg text-muted-foreground">
+              {isMonthly ? dict.monthlyCadence : dict.annualCadence}
+            </span>
           </p>
-          <p className="text-sm font-medium text-yellow-500">
-            {dict.annualEquivalent.replace(
-              "{{price}}",
-              dictionary.premium.plans.yearly.equivalentPrice,
-            )}
-          </p>
+          {isMonthly ? (
+            <p className="text-sm text-muted-foreground">
+              {dict.monthlyRenewal}
+            </p>
+          ) : (
+            <p className="text-sm font-medium text-yellow-500">
+              {dict.annualEquivalent.replace(
+                "{{price}}",
+                dictionary.premium.plans.yearly.equivalentPrice,
+              )}
+            </p>
+          )}
           {lossAversion && (
             <p className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm font-medium">
               {lossAversion}
             </p>
           )}
-          <p className="text-sm text-muted-foreground">{dict.examAnchor}</p>
+          {!isMonthly && (
+            <p className="text-sm text-muted-foreground">{dict.examAnchor}</p>
+          )}
         </div>
 
         {features && features.length > 0 && (
@@ -109,31 +132,61 @@ export function PremiumPricingCard({
           </Button>
         ) : (
           <div className="space-y-3">
-            <Button
-              className="w-full bg-yellow-600 font-bold text-white hover:bg-yellow-700"
-              size="lg"
-              onClick={() => choose("YEARLY")}
-              disabled={isStarting}
-            >
-              {pendingPlan === "YEARLY" && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {pendingPlan === "YEARLY" ? dictionary.premium.starting : dict.annualCta}
-            </Button>
-            <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <ShieldCheck className="h-4 w-4 shrink-0 text-green-500" aria-hidden="true" />
-              {dict.guarantee}
-            </p>
-            <div className="text-center">
+            {isMonthly ? (
               <Button
-                variant="link"
-                size="sm"
-                className="h-auto p-0 text-muted-foreground"
+                className="w-full font-bold"
+                size="lg"
+                variant="outline"
                 onClick={() => choose("MONTHLY")}
                 disabled={isStarting}
               >
-                {pendingPlan === "MONTHLY" && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
-                {pendingPlan === "MONTHLY" ? dictionary.premium.starting : dict.monthlyCta}
+                {pendingPlan === "MONTHLY" && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {pendingPlan === "MONTHLY"
+                  ? dictionary.premium.starting
+                  : dict.monthlySubscribeCta}
               </Button>
-            </div>
+            ) : (
+              <Button
+                className="w-full bg-yellow-600 font-bold text-white hover:bg-yellow-700"
+                size="lg"
+                onClick={() => choose("YEARLY")}
+                disabled={isStarting}
+              >
+                {pendingPlan === "YEARLY" && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {pendingPlan === "YEARLY"
+                  ? dictionary.premium.starting
+                  : dict.annualCta}
+              </Button>
+            )}
+            <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <ShieldCheck
+                className="h-4 w-4 shrink-0 text-green-500"
+                aria-hidden="true"
+              />
+              {dict.guarantee}
+            </p>
+            {variant === "combined" && (
+              <div className="text-center">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="h-auto p-0 text-muted-foreground"
+                  onClick={() => choose("MONTHLY")}
+                  disabled={isStarting}
+                >
+                  {pendingPlan === "MONTHLY" && (
+                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                  )}
+                  {pendingPlan === "MONTHLY"
+                    ? dictionary.premium.starting
+                    : dict.monthlyCta}
+                </Button>
+              </div>
+            )}
           </div>
         )}
 

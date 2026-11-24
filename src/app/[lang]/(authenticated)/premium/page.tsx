@@ -109,14 +109,20 @@ export default function PremiumPage() {
         </Card>
       )}
 
-      <section className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-5">
+      <section className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-3">
         <PremiumPricingCard
           checkout={checkout}
+          variant="yearly"
           features={premiumFeatures}
-          className="lg:col-span-3"
         />
 
-        <Card className="flex flex-col lg:col-span-2">
+        <PremiumPricingCard
+          checkout={checkout}
+          variant="monthly"
+          features={premiumFeatures}
+        />
+
+        <Card className="flex flex-col">
           <CardContent className="flex flex-1 flex-col gap-4 pt-6">
             <h2 className="text-xl font-bold">{free.name}</h2>
             <ul className="flex-1 space-y-2">

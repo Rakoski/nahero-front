@@ -1047,6 +1047,11 @@ export const pt = {
       annualCta: "Assinar plano anual",
       guarantee: "7 dias, devolução integral",
       monthlyCta: "ou R$ 10/mês",
+      monthlyLabel: "Plano mensal",
+      monthlyPrice: "R$ 10",
+      monthlyCadence: "/mês",
+      monthlyRenewal: "Renova todo mês. Cancele quando quiser.",
+      monthlySubscribeCta: "Assinar plano mensal",
     },
     plans: {
       free: {
